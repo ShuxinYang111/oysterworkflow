@@ -10,9 +10,29 @@ This public repository is the release home for OysterWorkflow. It is intended fo
 
 ## Screenshots
 
-![OysterWorkflow install from current session](./assets/screenshots/install-from-session.png)
+### Capture and recorder status
 
-![OysterWorkflow installed skill detail](./assets/screenshots/installed-skill-detail.png)
+Start, stop, or schedule a capture from one place while checking OCR language priority, audio capture, recorder status, and macOS permission readiness.
+
+![OysterWorkflow recorder dashboard with capture controls and status cards](./assets/screenshots/01-recorder-dashboard.png)
+
+### Workflow candidate discovery
+
+Review candidate workflows detected from a recorded session, see the stage summary, and choose whether to continue with the generated candidate or create one manually.
+
+![OysterWorkflow workflow candidate discovery screen](./assets/screenshots/02-workflow-candidates.png)
+
+### Skill draft review
+
+Inspect the generated OpenClaw skill steps and evidence notes before installing the result. Sensitive personal and account-specific details are redacted in this screenshot.
+
+![OysterWorkflow generated skill steps with sensitive details redacted](./assets/screenshots/03-skill-steps-redacted.png)
+
+### Skill manager and install prompts
+
+Manage installed skills, copy the recommended execution prompt, and uninstall generated skills when they are no longer needed.
+
+![OysterWorkflow skill manager with generated skills and copy prompt controls](./assets/screenshots/04-skill-manager-installation.png)
 
 ## Why People Use It
 
