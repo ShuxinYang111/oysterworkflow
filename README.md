@@ -1,58 +1,90 @@
 # OysterWorkflow
 
-OysterWorkflow is a macOS desktop app for turning recorded workflows into reusable OpenClaw skills.
+Turn recorded workflows into reusable OpenClaw skills on macOS.
 
-This repository is the public release home for the app. It provides downloads, release notes, licensing information, and issue tracking. The source code for OysterWorkflow is currently private.
+[Download Latest Release](https://github.com/ShuxinYang111/oysterworkflow/releases/latest) | [Release Notes](https://github.com/ShuxinYang111/oysterworkflow/releases) | [Report an Issue](https://github.com/ShuxinYang111/oysterworkflow/issues)
+
+OysterWorkflow is a desktop app for capturing real workflow evidence, reviewing candidate workflows, generating reusable skill artifacts, and installing those skills into OpenClaw-discoverable folders.
+
+This public repository is the release home for OysterWorkflow. It is intended for downloads, release notes, screenshots, and issue tracking. The source code for OysterWorkflow is currently private.
+
+## Screenshots
+
+![OysterWorkflow install from current session](./assets/screenshots/install-from-session.png)
+
+![OysterWorkflow installed skill detail](./assets/screenshots/installed-skill-detail.png)
+
+## Why People Use It
+
+- Capture workflow evidence from screen activity, OCR, UI events, and optional voice narration
+- Turn one recording session into candidate reusable workflows
+- Review generated skill artifacts before export or install
+- Install finished skills directly into an OpenClaw skill folder
+
+## How It Works
+
+1. Record a workflow in the desktop app.
+2. Review the captured session and select the workflow you want.
+3. Generate a reusable OpenClaw skill artifact.
+4. Install the result into your skill directory and reuse it later.
 
 ## Download
 
-Download the latest macOS build from [Releases](../../releases).
+Download the latest macOS build from [Releases](https://github.com/ShuxinYang111/oysterworkflow/releases/latest).
 
-Current public release asset:
+Current release asset:
 
 - `OysterWorkflow-0.1.0-arm64.dmg`
 
-## What OysterWorkflow Does
+SHA-256:
 
-- Records workflow evidence from screen activity, OCR, UI events, and optional voice narration
-- Finds candidate workflows from one captured session
-- Generates reusable OpenClaw skill artifacts from recorded workflows
-- Lets you inspect artifacts before exporting or installing them
-- Installs generated skills into OpenClaw-discoverable directories
+```text
+6233d42d356e32677c60c27d877f10bf2eb3a0ecb63e458e0e7234a4e3e90038
+```
 
-## Platform
+## System Requirements
 
-OysterWorkflow is currently distributed as a macOS desktop app.
+- macOS
+- Apple Silicon Mac (`arm64`)
 
-Because it records workflow evidence, macOS may ask for permissions such as:
+## Installation Notes
+
+1. Download `OysterWorkflow-0.1.0-arm64.dmg` from the latest release.
+2. Open the `.dmg` and drag `OysterWorkflow.app` into `Applications`.
+3. Launch OysterWorkflow from `Applications`.
+4. Grant the required macOS permissions when prompted.
+5. If a recorder permission was just enabled, quit and reopen the app once before starting a recording.
+
+Because OysterWorkflow records workflow evidence, macOS may ask for:
 
 - Screen Recording
 - Accessibility
 - Input Monitoring
 - Microphone, when voice narration is enabled
 
-## Quick Start
+## What This Public Repo Contains
 
-1. Download the latest `.dmg` from the Releases page.
-2. Open the app and grant the required macOS permissions.
-3. Record a workflow.
-4. Review the captured session and generate an OpenClaw skill.
-5. Install the generated skill into OpenClaw.
+- macOS release downloads
+- release notes
+- screenshots and product documentation
+- issue tracking for installation and usage problems
 
-## Public Repo, Private Source
+It does not include the private source code for OysterWorkflow.
 
-OysterWorkflow is currently distributed as closed-source public binaries.
+## License
 
-That means:
+Public releases are licensed under [PolyForm Noncommercial 1.0.0](./LICENSE).
 
-- this repository is public for downloads, release notes, documentation, and issue tracking
-- the app source code is not included here
-- public releases are licensed for noncommercial use under PolyForm Noncommercial 1.0.0
+In plain language:
 
-See [LICENSE](./LICENSE) and [LICENSE-SUMMARY.md](./LICENSE-SUMMARY.md) for details.
+- you may download and use the public release for noncommercial purposes
+- you do not receive rights to the private source code
+- commercial use is not licensed under the public release terms
+
+See [LICENSE-SUMMARY.md](./LICENSE-SUMMARY.md) for the plain-language summary.
 
 For commercial licensing, contact: `shuxin.y.97@gmail.com`
 
 ## Feedback
 
-Use GitHub Issues for bug reports, installation problems, and workflow-generation feedback.
+Use [GitHub Issues](https://github.com/ShuxinYang111/oysterworkflow/issues) for bug reports, installation problems, and workflow-generation feedback.
