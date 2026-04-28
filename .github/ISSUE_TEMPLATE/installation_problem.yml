@@ -1,0 +1,57 @@
+name: Installation problem
+description: Report download, macOS permission, launch, or setup problems.
+title: "[Install]: "
+labels: ["installation"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for testing OysterWorkflow. Please redact personal data and do not share credentials or sensitive screenshots.
+  - type: input
+    id: version
+    attributes:
+      label: Release version
+      description: "Example: v0.1.0"
+      placeholder: v0.1.0
+    validations:
+      required: true
+  - type: dropdown
+    id: mac
+    attributes:
+      label: Mac type
+      options:
+        - Apple Silicon
+        - Intel
+        - Not sure
+    validations:
+      required: true
+  - type: input
+    id: macos
+    attributes:
+      label: macOS version
+      placeholder: macOS 15.x
+  - type: checkboxes
+    id: permissions
+    attributes:
+      label: Permissions involved
+      options:
+        - label: Screen Recording
+        - label: Accessibility
+        - label: Input Monitoring
+        - label: Microphone
+        - label: Not sure
+  - type: textarea
+    id: problem
+    attributes:
+      label: What happened?
+      description: Include the exact step where you got stuck.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: What did you expect?
+  - type: textarea
+    id: notes
+    attributes:
+      label: Additional notes

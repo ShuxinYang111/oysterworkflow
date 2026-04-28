@@ -2,13 +2,34 @@
 
 [English](./README.md) | [简体中文](./README.zh-CN.md)
 
-Turn recorded workflows into reusable OpenClaw skills on macOS.
+Turn real computer workflows into reusable agent capabilities on macOS.
 
 [Download Latest Release](https://github.com/ShuxinYang111/oysterworkflow/releases/latest) | [Release Notes](https://github.com/ShuxinYang111/oysterworkflow/releases) | [Report an Issue](https://github.com/ShuxinYang111/oysterworkflow/issues)
 
-OysterWorkflow is a desktop app for capturing real workflow evidence, reviewing candidate workflows, generating reusable skill artifacts, and installing those skills into OpenClaw-discoverable folders.
+OysterWorkflow is a desktop app for capturing real workflow evidence, reviewing candidate workflows, generating reusable skill artifacts, and installing those skills into OpenClaw-discoverable folders. It is an early step toward workflow-to-capability infrastructure: turning demonstrated human computer workflows into reviewable, reusable agent capabilities.
 
-This public repository is the release home for OysterWorkflow. It is intended for downloads, release notes, screenshots, and issue tracking. The source code for OysterWorkflow is currently private.
+This public repository is the release home for OysterWorkflow. It is intended for downloads, release notes, screenshots, product documentation, and issue tracking. The source code for OysterWorkflow is currently private; future partial source, SDK, or integration surfaces are being considered, but are not promised in this release.
+
+## Why Follow This Repo?
+
+This repo is useful to follow if you care about:
+
+- workflow evidence as training and review material for AI agents
+- turning real desktop work into reusable capability packages
+- OpenClaw skills as an early runtime artifact for agent capabilities
+- human-in-the-loop review before generated skills are installed or reused
+- practical macOS workflows where screen state, OCR text, UI events, and user judgment all matter
+
+## Who Should Try It?
+
+OysterWorkflow is most relevant if you:
+
+- repeat desktop or browser workflows and want to capture the real path once
+- build AI agent, RPA, workflow automation, or developer productivity tools
+- need to turn messy operational procedures into reviewable artifacts
+- want to test how generated OpenClaw skills feel before this idea becomes more automated
+
+Current release scope is intentionally narrow: macOS on Apple Silicon, public noncommercial release, and private source code.
 
 ## Screenshots
 
@@ -92,6 +113,38 @@ Because OysterWorkflow records workflow evidence, macOS may ask for:
 - issue tracking for installation and usage problems
 
 It does not include the private source code for OysterWorkflow.
+
+## Roadmap and Feedback
+
+- See [ROADMAP.md](./ROADMAP.md) for the current direction.
+- See [CONTRIBUTING.md](./CONTRIBUTING.md) for useful feedback areas and issue guidelines.
+- Use [GitHub Issues](https://github.com/ShuxinYang111/oysterworkflow/issues) for installation problems, workflow-generation feedback, and feature requests.
+
+## FAQ
+
+**Is this repo open source?**
+
+No. This public repository hosts release binaries, documentation, screenshots, and issue tracking. The OysterWorkflow source code is currently private.
+
+**Will any source code or SDK be opened later?**
+
+Possibly. Future partial source, SDK, or integration surfaces are being considered, especially around artifacts and runtime integration, but this release does not promise a timeline or scope.
+
+**What does OysterWorkflow generate?**
+
+The current workflow generates reviewable OpenClaw skill artifacts, typically including files such as `skill.json`, `assets.json`, and `summary.json`.
+
+**Is commercial use allowed?**
+
+Not under the public release license. Public releases are licensed for noncommercial use under PolyForm Noncommercial 1.0.0. Commercial use requires separate written permission.
+
+**Does OysterWorkflow fully automate every workflow after one recording?**
+
+No. The current product focuses on capturing workflow evidence, discovering candidate workflows, generating reviewable artifacts, and letting the user inspect the result before reuse.
+
+**What should I avoid sharing in public issues?**
+
+Do not share credentials, private URLs, account data, customer data, or sensitive screenshots. Redacted workflow descriptions are much more useful than raw private data.
 
 ## License
 

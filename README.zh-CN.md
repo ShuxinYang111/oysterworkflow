@@ -2,13 +2,34 @@
 
 [English](./README.md) | [简体中文](./README.zh-CN.md)
 
-在 macOS 上，将录制下来的真实工作流转化为可复用的skill。
+在 macOS 上，将真实电脑工作流转化为可复用的 Agent 能力。
 
 [下载最新版](https://github.com/ShuxinYang111/oysterworkflow/releases/latest) | [发布记录](https://github.com/ShuxinYang111/oysterworkflow/releases) | [反馈问题](https://github.com/ShuxinYang111/oysterworkflow/issues)
 
-OysterWorkflow 是一款 macOS 桌面应用，用于采集真实工作流证据、审查候选工作流、生成可复用的 skill artifacts，并将生成结果安装到 OpenClaw 可发现的 skill 目录中。
+OysterWorkflow 是一款 macOS 桌面应用，用于采集真实工作流证据、审查候选工作流、生成可复用的 skill artifacts，并将生成结果安装到 OpenClaw 可发现的 skill 目录中。它是 workflow-to-capability infrastructure 的早期尝试：把人真实示范过的电脑流程，转化为可审查、可复用的 Agent 能力。
 
-这个公开仓库是 OysterWorkflow 的发布主页，主要用于下载、发布记录、截图、文档和 issue tracking。OysterWorkflow 的源码目前仍为私有。
+这个公开仓库是 OysterWorkflow 的发布主页，主要用于下载、发布记录、截图、产品文档和 issue tracking。OysterWorkflow 的源码目前仍为私有；未来可能考虑开放部分源码、SDK 或集成接口，但当前版本不承诺具体范围或时间表。
+
+## 为什么关注这个仓库
+
+如果你关注以下方向，这个仓库会持续提供相关更新：
+
+- workflow evidence 如何成为 AI Agent 的训练、审查和复用材料
+- 如何把真实桌面工作转化为可复用的 capability package
+- OpenClaw skill 作为早期 Agent capability runtime artifact
+- 安装或复用生成 skill 前的人类审查流程
+- 屏幕状态、OCR 文本、UI events 和人的判断共同参与的真实 macOS 工作流
+
+## 谁适合试用
+
+OysterWorkflow 更适合这些用户：
+
+- 经常重复桌面或浏览器流程，希望先把真实路径采集下来
+- 正在构建 AI Agent、RPA、workflow automation 或 developer productivity 工具
+- 想把复杂运营流程整理成可审查 artifacts
+- 想试用 generated OpenClaw skill 在更自动化之前的实际形态
+
+当前发布范围刻意保持较窄：macOS Apple Silicon、公开非商业 release、源码私有。
 
 ## 截图
 
@@ -92,6 +113,38 @@ SHA-256：
 - 安装和使用问题的 issue tracking
 
 它不包含 OysterWorkflow 的私有源码。
+
+## Roadmap 和反馈
+
+- 当前方向见 [ROADMAP.md](./ROADMAP.md)。
+- 反馈方式和 issue 指南见 [CONTRIBUTING.md](./CONTRIBUTING.md)。
+- 安装问题、workflow generation 反馈和功能建议请使用 [GitHub Issues](https://github.com/ShuxinYang111/oysterworkflow/issues)。
+
+## FAQ
+
+**这个仓库是开源仓库吗？**
+
+不是。这个公开仓库用于发布二进制包、文档、截图和 issue tracking。OysterWorkflow 源码当前仍为私有。
+
+**之后会开放源码或 SDK 吗？**
+
+有可能。未来会考虑开放部分源码、SDK 或集成接口，尤其是 artifacts 和 runtime integration 相关部分，但当前 release 不承诺时间表或具体范围。
+
+**OysterWorkflow 会生成什么？**
+
+当前流程会生成可审查的 OpenClaw skill artifacts，典型文件包括 `skill.json`、`assets.json` 和 `summary.json`。
+
+**可以商业使用吗？**
+
+公开 release 许可不包含商业授权。公开版本使用 PolyForm Noncommercial 1.0.0，商业使用需要单独书面许可。
+
+**录制一次之后就能完全自动化所有工作流吗？**
+
+不能。当前产品重点是采集 workflow evidence、发现候选工作流、生成可审查 artifacts，并让用户在复用前检查结果。
+
+**公开 issue 里不要发什么？**
+
+请不要公开发布密码、私有 URL、账号信息、客户数据或敏感截图。经过脱敏的 workflow 描述比原始隐私数据更有帮助。
 
 ## 许可
 

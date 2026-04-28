@@ -1,0 +1,42 @@
+name: Workflow-generation feedback
+description: Share feedback about captured sessions, candidate workflows, or generated skill artifacts.
+title: "[Workflow]: "
+labels: ["workflow-feedback"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Please keep examples public-safe. Redact private URLs, names, account data, credentials, customer data, and sensitive screenshots.
+  - type: input
+    id: version
+    attributes:
+      label: Release version
+      placeholder: v0.1.0
+    validations:
+      required: true
+  - type: textarea
+    id: workflow
+    attributes:
+      label: What workflow were you trying to capture?
+      description: Describe the task and app/site category without sensitive details.
+    validations:
+      required: true
+  - type: textarea
+    id: useful
+    attributes:
+      label: What felt useful?
+  - type: textarea
+    id: wrong
+    attributes:
+      label: What felt wrong, missing, or confusing?
+  - type: textarea
+    id: artifact
+    attributes:
+      label: Artifact feedback
+      description: If you reviewed generated skill steps, evidence notes, or assets, what should change?
+  - type: textarea
+    id: reuse
+    attributes:
+      label: What would make this reusable?
+      description: Describe what an agent capability should remember or expose next time.
+
