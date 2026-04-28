@@ -2,7 +2,7 @@
 
 [English](./README.md) | [简体中文](./README.zh-CN.md)
 
-Turn real computer workflows into reusable agent capabilities on macOS.
+Turn real computer workflows into reusable agent capabilities on macOS and Windows.
 
 [Download Latest Release](https://github.com/ShuxinYang111/oysterworkflow/releases/latest) | [Release Notes](https://github.com/ShuxinYang111/oysterworkflow/releases) | [Report an Issue](https://github.com/ShuxinYang111/oysterworkflow/issues)
 
@@ -18,7 +18,7 @@ This repo is useful to follow if you care about:
 - turning real desktop work into reusable capability packages
 - OpenClaw skills as an early runtime artifact for agent capabilities
 - human-in-the-loop review before generated skills are installed or reused
-- practical macOS workflows where screen state, OCR text, UI events, and user judgment all matter
+- practical desktop workflows where screen state, OCR text, UI events, and user judgment all matter
 
 ## Who Should Try It?
 
@@ -29,13 +29,13 @@ OysterWorkflow is most relevant if you:
 - need to turn messy operational procedures into reviewable artifacts
 - want to test how generated OpenClaw skills feel before this idea becomes more automated
 
-Current release scope is intentionally narrow: macOS on Apple Silicon, public noncommercial release, and private source code.
+Current release scope is intentionally narrow: macOS on Apple Silicon, Windows x64, public noncommercial release, and private source code.
 
 ## Screenshots
 
 ### Capture and recorder status
 
-Start, stop, or schedule a capture from one place while checking OCR language priority, audio capture, recorder status, and macOS permission readiness.
+Start, stop, or schedule a capture from one place while checking OCR language priority, audio capture, recorder status, and desktop recorder readiness.
 
 ![OysterWorkflow recorder dashboard with capture controls and status cards](./assets/screenshots/01-recorder-dashboard.png)
 
@@ -73,24 +73,31 @@ Manage installed skills, copy the recommended execution prompt, and uninstall ge
 
 ## Download
 
-Download the latest macOS build from [Releases](https://github.com/ShuxinYang111/oysterworkflow/releases/latest).
+Download the latest macOS or Windows build from [Releases](https://github.com/ShuxinYang111/oysterworkflow/releases/latest).
 
-Current release asset:
+Current release assets:
 
 - `OysterWorkflow-0.1.0-arm64.dmg`
+- `OysterWorkflow-Setup-0.1.0.exe`
 
 SHA-256:
 
 ```text
+macOS arm64 dmg:
 711fe49c3abeb66e109c1ab78476b09978d3c83c042b922a58a6affa46d16187
+
+Windows x64 installer:
+78dad16a0e9152173d128ca5c2674a4987c61a4245e5f67bd2650654687bf0cf
 ```
 
 ## System Requirements
 
-- macOS
-- Apple Silicon Mac (`arm64`)
+- macOS on Apple Silicon (`arm64`)
+- Windows x64
 
 ## Installation Notes
+
+### macOS
 
 1. Download `OysterWorkflow-0.1.0-arm64.dmg` from the latest release.
 2. Open the `.dmg` and drag `OysterWorkflow.app` into `Applications`.
@@ -105,9 +112,22 @@ Because OysterWorkflow records workflow evidence, macOS may ask for:
 - Input Monitoring
 - Microphone, when voice narration is enabled
 
+### Windows
+
+1. Download `OysterWorkflow-Setup-0.1.0.exe` from the latest release.
+2. Run the installer.
+3. Launch OysterWorkflow from the Start menu or install location.
+4. Enable recorder audio only when you want voice narration captured.
+
+Windows notes:
+
+- The Windows build is x64.
+- The Windows version currently does not support Chinese text input in the app.
+- Voice transcription on Windows currently works best for English. Chinese speech transcription is not reliable in this release.
+
 ## What This Public Repo Contains
 
-- macOS release downloads
+- macOS and Windows release downloads
 - release notes
 - screenshots and product documentation
 - issue tracking for installation and usage problems

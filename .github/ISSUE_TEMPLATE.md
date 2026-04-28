@@ -17,7 +17,7 @@ Please keep public issues safe to share:
 Useful issue reports usually include:
 
 - release version, for example `v0.1.0`
-- macOS version and Mac type
+- operating system and device type, for example macOS Apple Silicon or Windows x64
 - what workflow you were trying to capture
 - what you expected
 - what happened instead

@@ -1,5 +1,5 @@
 name: Installation problem
-description: Report download, macOS permission, launch, or setup problems.
+description: Report download, Windows setup, macOS permission, launch, or setup problems.
 title: "[Install]: "
 labels: ["installation"]
 body:
@@ -16,20 +16,21 @@ body:
     validations:
       required: true
   - type: dropdown
-    id: mac
+    id: platform
     attributes:
-      label: Mac type
+      label: Platform
       options:
-        - Apple Silicon
-        - Intel
+        - macOS Apple Silicon
+        - macOS Intel
+        - Windows x64
         - Not sure
     validations:
       required: true
   - type: input
-    id: macos
+    id: os_version
     attributes:
-      label: macOS version
-      placeholder: macOS 15.x
+      label: Operating system version
+      placeholder: macOS 15.x or Windows 11 23H2
   - type: checkboxes
     id: permissions
     attributes:

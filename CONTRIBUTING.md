@@ -8,7 +8,7 @@ This public repository is currently a release, documentation, and issue-tracking
 
 Please open an issue if you can share:
 
-- installation or macOS permission problems
+- installation, Windows setup, or macOS permission problems
 - confusing recorder, candidate workflow, or skill review behavior
 - examples of workflows you would like to capture
 - generated skill artifacts that feel wrong, incomplete, or surprisingly useful

@@ -6,7 +6,7 @@ This roadmap is directional. It is not a commitment to ship every item or to shi
 
 ## Current Release
 
-- macOS desktop app for Apple Silicon
+- macOS desktop app for Apple Silicon and Windows x64 installer
 - workflow evidence capture from screen activity, OCR text, UI events, input traces, window state, and optional narration
 - candidate workflow review
 - OpenClaw skill artifact generation
@@ -15,7 +15,7 @@ This roadmap is directional. It is not a commitment to ship every item or to shi
 
 ## Near-Term Focus
 
-- reduce macOS installation and permission friction
+- reduce macOS installation / permission friction and Windows setup friction
 - improve the clarity of recorder and review states
 - make generated skill artifacts easier to inspect and compare
 - collect high-quality examples of real workflows people want to capture
