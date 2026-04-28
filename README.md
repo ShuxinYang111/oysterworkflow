@@ -1,5 +1,7 @@
 # OysterWorkflow
 
+[English](./README.md) | [简体中文](./README.zh-CN.md)
+
 Turn recorded workflows into reusable OpenClaw skills on macOS.
 
 [Download Latest Release](https://github.com/ShuxinYang111/oysterworkflow/releases/latest) | [Release Notes](https://github.com/ShuxinYang111/oysterworkflow/releases) | [Report an Issue](https://github.com/ShuxinYang111/oysterworkflow/issues)
@@ -59,7 +61,7 @@ Current release asset:
 SHA-256:
 
 ```text
-6233d42d356e32677c60c27d877f10bf2eb3a0ecb63e458e0e7234a4e3e90038
+711fe49c3abeb66e109c1ab78476b09978d3c83c042b922a58a6affa46d16187
 ```
 
 ## System Requirements
