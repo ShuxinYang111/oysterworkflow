@@ -2,7 +2,7 @@
 
 [English](./README.md) | [简体中文](./README.zh-CN.md)
 
-在 macOS 上，将录制下来的真实工作流转化为可复用的 OpenClaw skill。
+在 macOS 上，将录制下来的真实工作流转化为可复用的skill。
 
 [下载最新版](https://github.com/ShuxinYang111/oysterworkflow/releases/latest) | [发布记录](https://github.com/ShuxinYang111/oysterworkflow/releases) | [反馈问题](https://github.com/ShuxinYang111/oysterworkflow/issues)
 
