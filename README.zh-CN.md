@@ -2,36 +2,45 @@
 
 [English](./README.md) | [简体中文](./README.zh-CN.md)
 
-在 macOS 和 Windows 上，将真实电脑工作流转化为可复用的 Agent 能力。
+面向 AI Agent 的 workflow-to-capability infrastructure，支持 macOS 和 Windows。
 
-[下载最新版](https://github.com/ShuxinYang111/oysterworkflow/releases/latest) | [发布记录](https://github.com/ShuxinYang111/oysterworkflow/releases) | [反馈问题](https://github.com/ShuxinYang111/oysterworkflow/issues)
+[下载最新版](https://github.com/ShuxinYang111/oysterworkflow/releases/latest) | [发布记录](https://github.com/ShuxinYang111/oysterworkflow/releases) | [营销网站工作区](https://github.com/ShuxinYang111/oyster-marketing) | [反馈问题](https://github.com/ShuxinYang111/oysterworkflow/issues) | [商业授权](mailto:shuxin.y.97@gmail.com)
 
-OysterWorkflow 是一款 macOS / Windows 桌面应用，用于采集真实工作流证据、审查候选工作流、生成可复用的 skill artifacts，并将生成结果安装到 OpenClaw 可发现的 skill 目录中。它是 workflow-to-capability infrastructure 的早期尝试：把人真实示范过的电脑流程，转化为可审查、可复用的 Agent 能力。
+OysterWorkflow 会采集真实工作流证据，把它整理成可审查的 artifacts，并帮助你把最终能力安装到 OpenClaw 中。当前公开版本聚焦于可审查的 OpenClaw skill 生成，而更大的方向是从真实电脑工作中沉淀可复用的 Agent experience。
 
-这个公开仓库是 OysterWorkflow 的发布主页，主要用于下载、发布记录、截图、产品文档和 issue tracking。OysterWorkflow 的源码目前仍为私有；未来可能考虑开放部分源码、SDK 或集成接口，但当前版本不承诺具体范围或时间表。
+这个公开仓库是 OysterWorkflow 的发布主页，主要用于下载、发布记录、截图、产品文档、问题反馈，以及连接并行建设中的公开营销网站工作区。当前版本下，OysterWorkflow 源码仍为私有。
 
-## 为什么关注这个仓库
+## 为什么这件事重要
 
-如果你关注以下方向，这个仓库会持续提供相关更新：
-
-- workflow evidence 如何成为 AI Agent 的训练、审查和复用材料
-- 如何把真实桌面工作转化为可复用的 capability package
-- OpenClaw skill 作为早期 Agent capability runtime artifact
-- 安装或复用生成 skill 前的人类审查流程
-- 屏幕状态、OCR 文本、UI events 和人的判断共同参与的真实桌面工作流
+Prompt 和 SOP 往往遗漏真实电脑工作的质感：页面状态、重试过程、本地上下文、UI 切换，以及一个任务真正成功所依赖的执行顺序。OysterWorkflow 的目标，就是把这条原本看不见的路径沉淀成可复用资产。
 
 ## 谁适合试用
 
-OysterWorkflow 更适合这些用户：
+如果你符合下面这些情况，OysterWorkflow 会比较值得试：
 
-- 经常重复桌面或浏览器流程，希望先把真实路径采集下来
+- 经常重复桌面或浏览器流程，希望先把真实路径完整采集一次
 - 正在构建 AI Agent、RPA、workflow automation 或 developer productivity 工具
-- 想把复杂运营流程整理成可审查 artifacts
-- 想试用 generated OpenClaw skill 在更自动化之前的实际形态
+- 想把复杂运营流程整理成可审查、可复用的 artifacts
+- 希望在安装或复用生成能力之前，保留人类审查环节
 
-当前发布范围刻意保持较窄：macOS Apple Silicon、Windows x64、公开非商业 release、源码私有。
+当前发布范围刻意保持较窄：macOS Apple Silicon、Windows x64、公开非商业发布、源码私有。
 
-## 截图
+## OysterWorkflow 当前能做什么
+
+- 从屏幕活动、OCR、UI events、输入轨迹和可选语音讲解中采集工作流证据
+- 将一次录制 session 提炼为值得审查的候选工作流
+- 生成可审查的 OpenClaw skill artifacts，例如 `skill.json`、`assets.json` 和 `summary.json`
+- 在导出或安装前保留人工检查和判断
+- 将完成的 skill 直接安装到 OpenClaw skill 目录
+
+## 从 Workflow 到 Capability
+
+1. 先真实完成一次工作流。
+2. 审查识别出的候选工作流，并选择真正有价值的那条路径。
+3. 检查生成的 skill 草稿和证据说明。
+4. 将最终能力安装到 OpenClaw 中，供后续复用。
+
+## 产品截图
 
 ### 采集与录制状态
 
@@ -56,20 +65,6 @@ OysterWorkflow 更适合这些用户：
 管理已安装的 skills，复制推荐执行提示词，并在不再需要时卸载生成的 skills。
 
 ![OysterWorkflow skill manager with generated skills and copy prompt controls](./assets/screenshots/04-skill-manager-installation.png)
-
-## 为什么使用它
-
-- 从屏幕活动、OCR、UI events 和可选语音讲解中采集工作流证据
-- 将一次录制 session 转化为候选的可复用工作流
-- 在导出或安装前审查生成的 skill artifacts
-- 将完成的 skills 直接安装到 OpenClaw skill 目录
-
-## 工作方式
-
-1. 在桌面应用中录制一个工作流。
-2. 审查采集到的 session，并选择你想沉淀的工作流。
-3. 生成可复用的 OpenClaw skill artifact。
-4. 将结果安装到你的 skill 目录，并在之后复用。
 
 ## 下载
 
@@ -99,7 +94,7 @@ Windows x64 installer:
 
 ### macOS
 
-1. 从 latest release 下载 `OysterWorkflow-0.1.0-arm64.dmg`。
+1. 从最新 release 下载 `OysterWorkflow-0.1.0-arm64.dmg`。
 2. 打开 `.dmg`，将 `OysterWorkflow.app` 拖入 `Applications`。
 3. 从 `Applications` 启动 OysterWorkflow。
 4. 按提示授予必要的 macOS 权限。
@@ -114,7 +109,7 @@ Windows x64 installer:
 
 ### Windows
 
-1. 从 latest release 下载 `OysterWorkflow-Setup-0.1.0.exe`。
+1. 从最新 release 下载 `OysterWorkflow-Setup-0.1.0.exe`。
 2. 运行安装器。
 3. 从开始菜单或安装目录启动 OysterWorkflow。
 4. 只有在需要采集语音讲解时才启用录制器音频。
@@ -127,14 +122,15 @@ Windows 注意事项：
 
 ## 这个公开仓库包含什么
 
-- macOS 和 Windows release 下载
-- release notes
-- 截图与产品文档
-- 安装和使用问题的 issue tracking
+- macOS 和 Windows 发布包下载
+- 发布记录
+- 截图和产品文档
+- 安装与使用问题反馈
+- 指向并行营销网站工作区的链接
 
 它不包含 OysterWorkflow 的私有源码。
 
-## Roadmap 和反馈
+## Roadmap 与反馈
 
 - 当前方向见 [ROADMAP.md](./ROADMAP.md)。
 - 反馈方式和 issue 指南见 [CONTRIBUTING.md](./CONTRIBUTING.md)。
@@ -179,7 +175,3 @@ Windows 注意事项：
 请阅读 [LICENSE-SUMMARY.md](./LICENSE-SUMMARY.md) 查看简明许可摘要。
 
 如需商业授权，请联系：`shuxin.y.97@gmail.com`
-
-## 反馈
-
-请通过 [GitHub Issues](https://github.com/ShuxinYang111/oysterworkflow/issues) 反馈 bug、安装问题和 workflow generation 相关问题。
