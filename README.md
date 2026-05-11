@@ -2,23 +2,17 @@
 
 [English](./README.md) | [简体中文](./README.zh-CN.md)
 
-Turn real computer workflows into reusable agent capabilities on macOS and Windows.
+Workflow-to-capability infrastructure for AI agents on macOS and Windows.
 
-[Download Latest Release](https://github.com/ShuxinYang111/oysterworkflow/releases/latest) | [Release Notes](https://github.com/ShuxinYang111/oysterworkflow/releases) | [Report an Issue](https://github.com/ShuxinYang111/oysterworkflow/issues)
+[Download Latest Release](https://github.com/ShuxinYang111/oysterworkflow/releases/latest) | [Release Notes](https://github.com/ShuxinYang111/oysterworkflow/releases) | [Marketing Website Workspace](https://github.com/ShuxinYang111/oyster-marketing) | [Report an Issue](https://github.com/ShuxinYang111/oysterworkflow/issues) | [Commercial Licensing](mailto:shuxin.y.97@gmail.com)
 
-OysterWorkflow is a desktop app for capturing real workflow evidence, reviewing candidate workflows, generating reusable skill artifacts, and installing those skills into OpenClaw-discoverable folders. It is an early step toward workflow-to-capability infrastructure: turning demonstrated human computer workflows into reviewable, reusable agent capabilities.
+OysterWorkflow captures real workflow evidence, turns it into reviewable artifacts, and helps install the finished capability into OpenClaw. The current release focuses on reviewable OpenClaw skills today, while the broader direction is reusable agent experience built from real computer work.
 
-This public repository is the release home for OysterWorkflow. It is intended for downloads, release notes, screenshots, product documentation, and issue tracking. The source code for OysterWorkflow is currently private; future partial source, SDK, or integration surfaces are being considered, but are not promised in this release.
+This public repository is the release home for OysterWorkflow. It is intended for downloads, release notes, screenshots, product documentation, issue tracking, and links to the parallel public marketing-site workspace. The source code for OysterWorkflow is currently private in this release.
 
-## Why Follow This Repo?
+## Why It Matters
 
-This repo is useful to follow if you care about:
-
-- workflow evidence as training and review material for AI agents
-- turning real desktop work into reusable capability packages
-- OpenClaw skills as an early runtime artifact for agent capabilities
-- human-in-the-loop review before generated skills are installed or reused
-- practical desktop workflows where screen state, OCR text, UI events, and user judgment all matter
+Prompts and SOPs miss the texture of real computer work: page states, retries, local context, UI transitions, and the order that makes a task actually succeed. OysterWorkflow turns that invisible path into a reusable artifact.
 
 ## Who Should Try It?
 
@@ -27,11 +21,26 @@ OysterWorkflow is most relevant if you:
 - repeat desktop or browser workflows and want to capture the real path once
 - build AI agent, RPA, workflow automation, or developer productivity tools
 - need to turn messy operational procedures into reviewable artifacts
-- want to test how generated OpenClaw skills feel before this idea becomes more automated
+- want human review before generated skills are installed or reused
 
 Current release scope is intentionally narrow: macOS on Apple Silicon, Windows x64, public noncommercial release, and private source code.
 
-## Screenshots
+## What OysterWorkflow Does
+
+- Capture workflow evidence from screen activity, OCR, UI events, input traces, and optional voice narration
+- Distill one recorded session into candidate workflows worth reviewing
+- Generate reviewable OpenClaw skill artifacts such as `skill.json`, `assets.json`, and `summary.json`
+- Keep humans in the loop before export or installation
+- Install finished skills directly into an OpenClaw skill directory
+
+## From Workflow To Capability
+
+1. Record a real workflow once.
+2. Review the detected workflow candidates and choose the path that matters.
+3. Validate the generated skill draft and its evidence notes.
+4. Install the finished capability into OpenClaw for reuse.
+
+## Product Screens
 
 ### Capture and recorder status
 
@@ -56,20 +65,6 @@ Inspect the generated OpenClaw skill steps and evidence notes before installing 
 Manage installed skills, copy the recommended execution prompt, and uninstall generated skills when they are no longer needed.
 
 ![OysterWorkflow skill manager with generated skills and copy prompt controls](./assets/screenshots/04-skill-manager-installation.png)
-
-## Why People Use It
-
-- Capture workflow evidence from screen activity, OCR, UI events, and optional voice narration
-- Turn one recording session into candidate reusable workflows
-- Review generated skill artifacts before export or install
-- Install finished skills directly into an OpenClaw skill folder
-
-## How It Works
-
-1. Record a workflow in the desktop app.
-2. Review the captured session and select the workflow you want.
-3. Generate a reusable OpenClaw skill artifact.
-4. Install the result into your skill directory and reuse it later.
 
 ## Download
 
@@ -125,14 +120,15 @@ Windows notes:
 - The Windows version currently does not support Chinese text input in the app.
 - Voice transcription on Windows currently works best for English. Chinese speech transcription is not reliable in this release.
 
-## What This Public Repo Contains
+## Public Repo Scope
 
 - macOS and Windows release downloads
 - release notes
 - screenshots and product documentation
 - issue tracking for installation and usage problems
+- links to the parallel public marketing-site workspace
 
-It does not include the private source code for OysterWorkflow.
+The private source code for OysterWorkflow is not included here.
 
 ## Roadmap and Feedback
 
@@ -179,7 +175,3 @@ In plain language:
 See [LICENSE-SUMMARY.md](./LICENSE-SUMMARY.md) for the plain-language summary.
 
 For commercial licensing, contact: `shuxin.y.97@gmail.com`
-
-## Feedback
-
-Use [GitHub Issues](https://github.com/ShuxinYang111/oysterworkflow/issues) for bug reports, installation problems, and workflow-generation feedback.
