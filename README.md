@@ -2,17 +2,29 @@
 
 [English](./README.md) | [简体中文](./README.zh-CN.md)
 
-Workflow-to-capability infrastructure for AI agents on macOS and Windows.
+The work experience layer for autonomous agents on macOS and Windows.
 
-[Download Latest Release](https://github.com/ShuxinYang111/oysterworkflow/releases/latest) | [Release Notes](https://github.com/ShuxinYang111/oysterworkflow/releases) | [Marketing Website Workspace](https://github.com/ShuxinYang111/oyster-marketing) | [Report an Issue](https://github.com/ShuxinYang111/oysterworkflow/issues) | [Commercial Licensing](mailto:shuxin.y.97@gmail.com)
+[Website](https://oysterworkflow.vercel.app/) | [Download Latest Release](https://github.com/ShuxinYang111/oysterworkflow/releases/latest) | [Release Notes](https://github.com/ShuxinYang111/oysterworkflow/releases) | [Report an Issue](https://github.com/ShuxinYang111/oysterworkflow/issues) | [Commercial Licensing](mailto:shuxin.y.97@gmail.com)
 
-OysterWorkflow captures real workflow evidence, turns it into reviewable artifacts, and helps install the finished capability into OpenClaw. The current release focuses on reviewable OpenClaw skills today, while the broader direction is reusable agent experience built from real computer work.
+OysterWorkflow captures real computer work and turns messy signals, decisions, and actions into reusable experience for autonomous agents.
 
-This public repository is the release home for OysterWorkflow. It is intended for downloads, release notes, screenshots, product documentation, issue tracking, and links to the parallel public marketing-site workspace. The source code for OysterWorkflow is currently private in this release.
+The current release focuses on reviewable OpenClaw skills today: record evidence, review candidate workflows, validate the draft, and install only the capability you trust. The broader direction is an experience layer for AI work: capture what happened, extract the pattern, and give future agents a memory of how work succeeds.
+
+This public repository is the release home for OysterWorkflow. It is intended for downloads, release notes, screenshots, product documentation, issue tracking, and the official website link. The source code for OysterWorkflow is currently private in this release.
 
 ## Why It Matters
 
 Prompts and SOPs miss the texture of real computer work: page states, retries, local context, UI transitions, and the order that makes a task actually succeed. OysterWorkflow turns that invisible path into a reusable artifact.
+
+## Experience Layer
+
+The website frames the product around three connected ideas:
+
+- Observe real computer work
+- Extract reusable experience patterns
+- Give future agents a memory of how work succeeds
+
+Inside the app, that means OysterWorkflow captures screen states, OCR text, inputs, windows, optional narration, candidate workflows, and skill drafts as inspectable evidence rather than treating a workflow as a prompt-only instruction.
 
 ## Who Should Try It?
 
@@ -126,7 +138,7 @@ Windows notes:
 - release notes
 - screenshots and product documentation
 - issue tracking for installation and usage problems
-- links to the parallel public marketing-site workspace
+- the official product website link
 
 The private source code for OysterWorkflow is not included here.
 

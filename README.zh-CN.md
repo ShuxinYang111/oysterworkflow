@@ -2,17 +2,29 @@
 
 [English](./README.md) | [简体中文](./README.zh-CN.md)
 
-面向 AI Agent 的 workflow-to-capability infrastructure，支持 macOS 和 Windows。
+面向 autonomous agents 的 work experience layer，支持 macOS 和 Windows。
 
-[下载最新版](https://github.com/ShuxinYang111/oysterworkflow/releases/latest) | [发布记录](https://github.com/ShuxinYang111/oysterworkflow/releases) | [营销网站工作区](https://github.com/ShuxinYang111/oyster-marketing) | [反馈问题](https://github.com/ShuxinYang111/oysterworkflow/issues) | [商业授权](mailto:shuxin.y.97@gmail.com)
+[官网](https://oysterworkflow.vercel.app/) | [下载最新版](https://github.com/ShuxinYang111/oysterworkflow/releases/latest) | [发布记录](https://github.com/ShuxinYang111/oysterworkflow/releases) | [反馈问题](https://github.com/ShuxinYang111/oysterworkflow/issues) | [商业授权](mailto:shuxin.y.97@gmail.com)
 
-OysterWorkflow 会采集真实工作流证据，把它整理成可审查的 artifacts，并帮助你把最终能力安装到 OpenClaw 中。当前公开版本聚焦于可审查的 OpenClaw skill 生成，而更大的方向是从真实电脑工作中沉淀可复用的 Agent experience。
+OysterWorkflow 会采集真实电脑工作，并把混杂的 signals、decisions 和 actions 转化为 autonomous agents 可复用的 experience。
 
-这个公开仓库是 OysterWorkflow 的发布主页，主要用于下载、发布记录、截图、产品文档、问题反馈，以及连接并行建设中的公开营销网站工作区。当前版本下，OysterWorkflow 源码仍为私有。
+当前公开版本聚焦于可审查的 OpenClaw skill 生成：录制证据、审查候选工作流、验证草稿，并只安装你信任的 capability。更大的方向是面向 AI work 的 experience layer：捕捉发生过什么、抽取可复用模式，并让未来 Agent 拥有“工作如何成功”的记忆。
+
+这个公开仓库是 OysterWorkflow 的发布主页，主要用于下载、发布记录、截图、产品文档、问题反馈，以及放置官网入口。当前版本下，OysterWorkflow 源码仍为私有。
 
 ## 为什么这件事重要
 
 Prompt 和 SOP 往往遗漏真实电脑工作的质感：页面状态、重试过程、本地上下文、UI 切换，以及一个任务真正成功所依赖的执行顺序。OysterWorkflow 的目标，就是把这条原本看不见的路径沉淀成可复用资产。
+
+## Experience Layer
+
+官网把产品核心概括为三个连续动作：
+
+- Observe real computer work
+- Extract reusable experience patterns
+- Give future agents a memory of how work succeeds
+
+落到应用里，这意味着 OysterWorkflow 会把 screen states、OCR text、inputs、windows、可选语音讲解、候选工作流和 skill 草稿作为可检查证据保存下来，而不是只把工作流当成一段 prompt instruction。
 
 ## 谁适合试用
 
@@ -126,7 +138,7 @@ Windows 注意事项：
 - 发布记录
 - 截图和产品文档
 - 安装与使用问题反馈
-- 指向并行营销网站工作区的链接
+- 官网入口
 
 它不包含 OysterWorkflow 的私有源码。
 
