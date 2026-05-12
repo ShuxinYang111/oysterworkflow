@@ -8,9 +8,7 @@ The work experience layer for autonomous agents on macOS and Windows.
 
 OysterWorkflow captures real computer work and turns messy signals, decisions, and actions into reusable experience for autonomous agents.
 
-The current release focuses on reviewable OpenClaw skills today: record evidence, review candidate workflows, validate the draft, and install only the capability you trust. The broader direction is an experience layer for AI work: capture what happened, extract the pattern, and give future agents a memory of how work succeeds.
-
-This public repository is the release home for OysterWorkflow. It is intended for downloads, release notes, screenshots, product documentation, issue tracking, and the official website link. The source code for OysterWorkflow is currently private in this release.
+The current release focuses on reviewable AI skills today: record evidence, review candidate workflows, validate the draft, and install only the capability you trust. The broader direction is an experience layer for AI work: capture what happened, extract the pattern, and give future agents an experience layer of how work succeeds.
 
 ## Why It Matters
 
