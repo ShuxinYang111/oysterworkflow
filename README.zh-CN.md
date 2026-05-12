@@ -6,77 +6,79 @@
 
 [官网](https://oysterworkflow.vercel.app/) | [下载最新版](https://github.com/ShuxinYang111/oysterworkflow/releases/latest) | [发布记录](https://github.com/ShuxinYang111/oysterworkflow/releases) | [反馈问题](https://github.com/ShuxinYang111/oysterworkflow/issues) | [商业授权](mailto:shuxin.y.97@gmail.com)
 
-OysterWorkflow 会采集真实电脑工作，并把混杂的 signals、decisions 和 actions 转化为 autonomous agents 可复用的 experience。
+OysterWorkflow 会采集人类和 Agent 在电脑上观察到什么、如何反应、如何完成真实工作。它把 screen states、OCR text、clicks、keystrokes、retries、choices 和 verification moves 转化为 AI agents 可复用的 experience。
 
-当前公开版本聚焦于可审查的 OpenClaw skill 生成：录制证据、审查候选工作流、验证草稿，并只安装你信任的 capability。更大的方向是面向 AI work 的 experience layer：捕捉发生过什么、抽取可复用模式，并让未来 Agent 拥有“工作如何成功”的记忆。
+当前公开版本会从桌面 workflow evidence 中生成可审查的 OpenClaw skills。更大的方向，是建立一个 workflow data、artifact 和 evaluation loop，让未来 Agent 拥有“工作如何成功”的记忆。
 
-这个公开仓库是 OysterWorkflow 的发布主页，主要用于下载、发布记录、截图、产品文档、问题反馈，以及放置官网入口。当前版本下，OysterWorkflow 源码仍为私有。
+## 核心想法
 
-## 为什么这件事重要
+Autonomous agents 需要的不只是 instructions，还需要 work memory。
 
-Prompt 和 SOP 往往遗漏真实电脑工作的质感：页面状态、重试过程、本地上下文、UI 切换，以及一个任务真正成功所依赖的执行顺序。OysterWorkflow 的目标，就是把这条原本看不见的路径沉淀成可复用资产。
+真实工作通常不只是推理或清单，而是一组 experience patterns：noticing、deciding、trying、fixing、verifying 和 finishing。OysterWorkflow 会从真实电脑工作中保留这些模式，让 Codex、Claude Code、Cursor、OpenAI Agents、OpenClaw 和 custom agents 这类 agent stacks 可以复用已经成功过的路径。
 
-## Experience Layer
+## Work 如何变成 Agent Experience
 
-官网把产品核心概括为三个连续动作：
+1. **Capture real work.** 开始、暂停和回看桌面工作，同时把 screen states、OCR text、inputs、windows 和可选语音讲解保存为证据。
+2. **Detect the meaningful pattern.** 在嘈杂 session 中识别真正有意义的工作模式：什么发生了变化、什么值得关注、任务在哪里真的推进了。
+3. **Structure the experience.** 把采集到的工作整理为可复用的 noticing rules、retry logic、verification checks 和 completion conditions。
+4. **Hand it to the agent ecosystem.** 最终 artifact 会成为 agent-ready memory 和 runtime material，当前首先落在 OpenClaw skills 上。
 
-- Observe real computer work
-- Extract reusable experience patterns
-- Give future agents a memory of how work succeeds
+## Agent 能获得什么
 
-落到应用里，这意味着 OysterWorkflow 会把 screen states、OCR text、inputs、windows、可选语音讲解、候选工作流和 skill 草稿作为可检查证据保存下来，而不是只把工作流当成一段 prompt instruction。
+- **Goal retention:** Agent 会锚定已经示范成功的结果，而不只是重新解释一段新 prompt。
+- **Workflow fidelity:** Agent 可以沿着真实软件里成功过的路径走，而不是每次都即兴摸索页面和工具。
+- **Preference alignment:** 命名习惯、文件夹结构、清理标准和判断规则可以延续下去。
+- **Repeatability:** 重复工作可以复用更稳定的 experience layer，而不是每次从零解决。
+- **Edge-case handling:** retries、failed clicks、changed pages、ambiguous states 和 verification moves 会继续留在记忆里。
+- **Less prompting:** 用户不需要每次重复写很长的 setup prompts。
+- **Long workflow support:** 多步骤任务会保留让它长期保持连贯的 decision chain。
+
+## 当前 Runtime Artifact
+
+OpenClaw skills 是当前第一个 runtime artifact，但不是产品最终边界。
+
+当前公开版本聚焦于：
+
+- `skill.json`，保存生成的 skill definition
+- `assets.json`，保存采集到的 supporting evidence
+- `summary.json`，保存 run 和 generation context
+- 在安装或复用生成能力前保留 human review
+
+## 产品截图
+
+### Recorder control
+
+开始、暂停和回看真实桌面工作，并将 screen states、OCR text、inputs、windows 和可选语音讲解作为 evidence 捕获下来。
+
+![OysterWorkflow recorder dashboard with capture controls and status cards](./assets/screenshots/01-recorder-dashboard.png)
+
+### Candidate workflow detection
+
+审查 OysterWorkflow 从嘈杂 session 中识别出的工作模式，并选择值得转化为 reusable agent experience 的路径。
+
+![OysterWorkflow workflow candidate discovery screen](./assets/screenshots/02-workflow-candidates.png)
+
+### Skill draft review
+
+在安装结果之前，检查生成的 OpenClaw steps 和 evidence notes。截图中的敏感个人信息和账号相关细节已做脱敏处理。
+
+![OysterWorkflow generated skill steps with sensitive details redacted](./assets/screenshots/03-skill-steps-redacted.png)
+
+### Skill manager and agent handoff
+
+管理已生成的 skills，复制推荐执行提示词，并在能力不再有用时移除它。
+
+![OysterWorkflow skill manager with generated skills and copy prompt controls](./assets/screenshots/04-skill-manager-installation.png)
 
 ## 谁适合试用
 
-如果你符合下面这些情况，OysterWorkflow 会比较值得试：
+OysterWorkflow 更适合这些用户：
 
 - 经常重复桌面或浏览器流程，希望先把真实路径完整采集一次
 - 正在构建 AI Agent、RPA、workflow automation 或 developer productivity 工具
 - 想把复杂运营流程整理成可审查、可复用的 artifacts
-- 希望在安装或复用生成能力之前，保留人类审查环节
-
-当前发布范围刻意保持较窄：macOS Apple Silicon、Windows x64、公开非商业发布、源码私有。
-
-## OysterWorkflow 当前能做什么
-
-- 从屏幕活动、OCR、UI events、输入轨迹和可选语音讲解中采集工作流证据
-- 将一次录制 session 提炼为值得审查的候选工作流
-- 生成可审查的 OpenClaw skill artifacts，例如 `skill.json`、`assets.json` 和 `summary.json`
-- 在导出或安装前保留人工检查和判断
-- 将完成的 skill 直接安装到 OpenClaw skill 目录
-
-## 从 Workflow 到 Capability
-
-1. 先真实完成一次工作流。
-2. 审查识别出的候选工作流，并选择真正有价值的那条路径。
-3. 检查生成的 skill 草稿和证据说明。
-4. 将最终能力安装到 OpenClaw 中，供后续复用。
-
-## 产品截图
-
-### 采集与录制状态
-
-在一个界面中开始、停止或安排采集任务，同时查看 OCR 语言优先级、音频采集、录制器状态和桌面录制器准备情况。
-
-![OysterWorkflow recorder dashboard with capture controls and status cards](./assets/screenshots/01-recorder-dashboard.png)
-
-### 工作流候选发现
-
-查看从录制 session 中识别出的候选工作流、阶段摘要，并选择继续使用生成的候选工作流或手动创建。
-
-![OysterWorkflow workflow candidate discovery screen](./assets/screenshots/02-workflow-candidates.png)
-
-### Skill 草稿审查
-
-在安装结果之前，检查生成的 OpenClaw skill steps 和 evidence notes。截图中的敏感个人信息和账号相关细节已做脱敏处理。
-
-![OysterWorkflow generated skill steps with sensitive details redacted](./assets/screenshots/03-skill-steps-redacted.png)
-
-### Skill 管理与安装提示
-
-管理已安装的 skills，复制推荐执行提示词，并在不再需要时卸载生成的 skills。
-
-![OysterWorkflow skill manager with generated skills and copy prompt controls](./assets/screenshots/04-skill-manager-installation.png)
+- 关心 user preferences、recovery logic 和 verification checks
+- 希望在安装或复用生成能力之前保留人工审查
 
 ## 下载
 
@@ -134,13 +136,7 @@ Windows 注意事项：
 
 ## 这个公开仓库包含什么
 
-- macOS 和 Windows 发布包下载
-- 发布记录
-- 截图和产品文档
-- 安装与使用问题反馈
-- 官网入口
-
-它不包含 OysterWorkflow 的私有源码。
+这个公开仓库用于发布二进制包、文档、截图、issue tracking 和官网入口。它不包含 OysterWorkflow 的私有源码。
 
 ## Roadmap 与反馈
 
@@ -154,21 +150,21 @@ Windows 注意事项：
 
 不是。这个公开仓库用于发布二进制包、文档、截图和 issue tracking。OysterWorkflow 源码当前仍为私有。
 
-**之后会开放源码或 SDK 吗？**
-
-有可能。未来会考虑开放部分源码、SDK 或集成接口，尤其是 artifacts 和 runtime integration 相关部分，但当前 release 不承诺时间表或具体范围。
-
-**OysterWorkflow 会生成什么？**
+**OysterWorkflow 现在会生成什么？**
 
 当前流程会生成可审查的 OpenClaw skill artifacts，典型文件包括 `skill.json`、`assets.json` 和 `summary.json`。
-
-**可以商业使用吗？**
-
-公开 release 许可不包含商业授权。公开版本使用 PolyForm Noncommercial 1.0.0，商业使用需要单独书面许可。
 
 **录制一次之后就能完全自动化所有工作流吗？**
 
 不能。当前产品重点是采集 workflow evidence、发现候选工作流、生成可审查 artifacts，并让用户在复用前检查结果。
+
+**为什么叫 experience layer？**
+
+因为真正重要的不只是最终 instruction。OysterWorkflow 会记录 observed context、user choices、recovery moves 和 verification checks，用来解释工作实际上是如何成功的。
+
+**可以商业使用吗？**
+
+公开 release 许可不包含商业授权。公开版本使用 PolyForm Noncommercial 1.0.0，商业使用需要单独书面许可。
 
 **公开 issue 里不要发什么？**
 

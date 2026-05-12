@@ -6,23 +6,69 @@ The work experience layer for autonomous agents on macOS and Windows.
 
 [Website](https://oysterworkflow.vercel.app/) | [Download Latest Release](https://github.com/ShuxinYang111/oysterworkflow/releases/latest) | [Release Notes](https://github.com/ShuxinYang111/oysterworkflow/releases) | [Report an Issue](https://github.com/ShuxinYang111/oysterworkflow/issues) | [Commercial Licensing](mailto:shuxin.y.97@gmail.com)
 
-OysterWorkflow captures real computer work and turns messy signals, decisions, and actions into reusable experience for autonomous agents.
+OysterWorkflow captures what humans and agents observe, how they react, and how they complete real work on computers. It turns screens, OCR text, clicks, keystrokes, retries, choices, and verification moves into reusable experience for AI agents.
 
-The current release focuses on reviewable AI skills today: record evidence, review candidate workflows, validate the draft, and install only the capability you trust. The broader direction is an experience layer for AI work: capture what happened, extract the pattern, and give future agents an experience layer of how work succeeds.
+The current release focuses on reviewable AI skills today, starting with OpenClaw: record evidence, review candidate workflows, validate the draft, and install only the capability you trust. The larger direction is a workflow data, artifact, and evaluation loop that gives future agents an experience layer of how work succeeds.
 
-## Why It Matters
+## The Idea
 
-Prompts and SOPs miss the texture of real computer work: page states, retries, local context, UI transitions, and the order that makes a task actually succeed. OysterWorkflow turns that invisible path into a reusable artifact.
+Autonomous agents need more than instructions. They need work memory.
 
-## Experience Layer
+Most real work is not just reasoning or a checklist. It is a compound of experience patterns: noticing, deciding, trying, fixing, verifying, and finishing. OysterWorkflow preserves those patterns from real computer work so agent stacks such as Codex, Claude Code, Cursor, OpenAI Agents, OpenClaw, and custom agents can reuse the path that already worked.
 
-The website frames the product around three connected ideas:
+## How Work Becomes Agent Experience
 
-- Observe real computer work
-- Extract reusable experience patterns
-- Give future agents a memory of how work succeeds
+1. **Capture real work.** Start, pause, and review desktop work while OysterWorkflow records screen states, OCR text, inputs, windows, and optional narration as evidence.
+2. **Detect the meaningful pattern.** The app identifies what changed, what mattered, and where the task actually progressed inside a noisy session.
+3. **Structure the experience.** Captured work becomes reusable noticing rules, retry logic, verification checks, and completion conditions.
+4. **Hand it to the agent ecosystem.** The finished artifact becomes agent-ready memory and runtime material, starting with OpenClaw skills.
 
-Inside the app, that means OysterWorkflow captures screen states, OCR text, inputs, windows, optional narration, candidate workflows, and skill drafts as inspectable evidence rather than treating a workflow as a prompt-only instruction.
+## What Agents Gain
+
+- **Goal retention:** the agent is anchored to a demonstrated outcome instead of only a fresh prompt interpretation.
+- **Workflow fidelity:** the agent can follow the path that worked in real software instead of improvising around every page and tool.
+- **Preference alignment:** naming habits, folder structure, cleanup standards, and judgment rules can carry forward.
+- **Repeatability:** recurring work can reuse a steadier experience layer instead of being solved from scratch each time.
+- **Edge-case handling:** retries, failed clicks, changed pages, ambiguous states, and verification moves remain part of the memory.
+- **Less prompting:** users do not need to rewrite long setup prompts every time the same workflow returns.
+- **Long workflow support:** multi-step work keeps the chain of decisions that made it coherent over time.
+
+## Current Runtime Artifact
+
+OpenClaw skills are the first runtime artifact, not the final boundary of the product.
+
+The current release focuses on:
+
+- `skill.json` for the generated skill definition
+- `assets.json` for captured supporting evidence
+- `summary.json` for run and generation context
+- human review before a generated capability is installed or reused
+
+## Product Screens
+
+### Recorder control
+
+Start, pause, and review real desktop work with screen states, OCR text, inputs, windows, and optional narration captured as evidence.
+
+![OysterWorkflow recorder dashboard with capture controls and status cards](./assets/screenshots/01-recorder-dashboard.png)
+
+### Candidate workflow detection
+
+Review the work patterns OysterWorkflow detected from a noisy session, then choose the path worth turning into reusable agent experience.
+
+![OysterWorkflow workflow candidate discovery screen](./assets/screenshots/02-workflow-candidates.png)
+
+### Skill draft review
+
+Inspect generated OpenClaw steps and evidence notes before installing the result. Sensitive personal and account-specific details are redacted in this screenshot.
+
+![OysterWorkflow generated skill steps with sensitive details redacted](./assets/screenshots/03-skill-steps-redacted.png)
+
+### Skill manager and agent handoff
+
+Manage generated skills, copy the recommended execution prompt, and remove obsolete capabilities when they are no longer useful.
+
+![OysterWorkflow skill manager with generated skills and copy prompt controls](./assets/screenshots/04-skill-manager-installation.png)
 
 ## Who Should Try It?
 
@@ -31,50 +77,8 @@ OysterWorkflow is most relevant if you:
 - repeat desktop or browser workflows and want to capture the real path once
 - build AI agent, RPA, workflow automation, or developer productivity tools
 - need to turn messy operational procedures into reviewable artifacts
+- care about user preferences, recovery logic, and verification checks
 - want human review before generated skills are installed or reused
-
-Current release scope is intentionally narrow: macOS on Apple Silicon, Windows x64, public noncommercial release, and private source code.
-
-## What OysterWorkflow Does
-
-- Capture workflow evidence from screen activity, OCR, UI events, input traces, and optional voice narration
-- Distill one recorded session into candidate workflows worth reviewing
-- Generate reviewable OpenClaw skill artifacts such as `skill.json`, `assets.json`, and `summary.json`
-- Keep humans in the loop before export or installation
-- Install finished skills directly into an OpenClaw skill directory
-
-## From Workflow To Capability
-
-1. Record a real workflow once.
-2. Review the detected workflow candidates and choose the path that matters.
-3. Validate the generated skill draft and its evidence notes.
-4. Install the finished capability into OpenClaw for reuse.
-
-## Product Screens
-
-### Capture and recorder status
-
-Start, stop, or schedule a capture from one place while checking OCR language priority, audio capture, recorder status, and desktop recorder readiness.
-
-![OysterWorkflow recorder dashboard with capture controls and status cards](./assets/screenshots/01-recorder-dashboard.png)
-
-### Workflow candidate discovery
-
-Review candidate workflows detected from a recorded session, see the stage summary, and choose whether to continue with the generated candidate or create one manually.
-
-![OysterWorkflow workflow candidate discovery screen](./assets/screenshots/02-workflow-candidates.png)
-
-### Skill draft review
-
-Inspect the generated OpenClaw skill steps and evidence notes before installing the result. Sensitive personal and account-specific details are redacted in this screenshot.
-
-![OysterWorkflow generated skill steps with sensitive details redacted](./assets/screenshots/03-skill-steps-redacted.png)
-
-### Skill manager and install prompts
-
-Manage installed skills, copy the recommended execution prompt, and uninstall generated skills when they are no longer needed.
-
-![OysterWorkflow skill manager with generated skills and copy prompt controls](./assets/screenshots/04-skill-manager-installation.png)
 
 ## Download
 
@@ -132,13 +136,7 @@ Windows notes:
 
 ## Public Repo Scope
 
-- macOS and Windows release downloads
-- release notes
-- screenshots and product documentation
-- issue tracking for installation and usage problems
-- the official product website link
-
-The private source code for OysterWorkflow is not included here.
+This public repository hosts release binaries, documentation, screenshots, issue tracking, and the official product website link. The private OysterWorkflow source code is not included here.
 
 ## Roadmap and Feedback
 
@@ -152,21 +150,21 @@ The private source code for OysterWorkflow is not included here.
 
 No. This public repository hosts release binaries, documentation, screenshots, and issue tracking. The OysterWorkflow source code is currently private.
 
-**Will any source code or SDK be opened later?**
+**What does OysterWorkflow generate today?**
 
-Possibly. Future partial source, SDK, or integration surfaces are being considered, especially around artifacts and runtime integration, but this release does not promise a timeline or scope.
-
-**What does OysterWorkflow generate?**
-
-The current workflow generates reviewable OpenClaw skill artifacts, typically including files such as `skill.json`, `assets.json`, and `summary.json`.
-
-**Is commercial use allowed?**
-
-Not under the public release license. Public releases are licensed for noncommercial use under PolyForm Noncommercial 1.0.0. Commercial use requires separate written permission.
+The current workflow generates reviewable OpenClaw skill artifacts, typically including `skill.json`, `assets.json`, and `summary.json`.
 
 **Does OysterWorkflow fully automate every workflow after one recording?**
 
 No. The current product focuses on capturing workflow evidence, discovering candidate workflows, generating reviewable artifacts, and letting the user inspect the result before reuse.
+
+**Why call it an experience layer?**
+
+Because the important part is not only the final instruction. OysterWorkflow captures the observed context, user choices, recovery moves, and verification checks that explain how the work actually succeeded.
+
+**Is commercial use allowed?**
+
+Not under the public release license. Public releases are licensed for noncommercial use under PolyForm Noncommercial 1.0.0. Commercial use requires separate written permission.
 
 **What should I avoid sharing in public issues?**
 
