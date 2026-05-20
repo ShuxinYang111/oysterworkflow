@@ -183,3 +183,10 @@ Windows 注意事项：
 请阅读 [LICENSE-SUMMARY.md](./LICENSE-SUMMARY.md) 查看简明许可摘要。
 
 如需商业授权，请联系：`shuxin.y.97@gmail.com`
+
+## 第三方组件
+
+OysterWorkflow 会随桌面发行包附带 recorder 使用的第三方 sidecar 工具，包括 Screenpipe、FFmpeg 和 ffprobe。这些组件保留各自的许可证条款；它们不会被重新授权为 OysterWorkflow 代码，也不由 OysterWorkflow 的 PolyForm Noncommercial 条款覆盖。
+
+请查看 [THIRD-PARTY-NOTICES.md](./THIRD-PARTY-NOTICES.md)，了解随包组件声明、FFmpeg/ffprobe 来源信息，以及 `screenpipe-bundle.json` 中记录的构建期许可证 profile。
+
