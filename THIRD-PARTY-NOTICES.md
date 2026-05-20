@@ -10,6 +10,7 @@ This file covers third-party components bundled with OysterWorkflow desktop rele
 - OysterWorkflow fork: https://github.com/ShuxinYang111/screenpipe
 - Pinned commit used by the current build line: `812100ae4148c5755dafad3bd265ac8eae8901e5`
 - License: MIT for the main Screenpipe repository code, except Screenpipe's upstream `ee/` directory, which is separately licensed by Screenpipe and is not distributed as an OysterWorkflow Enterprise feature.
+- Packaged license file: `SCREENPIPE-LICENSE.md`
 
 Required MIT notice:
 
