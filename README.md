@@ -138,6 +138,12 @@ Windows notes:
 
 This public repository hosts release binaries, documentation, screenshots, issue tracking, and the official product website link. The private OysterWorkflow source code is not included here.
 
+## Third-Party Components
+
+OysterWorkflow bundles third-party sidecar tools used by the recorder, including Screenpipe, FFmpeg, and ffprobe. These components keep their own license terms; they are not relicensed as OysterWorkflow code and are not covered by the PolyForm Noncommercial terms.
+
+See [THIRD-PARTY-NOTICES.md](./THIRD-PARTY-NOTICES.md) for bundled component notices, FFmpeg/ffprobe source information, and the build-time license profile recorded in `screenpipe-bundle.json`.
+
 ## Roadmap and Feedback
 
 - See [ROADMAP.md](./ROADMAP.md) for the current direction.
