@@ -4,11 +4,19 @@
 
 The work experience layer for autonomous agents on macOS and Windows.
 
-[Website](https://oysterworkflow.vercel.app/) | [Download Latest Release](https://github.com/ShuxinYang111/oysterworkflow/releases/latest) | [Release Notes](https://github.com/ShuxinYang111/oysterworkflow/releases) | [Report an Issue](https://github.com/ShuxinYang111/oysterworkflow/issues) | [Commercial Licensing](mailto:shuxin.y.97@gmail.com)
+[Website](https://oysterworkflow.vercel.app/) | [Open Core](https://github.com/ShuxinYang111/oysterworkflow-core) | [Download Latest Release](https://github.com/ShuxinYang111/oysterworkflow/releases/latest) | [Release Notes](https://github.com/ShuxinYang111/oysterworkflow/releases) | [Report an Issue](https://github.com/ShuxinYang111/oysterworkflow/issues) | [Commercial Licensing](mailto:shuxin.y.97@gmail.com)
 
 OysterWorkflow captures what humans and agents observe, how they react, and how they complete real work on computers. It turns screens, OCR text, clicks, keystrokes, retries, choices, and verification moves into reusable experience for AI agents.
 
-The current release focuses on reviewable AI skills today, record evidence, detect candidate workflows, create structured workflow skill, and install it to your agent in one clikc.
+The current release focuses on reviewable AI skills: recording evidence, detecting candidate workflows, creating structured workflow skills, and installing them into your agent.
+
+## Open Core
+
+The core workflow pipeline is open source in [OysterWorkflow Core](https://github.com/ShuxinYang111/oysterworkflow-core) under the Apache-2.0 license.
+
+The open core includes the Screenpipe ingest client, OCR/UI/audio trace processing, event normalization, deduplication, segmentation, workflow discovery, OpenClaw skill extraction, and generated skill quality evaluation.
+
+This repository remains the public release home for the desktop app: binaries, documentation, screenshots, issue tracking, and product updates. The private desktop app source code is not included here.
 
 ## The Idea
 
@@ -138,6 +146,8 @@ Windows notes:
 
 This public repository hosts release binaries, documentation, screenshots, issue tracking, and the official product website link. The private OysterWorkflow source code is not included here.
 
+For the open-source implementation surface, see [OysterWorkflow Core](https://github.com/ShuxinYang111/oysterworkflow-core).
+
 ## Third-Party Components
 
 OysterWorkflow bundles third-party sidecar tools used by the recorder, including Screenpipe, FFmpeg, and ffprobe. These components keep their own license terms; they are not relicensed as OysterWorkflow code and are not covered by the PolyForm Noncommercial terms.
@@ -151,6 +161,10 @@ See [THIRD-PARTY-NOTICES.md](./THIRD-PARTY-NOTICES.md) for bundled component not
 - Use [GitHub Issues](https://github.com/ShuxinYang111/oysterworkflow/issues) for installation problems, workflow-generation feedback, and feature requests.
 
 ## FAQ
+
+**Which part of OysterWorkflow is open source?**
+
+[OysterWorkflow Core](https://github.com/ShuxinYang111/oysterworkflow-core) is open source under Apache-2.0. It contains the CLI pipeline for ingesting Screenpipe traces, generating OpenClaw skill artifacts, and evaluating generated skills. This desktop app release repository is public, but it does not include the private app source code.
 
 **What does OysterWorkflow generate today?**
 

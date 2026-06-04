@@ -4,11 +4,19 @@
 
 面向 autonomous agents 的 work experience layer，支持 macOS 和 Windows。
 
-[官网](https://oysterworkflow.vercel.app/) | [下载最新版](https://github.com/ShuxinYang111/oysterworkflow/releases/latest) | [发布记录](https://github.com/ShuxinYang111/oysterworkflow/releases) | [反馈问题](https://github.com/ShuxinYang111/oysterworkflow/issues) | [商业授权](mailto:shuxin.y.97@gmail.com)
+[官网](https://oysterworkflow.vercel.app/) | [开源 Core](https://github.com/ShuxinYang111/oysterworkflow-core) | [下载最新版](https://github.com/ShuxinYang111/oysterworkflow/releases/latest) | [发布记录](https://github.com/ShuxinYang111/oysterworkflow/releases) | [反馈问题](https://github.com/ShuxinYang111/oysterworkflow/issues) | [商业授权](mailto:shuxin.y.97@gmail.com)
 
 OysterWorkflow 会采集人类和 Agent 在电脑上观察到什么、如何反应、如何完成真实工作。它把 screen states、OCR text、clicks、keystrokes、retries、choices 和 verification moves 转化为 AI agents 可复用的 experience。
 
 当前公开版本会从桌面 workflow evidence 中生成可审查的 OpenClaw skills。更大的方向，是建立一个 workflow data、artifact 和 evaluation loop，让未来 Agent 拥有“工作如何成功”的记忆。
+
+## 开源 Core
+
+核心 workflow pipeline 已在 [OysterWorkflow Core](https://github.com/ShuxinYang111/oysterworkflow-core) 开源，并使用 Apache-2.0 许可证。
+
+开源 core 包含 Screenpipe ingest client、OCR/UI/audio trace processing、event normalization、deduplication、segmentation、workflow discovery、OpenClaw skill extraction，以及 generated skill quality evaluation。
+
+当前这个仓库仍然是桌面 App 的公开发布入口，用于存放二进制包、文档、截图、issue tracking 和产品更新；它不包含私有桌面 App 源码。
 
 ## 核心想法
 
@@ -138,6 +146,8 @@ Windows 注意事项：
 
 这个公开仓库用于发布二进制包、文档、截图、issue tracking 和官网入口。它不包含 OysterWorkflow 的私有源码。
 
+如果你想查看开源实现部分，请访问 [OysterWorkflow Core](https://github.com/ShuxinYang111/oysterworkflow-core)。
+
 ## Roadmap 与反馈
 
 - 当前方向见 [ROADMAP.md](./ROADMAP.md)。
@@ -148,7 +158,7 @@ Windows 注意事项：
 
 **这个仓库是开源仓库吗？**
 
-不是。这个公开仓库用于发布二进制包、文档、截图和 issue tracking。OysterWorkflow 源码当前仍为私有。
+这个公开 App 仓库本身不是源码开源仓库，它用于发布二进制包、文档、截图和 issue tracking。开源实现部分在 [OysterWorkflow Core](https://github.com/ShuxinYang111/oysterworkflow-core)，使用 Apache-2.0 许可证，包含 Screenpipe trace ingest、OpenClaw skill 生成和 skill quality evaluation 等核心 pipeline。
 
 **OysterWorkflow 现在会生成什么？**
 
@@ -189,4 +199,3 @@ Windows 注意事项：
 OysterWorkflow 会随桌面发行包附带 recorder 使用的第三方 sidecar 工具，包括 Screenpipe、FFmpeg 和 ffprobe。这些组件保留各自的许可证条款；它们不会被重新授权为 OysterWorkflow 代码，也不由 OysterWorkflow 的 PolyForm Noncommercial 条款覆盖。
 
 请查看 [THIRD-PARTY-NOTICES.md](./THIRD-PARTY-NOTICES.md)，了解随包组件声明、FFmpeg/ffprobe 来源信息，以及 `screenpipe-bundle.json` 中记录的构建期许可证 profile。
-
