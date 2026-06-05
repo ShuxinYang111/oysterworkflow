@@ -16,8 +16,6 @@ The core workflow pipeline is open source in [OysterWorkflow Core](https://githu
 
 The open core includes the Screenpipe ingest client, OCR/UI/audio trace processing, event normalization, deduplication, segmentation, workflow discovery, OpenClaw skill extraction, and generated skill quality evaluation.
 
-This repository remains the public release home for the desktop app: binaries, documentation, screenshots, issue tracking, and product updates. The private desktop app source code is not included here.
-
 ## The Idea
 
 Autonomous agents need more than instructions. They need work experience.
