@@ -1,0 +1,28 @@
+{
+  "name": "oysterworkflow",
+  "version": "0.1.0",
+  "description": "Run revisioned OysterWorkflow workflows with Codex apps and tools.",
+  "author": {
+    "name": "OysterWorkflow",
+    "url": "https://github.com/ShuxinYang111/oysterworkflow"
+  },
+  "homepage": "https://oysterworkflow.vercel.app/",
+  "repository": "https://github.com/ShuxinYang111/oysterworkflow",
+  "license": "PolyForm-Noncommercial-1.0.0",
+  "keywords": ["workflow", "automation", "codex", "mcp", "oysterworkflow"],
+  "interface": {
+    "displayName": "OysterWorkflow",
+    "shortDescription": "Run recorded workflows with Codex",
+    "longDescription": "Search workflows recorded, generated, and managed in OysterWorkflow, pin a canonical workflow revision, and let Codex execute one validated node at a time with the apps and tools already available in Codex.",
+    "developerName": "OysterWorkflow",
+    "category": "Productivity",
+    "capabilities": ["Interactive", "Read", "Write"],
+    "defaultPrompt": [
+      "用 OysterWorkflow 执行‘筛选销售询盘并准备回复’",
+      "Find my OysterWorkflow workflows that Codex can run",
+      "Continue my current OysterWorkflow run"
+    ],
+    "brandColor": "#0F766E"
+  },
+  "mcpServers": "./.mcp.json"
+}

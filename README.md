@@ -8,7 +8,7 @@ The work experience layer for autonomous agents on macOS and Windows.
 
 OysterWorkflow captures what humans and agents observe, how they react, and how they complete real work on computers. It turns screens, OCR text, clicks, keystrokes, retries, choices, and verification moves into reusable experience for AI agents.
 
-The current release focuses on reviewable AI skills: recording evidence, detecting candidate workflows, creating structured workflow skills, and installing them into your agent.
+The current release focuses on reviewable AI workflows: recording evidence, detecting candidate workflows, creating structured workflow graphs, and handing a pinned workflow revision to an agent. The Codex Plugin Beta lets Codex execute those workflows with its own apps and tools.
 
 ## Open Core
 
@@ -86,20 +86,45 @@ OysterWorkflow is most relevant if you:
 - care about user preferences, recovery logic, and verification checks
 - want human review before generated skills are installed or reused
 
+## Codex Plugin Beta
+
+The Codex Plugin Beta connects Codex to the OysterWorkflow Runtime running on the same Mac. OysterWorkflow provides workflow discovery, revision pinning, graph transitions, retry limits, and durable run state. Codex uses its own installed apps and tools to perform the real actions.
+
+Requirements:
+
+- OysterWorkflow for macOS Apple Silicon, installed and running
+- Codex with plugin support
+- any Codex app or capability required by the selected workflow
+
+Install the marketplace and plugin:
+
+```bash
+codex plugin marketplace add ShuxinYang111/oysterworkflow
+codex plugin add oysterworkflow@oysterworkflow
+```
+
+Then start a new Codex task and try:
+
+```text
+Use OysterWorkflow to run “Screen sales inquiries and prepare replies”
+```
+
+This beta uses the local MCP endpoint at `http://127.0.0.1:3034/api/codex/mcp`, so OysterWorkflow must remain running while Codex uses the workflow.
+
 ## Download
 
 Download the latest macOS or Windows build from [Releases](https://github.com/ShuxinYang111/oysterworkflow/releases/latest).
 
 Current release assets:
 
-- `OysterWorkflow-0.1.0-arm64.dmg`
-- `OysterWorkflow-Setup-0.1.0.exe`
+- macOS Apple Silicon: `OysterWorkflow-0.2.0-arm64.dmg` in the latest release
+- Windows x64: `OysterWorkflow-Setup-0.1.0.exe` in the v0.1.0 release; the Codex Plugin Beta is currently macOS-only
 
 SHA-256:
 
 ```text
 macOS arm64 dmg:
-711fe49c3abeb66e109c1ab78476b09978d3c83c042b922a58a6affa46d16187
+8ff5f2c431f4815b61e1a975a07632d3769ae9b3398c072d8de254a5d930ade8
 
 Windows x64 installer:
 78dad16a0e9152173d128ca5c2674a4987c61a4245e5f67bd2650654687bf0cf
@@ -114,7 +139,7 @@ Windows x64 installer:
 
 ### macOS
 
-1. Download `OysterWorkflow-0.1.0-arm64.dmg` from the latest release.
+1. Download `OysterWorkflow-0.2.0-arm64.dmg` from the latest release.
 2. Open the `.dmg` and drag `OysterWorkflow.app` into `Applications`.
 3. Launch OysterWorkflow from `Applications`.
 4. Grant the required macOS permissions when prompted.

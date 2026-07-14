@@ -8,7 +8,7 @@
 
 OysterWorkflow 会采集人类和 Agent 在电脑上观察到什么、如何反应、如何完成真实工作。它把 screen states、OCR text、clicks、keystrokes、retries、choices 和 verification moves 转化为 AI agents 可复用的 experience。
 
-当前公开版本会从桌面 workflow evidence 中生成可审查的 OpenClaw skills。更大的方向，是建立一个 workflow data、artifact 和 evaluation loop，让未来 Agent 拥有“工作如何成功”的记忆。
+当前公开版本会从桌面 workflow evidence 中生成可审查的 workflow graph，并将固定 revision 的 workflow 交给 Agent。Codex Plugin Beta 可以让 Codex 使用自己的 apps 和 tools 执行这些 workflow。
 
 ## 开源 Core
 
@@ -88,20 +88,45 @@ OysterWorkflow 更适合这些用户：
 - 关心 user preferences、recovery logic 和 verification checks
 - 希望在安装或复用生成能力之前保留人工审查
 
+## Codex Plugin Beta
+
+Codex Plugin Beta 会把 Codex 连接到同一台 Mac 上运行的 OysterWorkflow Runtime。OysterWorkflow 负责 workflow 发现、revision 固定、graph transition、重试上限和持久运行状态；Codex 使用自己已经安装并授权的 apps 和 tools 完成真实动作。
+
+使用条件：
+
+- 已安装并运行 macOS Apple Silicon 版 OysterWorkflow
+- Codex 支持 plugin
+- Codex 中已具备所选 workflow 依赖的 app 或 capability
+
+安装 marketplace 和 plugin：
+
+```bash
+codex plugin marketplace add ShuxinYang111/oysterworkflow
+codex plugin add oysterworkflow@oysterworkflow
+```
+
+然后新建一个 Codex 任务并输入：
+
+```text
+用 OysterWorkflow 执行“筛选销售询盘并准备回复”
+```
+
+Beta 版本连接本机 `http://127.0.0.1:3034/api/codex/mcp`，因此 Codex 执行 workflow 时 OysterWorkflow 必须保持运行。
+
 ## 下载
 
 从 [Releases](https://github.com/ShuxinYang111/oysterworkflow/releases/latest) 下载最新版 macOS 或 Windows 构建。
 
 当前发布文件：
 
-- `OysterWorkflow-0.1.0-arm64.dmg`
-- `OysterWorkflow-Setup-0.1.0.exe`
+- macOS Apple Silicon：最新版中的 `OysterWorkflow-0.2.0-arm64.dmg`
+- Windows x64：v0.1.0 中的 `OysterWorkflow-Setup-0.1.0.exe`；Codex Plugin Beta 目前仅支持 macOS
 
 SHA-256：
 
 ```text
 macOS arm64 dmg:
-711fe49c3abeb66e109c1ab78476b09978d3c83c042b922a58a6affa46d16187
+8ff5f2c431f4815b61e1a975a07632d3769ae9b3398c072d8de254a5d930ade8
 
 Windows x64 installer:
 78dad16a0e9152173d128ca5c2674a4987c61a4245e5f67bd2650654687bf0cf
@@ -116,7 +141,7 @@ Windows x64 installer:
 
 ### macOS
 
-1. 从最新 release 下载 `OysterWorkflow-0.1.0-arm64.dmg`。
+1. 从最新 release 下载 `OysterWorkflow-0.2.0-arm64.dmg`。
 2. 打开 `.dmg`，将 `OysterWorkflow.app` 拖入 `Applications`。
 3. 从 `Applications` 启动 OysterWorkflow。
 4. 按提示授予必要的 macOS 权限。

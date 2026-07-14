@@ -1,0 +1,20 @@
+{
+  "name": "oysterworkflow",
+  "interface": {
+    "displayName": "OysterWorkflow"
+  },
+  "plugins": [
+    {
+      "name": "oysterworkflow",
+      "source": {
+        "source": "local",
+        "path": "./plugins/oysterworkflow"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Productivity"
+    }
+  ]
+}
