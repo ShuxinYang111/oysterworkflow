@@ -1,51 +1,47 @@
 # OysterWorkflow Roadmap
 
-OysterWorkflow is building a work experience layer for autonomous agents: a way to capture real computer work, extract the patterns that made it succeed, and hand those patterns to agent runtimes as reusable memory.
+OysterWorkflow is building a work experience layer for AI agents: capture real computer work, extract the workflow and judgment that made it succeed, and let agents reuse that experience.
 
 This roadmap is directional. It is not a commitment to ship every item or to ship them in this exact order.
 
-## Current Release
+## Current release
 
-- macOS desktop app for Apple Silicon and Windows x64 installer
-- workflow evidence capture from screen activity, OCR text, UI events, input traces, window state, and optional narration
-- candidate workflow detection from noisy real sessions
-- structured experience generation for noticing rules, retry logic, verification checks, and completion conditions
-- OpenClaw skill artifact generation as the first runtime target
-- skill installation into OpenClaw-discoverable folders
-- public noncommercial release through GitHub Releases
+- desktop capture for screen states, visible text, UI actions, inputs, app context, and optional voice coaching
+- candidate workflow discovery from noisy real work sessions
+- reviewable workflow graphs with actions, decisions, branches, terminal outcomes, and revision history
+- a local runtime that pins revisions, validates transitions, limits retries, and preserves run state
+- a Codex plugin beta that lets Codex execute graph nodes with its authorized apps and tools
+- a current macOS Apple Silicon release and an earlier Windows x64 build
+- an Apache-2.0 open core for trace processing, workflow discovery, OpenClaw skill extraction, and quality evaluation
 
-## Near-Term Focus
+## Near-term focus
 
-- reduce macOS installation / permission friction and Windows setup friction
-- make recorder, candidate workflow, and skill review states clearer
-- make generated artifacts easier to inspect, compare, and trust
-- improve how the product explains captured work as reusable agent memory
-- collect examples of workflows that need goal retention, preference alignment, recovery logic, and verification checks
-- improve feedback loops around where generated steps are useful, wrong, or missing context
+- reduce installation, permission, and first-run friction
+- make recording quality and missing evidence easier to understand
+- improve graph review, editing, version comparison, and trust signals
+- strengthen long-running execution, recovery, and verification in Oyster AI Worker
+- expand safe handoff to Codex and other agent runtimes
+- improve Windows support and Chinese-language behavior across platforms
 
-## Experience Layer Direction
+## Experience layer direction
 
-OpenClaw skills are the first runtime artifact, not the final boundary of the product.
+The workflow graph is the durable product boundary. Skills, MCP tools, AI Workers, and future agent integrations are ways to consume it.
 
-Future work may explore:
+Longer-term exploration includes:
 
-- clearer schemas for work experience artifacts
-- better examples that show how real traces become agent memory
-- richer review surfaces for long workflows and edge cases
-- quality evaluation loops for generated capabilities
-- integration surfaces for Codex, Claude Code, Cursor, OpenAI Agents, OpenClaw, and custom agent stacks
-- additional runtimes where observed work paths, user preferences, and recovery moves can improve repeatability
+- learning from both human and agent execution traces
+- merging new cases into an existing workflow without losing proven behavior
+- portable policies for context, preferences, risk, verification, and completion
+- quality evaluation loops for workflow revisions and agent runs
+- shared and team-managed experience libraries
 
-The source code is currently private. Any future opening of source code, SDKs, or integration layers will be announced separately.
+## Feedback wanted
 
-## Feedback Wanted
+The most useful feedback tells us:
 
-The most useful feedback right now:
-
-- what workflow you tried to capture
-- what goal, preference, or decision rule the agent should remember
-- where the product felt confusing or untrustworthy
-- what the generated artifact got right or wrong
-- what recovery moves, verification checks, or completion conditions were missing
-- what integration surface would make this useful in your own agent stack
-- what would make you comfortable using this for real repetitive work
+- which real workflow you tried
+- what judgment or preference the Agent needed to preserve
+- where the extracted graph was incomplete or wrong
+- which retry, recovery, verification, or completion rule was missing
+- which Agent or app integration would make the workflow useful
+- what would make you trust it for recurring work

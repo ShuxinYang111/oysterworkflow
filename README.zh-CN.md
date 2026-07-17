@@ -1,226 +1,109 @@
-# OysterWorkflow
+<p align="center">
+  <img src="./assets/oysterworkflow-app-icon.png" alt="OysterWorkflow 珍珠应用图标" width="112" />
+</p>
 
-[English](./README.md) | [简体中文](./README.zh-CN.md)
+<h1 align="center">OysterWorkflow</h1>
 
-面向 autonomous agents 的 work experience layer，支持 macOS 和 Windows。
+<p align="center"><strong>让你的日常工作教会 AI。</strong></p>
 
-[官网](https://oysterworkflow.vercel.app/) | [开源 Core](https://github.com/ShuxinYang111/oysterworkflow-core) | [下载最新版](https://github.com/ShuxinYang111/oysterworkflow/releases/latest) | [发布记录](https://github.com/ShuxinYang111/oysterworkflow/releases) | [反馈问题](https://github.com/ShuxinYang111/oysterworkflow/issues) | [商业授权](mailto:shuxin.y.97@gmail.com)
+<p align="center">记录真实电脑工作，提炼背后的流程与判断，再把这份经验交给你的 AI Agent 执行。</p>
 
-OysterWorkflow 会采集人类和 Agent 在电脑上观察到什么、如何反应、如何完成真实工作。它把 screen states、OCR text、clicks、keystrokes、retries、choices 和 verification moves 转化为 AI agents 可复用的 experience。
+<p align="center">
+  <a href="https://github.com/ShuxinYang111/oysterworkflow/releases/download/v0.2.0/OysterWorkflow-0.2.0-arm64.dmg"><strong>下载 macOS 版</strong></a>
+  &nbsp;&nbsp;|&nbsp;&nbsp;
+  <a href="https://oysterworkflow.com/">官网</a>
+  &nbsp;&nbsp;|&nbsp;&nbsp;
+  <a href="./README.md">English</a>
+</p>
 
-当前公开版本会从桌面 workflow evidence 中生成可审查的 workflow graph，并将固定 revision 的 workflow 交给 Agent。Codex Plugin Beta 可以让 Codex 使用自己的 apps 和 tools 执行这些 workflow。
+![包含动作、判断、分支与验证条件的 OysterWorkflow 工作流图](./assets/screenshots/03-workflow-graph.png)
 
-## 开源 Core
+## 强大的 AI 仍然需要你的流程与判断
 
-核心 workflow pipeline 已在 [OysterWorkflow Core](https://github.com/ShuxinYang111/oysterworkflow-core) 开源，并使用 Apache-2.0 许可证。
+AI 可以推理，但它不会自动知道哪些信号重要、什么时候需要分支、失败后怎样恢复，也不知道你的工作以什么标准才算完成。
 
-开源 core 包含 Screenpipe ingest client、OCR/UI/audio trace processing、event normalization、deduplication、segmentation、workflow discovery、OpenClaw skill extraction，以及 generated skill quality evaluation。
+OysterWorkflow 从真实电脑工作中学习这些模式。你只需要在熟悉的应用里完成任务，审查系统提炼出的工作流图，再把固定版本交给 Agent。
 
-当前这个仓库仍然是桌面 App 的公开发布入口，用于存放二进制包、文档、截图、issue tracking 和产品更新；它不包含私有桌面 App 源码。
+## 从真实工作到可复用的 Agent 经验
 
-## 核心想法
+1. **记录真实工作。** 在正常工作的同时，采集屏幕状态、可见文字、鼠标与键盘动作、应用上下文，以及可选的语音讲解。
+2. **学习工作模式。** 提炼目标、判断分支、偏好、例外、重试逻辑、验证条件和完成条件。
+3. **执行工作流。** 将证据整理成可审查、带版本的工作流图，交给 Oyster AI Worker、Codex 或其它兼容 Agent 执行。
 
-Autonomous agents 需要的不只是 instructions，还需要 work memory。
+## 看见 OysterWorkflow 学到了什么
 
-真实工作通常不只是推理或清单，而是一组 experience patterns：noticing、deciding、trying、fixing、verifying 和 finishing。OysterWorkflow 会从真实电脑工作中保留这些模式，让 Codex、Claude Code、Cursor、OpenAI Agents、OpenClaw 和 custom agents 这类 agent stacks 可以复用已经成功过的路径。
+<table>
+  <tr>
+    <td width="50%">
+      <img src="./assets/screenshots/01-recorder-dashboard.png" alt="OysterWorkflow 录制控制与采集状态" />
+      <br />
+      <strong>记录工作</strong><br />
+      采集屏幕、可见文字、输入、应用上下文和可选语音讲解。
+    </td>
+    <td width="50%">
+      <img src="./assets/screenshots/02-workflow-candidates.png" alt="OysterWorkflow 候选工作流审查界面" />
+      <br />
+      <strong>选择模式</strong><br />
+      从一次完整但嘈杂的录制中，审查系统识别出的关键工作流。
+    </td>
+  </tr>
+</table>
 
-## Work 如何变成 Agent Experience
+最终保留下来的不只是一份步骤清单，还包括：
 
-1. **Capture real work.** 开始、暂停和回看桌面工作，同时把 screen states、OCR text、inputs、windows 和可选语音讲解保存为证据。
-2. **Detect the meaningful pattern.** 在嘈杂 session 中识别真正有意义的工作模式：什么发生了变化、什么值得关注、任务在哪里真的推进了。
-3. **Structure the experience.** 把采集到的工作整理为可复用的 noticing rules、retry logic、verification checks 和 completion conditions。
-4. **Hand it to the agent ecosystem.** 最终 artifact 会成为 agent-ready memory 和 runtime material，当前首先落在 OpenClaw skills 上。
+- Agent 应该关注或忽略哪些上下文
+- 哪些动作和判断会让任务继续推进
+- 页面变化、动作失败或状态模糊时应该怎样恢复
+- 怎样验证结果，以及何时可以确认任务完成
 
-## Agent 能获得什么
+## 在 Codex 中执行 OysterWorkflow 工作流
 
-- **Goal retention:** Agent 会锚定已经示范成功的结果，而不只是重新解释一段新 prompt。
-- **Workflow fidelity:** Agent 可以沿着真实软件里成功过的路径走，而不是每次都即兴摸索页面和工具。
-- **Preference alignment:** 命名习惯、文件夹结构、清理标准和判断规则可以延续下去。
-- **Repeatability:** 重复工作可以复用更稳定的 experience layer，而不是每次从零解决。
-- **Edge-case handling:** retries、failed clicks、changed pages、ambiguous states 和 verification moves 会继续留在记忆里。
-- **Less prompting:** 用户不需要每次重复写很长的 setup prompts。
-- **Long workflow support:** 多步骤任务会保留让它长期保持连贯的 decision chain。
+Codex 插件会把 Codex 连接到同一台 Mac 上运行的 OysterWorkflow Runtime。OysterWorkflow 管理工作流图、版本、状态转换、重试上限和持久运行状态。Codex 使用自己已经安装并授权的应用与工具完成真实操作。
 
-## 当前 Runtime Artifact
-
-OpenClaw skills 是当前第一个 runtime artifact，但不是产品最终边界。
-
-当前公开版本聚焦于：
-
-- `skill.json`，保存生成的 skill definition
-- `assets.json`，保存采集到的 supporting evidence
-- `summary.json`，保存 run 和 generation context
-- 在安装或复用生成能力前保留 human review
-
-## 产品截图
-
-### Recorder control
-
-开始、暂停和回看真实桌面工作，并将 screen states、OCR text、inputs、windows 和可选语音讲解作为 evidence 捕获下来。
-
-![OysterWorkflow recorder dashboard with capture controls and status cards](./assets/screenshots/01-recorder-dashboard.png)
-
-### Candidate workflow detection
-
-审查 OysterWorkflow 从嘈杂 session 中识别出的工作模式，并选择值得转化为 reusable agent experience 的路径。
-
-![OysterWorkflow workflow candidate discovery screen](./assets/screenshots/02-workflow-candidates.png)
-
-### Skill draft review
-
-在安装结果之前，检查生成的 OpenClaw steps 和 evidence notes。截图中的敏感个人信息和账号相关细节已做脱敏处理。
-
-![OysterWorkflow generated skill steps with sensitive details redacted](./assets/screenshots/03-skill-steps-redacted.png)
-
-### Skill manager and agent handoff
-
-管理已生成的 skills，复制推荐执行提示词，并在能力不再有用时移除它。
-
-![OysterWorkflow skill manager with generated skills and copy prompt controls](./assets/screenshots/04-skill-manager-installation.png)
-
-## 谁适合试用
-
-OysterWorkflow 更适合这些用户：
-
-- 经常重复桌面或浏览器流程，希望先把真实路径完整采集一次
-- 正在构建 AI Agent、RPA、workflow automation 或 developer productivity 工具
-- 想把复杂运营流程整理成可审查、可复用的 artifacts
-- 关心 user preferences、recovery logic 和 verification checks
-- 希望在安装或复用生成能力之前保留人工审查
-
-## Codex Plugin Beta
-
-Codex Plugin Beta 会把 Codex 连接到同一台 Mac 上运行的 OysterWorkflow Runtime。OysterWorkflow 负责 workflow 发现、revision 固定、graph transition、重试上限和持久运行状态；Codex 使用自己已经安装并授权的 apps 和 tools 完成真实动作。
-
-使用条件：
-
-- 已安装并运行 macOS Apple Silicon 版 OysterWorkflow
-- Codex 支持 plugin
-- Codex 中已具备所选 workflow 依赖的 app 或 capability
-
-安装 marketplace 和 plugin：
+你需要同时安装 OysterWorkflow 和 Codex。工作流依赖的每一个应用，也必须能被 Codex 访问。
 
 ```bash
 codex plugin marketplace add ShuxinYang111/oysterworkflow
 codex plugin add oysterworkflow@oysterworkflow
 ```
 
-然后新建一个 Codex 任务并输入：
+新建一个 Codex 任务并输入：
 
 ```text
 用 OysterWorkflow 执行“筛选销售询盘并准备回复”
 ```
 
-Beta 版本连接本机 `http://127.0.0.1:3034/api/codex/mcp`，因此 Codex 执行 workflow 时 OysterWorkflow 必须保持运行。
+Beta 版本连接本机 MCP 地址 `http://127.0.0.1:3034/api/codex/mcp`，因此执行期间 OysterWorkflow 必须保持运行。
 
-## 下载
+## 下载并开始使用
 
-从 [Releases](https://github.com/ShuxinYang111/oysterworkflow/releases/latest) 下载最新版 macOS 或 Windows 构建。
+### macOS Apple Silicon
 
-当前发布文件：
+当前安装包是 `OysterWorkflow-0.2.0-arm64.dmg`，请使用页面顶部的下载入口。
 
-- macOS Apple Silicon：最新版中的 `OysterWorkflow-0.2.0-arm64.dmg`
-- Windows x64：v0.1.0 中的 `OysterWorkflow-Setup-0.1.0.exe`；Codex Plugin Beta 目前仅支持 macOS
+1. 打开 DMG，将 `OysterWorkflow.app` 拖入 `Applications`。
+2. 启动 OysterWorkflow，并按提示授予需要的权限。
+3. 录制一个真实工作流，审查工作流图，再选择执行它的 Agent。
 
-SHA-256：
+Screen Recording、Accessibility 和 Input Monitoring 权限用于桌面采集。只有使用语音讲解时才需要 Microphone 权限。
 
-```text
-macOS arm64 dmg:
-8ff5f2c431f4815b61e1a975a07632d3769ae9b3398c072d8de254a5d930ade8
+### Windows x64
 
-Windows x64 installer:
-78dad16a0e9152173d128ca5c2674a4987c61a4245e5f67bd2650654687bf0cf
-```
+**[下载 Windows 0.1.0 版](https://github.com/ShuxinYang111/oysterworkflow/releases/download/v0.1.0/OysterWorkflow-Setup-0.1.0.exe)**
 
-## 系统要求
+Windows 版是较早的版本。Codex 插件和最新的工作流图体验目前需要 macOS Apple Silicon。
 
-- macOS Apple Silicon (`arm64`)
-- Windows x64
+## 开源 Core
 
-## 安装说明
+[OysterWorkflow Core](https://github.com/ShuxinYang111/oysterworkflow-core) 使用 Apache-2.0 许可证开源，包含 Screenpipe ingest client、trace normalization、deduplication、segmentation、workflow discovery、OpenClaw skill extraction 和生成质量评估。
 
-### macOS
+当前仓库是桌面发行包、文档、截图、Codex 插件与 issue tracking 的公开入口，不包含桌面应用源码。
 
-1. 从最新 release 下载 `OysterWorkflow-0.2.0-arm64.dmg`。
-2. 打开 `.dmg`，将 `OysterWorkflow.app` 拖入 `Applications`。
-3. 从 `Applications` 启动 OysterWorkflow。
-4. 按提示授予必要的 macOS 权限。
-5. 如果刚刚开启了录制相关权限，建议退出并重新打开应用一次，再开始录制。
+## 反馈与授权
 
-因为 OysterWorkflow 需要采集工作流证据，macOS 可能会请求以下权限：
+- [反馈问题](https://github.com/ShuxinYang111/oysterworkflow/issues)
+- [查看 Roadmap](./ROADMAP.md)
+- [参与反馈](./CONTRIBUTING.md)
+- [查看第三方组件声明](./THIRD-PARTY-NOTICES.md)
 
-- Screen Recording
-- Accessibility
-- Input Monitoring
-- Microphone，当启用语音讲解时需要
-
-### Windows
-
-1. 从最新 release 下载 `OysterWorkflow-Setup-0.1.0.exe`。
-2. 运行安装器。
-3. 从开始菜单或安装目录启动 OysterWorkflow。
-4. 只有在需要采集语音讲解时才启用录制器音频。
-
-Windows 注意事项：
-
-- Windows 构建为 x64。
-- Windows 版本暂时不支持应用内中文输入。
-- Windows 语音转写当前更适合英文；本版本中文语音转写不可靠。
-
-## 这个公开仓库包含什么
-
-这个公开仓库用于发布二进制包、文档、截图、issue tracking 和官网入口。它不包含 OysterWorkflow 的私有源码。
-
-如果你想查看开源实现部分，请访问 [OysterWorkflow Core](https://github.com/ShuxinYang111/oysterworkflow-core)。
-
-## Roadmap 与反馈
-
-- 当前方向见 [ROADMAP.md](./ROADMAP.md)。
-- 反馈方式和 issue 指南见 [CONTRIBUTING.md](./CONTRIBUTING.md)。
-- 安装问题、workflow generation 反馈和功能建议请使用 [GitHub Issues](https://github.com/ShuxinYang111/oysterworkflow/issues)。
-
-## FAQ
-
-**这个仓库是开源仓库吗？**
-
-这个公开 App 仓库本身不是源码开源仓库，它用于发布二进制包、文档、截图和 issue tracking。开源实现部分在 [OysterWorkflow Core](https://github.com/ShuxinYang111/oysterworkflow-core)，使用 Apache-2.0 许可证，包含 Screenpipe trace ingest、OpenClaw skill 生成和 skill quality evaluation 等核心 pipeline。
-
-**OysterWorkflow 现在会生成什么？**
-
-当前流程会生成可审查的 OpenClaw skill artifacts，典型文件包括 `skill.json`、`assets.json` 和 `summary.json`。
-
-**录制一次之后就能完全自动化所有工作流吗？**
-
-不能。当前产品重点是采集 workflow evidence、发现候选工作流、生成可审查 artifacts，并让用户在复用前检查结果。
-
-**为什么叫 experience layer？**
-
-因为真正重要的不只是最终 instruction。OysterWorkflow 会记录 observed context、user choices、recovery moves 和 verification checks，用来解释工作实际上是如何成功的。
-
-**可以商业使用吗？**
-
-公开 release 许可不包含商业授权。公开版本使用 PolyForm Noncommercial 1.0.0，商业使用需要单独书面许可。
-
-**公开 issue 里不要发什么？**
-
-请不要公开发布密码、私有 URL、账号信息、客户数据或敏感截图。经过脱敏的 workflow 描述比原始隐私数据更有帮助。
-
-## 许可
-
-公开发布版本使用 [PolyForm Noncommercial 1.0.0](./LICENSE) 许可。
-
-简单来说：
-
-- 你可以下载并将公开发布版本用于非商业用途
-- 你不会获得私有源码的使用权
-- 公开发布条款不授权商业使用
-
-请阅读 [LICENSE-SUMMARY.md](./LICENSE-SUMMARY.md) 查看简明许可摘要。
-
-如需商业授权，请联系：`shuxin.y.97@gmail.com`
-
-## 第三方组件
-
-OysterWorkflow 会随桌面发行包附带 recorder 使用的第三方 sidecar 工具，包括 Screenpipe、FFmpeg 和 ffprobe。这些组件保留各自的许可证条款；它们不会被重新授权为 OysterWorkflow 代码，也不由 OysterWorkflow 的 PolyForm Noncommercial 条款覆盖。
-
-请查看 [THIRD-PARTY-NOTICES.md](./THIRD-PARTY-NOTICES.md)，了解随包组件声明、FFmpeg/ffprobe 来源信息，以及 `screenpipe-bundle.json` 中记录的构建期许可证 profile。
+桌面公开发行版使用 [PolyForm Noncommercial 1.0.0](./LICENSE) 许可证。商业使用需要单独书面授权。你可以阅读[简明许可说明](./LICENSE-SUMMARY.md)，或联系 [shuxin.y.97@gmail.com](mailto:shuxin.y.97@gmail.com)。
