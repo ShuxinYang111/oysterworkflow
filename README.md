@@ -1,62 +1,73 @@
-<p align="center">
-  <img src="./assets/oysterworkflow-app-icon.png" alt="OysterWorkflow pearl app icon" width="112" />
-</p>
+<div align="center"><a id="readme-top"></a>
 
-<h1 align="center">OysterWorkflow</h1>
+<a href="https://oysterworkflow.com/">
+  <img src="./assets/readme/oysterworkflow-readme-hero.png" alt="OysterWorkflow turns recorded computer work into a reusable workflow graph" width="100%" />
+</a>
 
-<p align="center"><strong>Teach AI how your work actually gets done.</strong></p>
+# OysterWorkflow
 
-<p align="center">Capture real computer work, extract the workflow and judgment behind it, then run that experience with your AI agent.</p>
+**Teach AI how your work actually gets done.**
 
-<p align="center">
-  <a href="https://github.com/ShuxinYang111/oysterworkflow/releases/download/v0.2.0/OysterWorkflow-0.2.0-arm64.dmg"><strong>Download for macOS</strong></a>
-  &nbsp;&nbsp;|&nbsp;&nbsp;
-  <a href="https://oysterworkflow.com/">Website</a>
-  &nbsp;&nbsp;|&nbsp;&nbsp;
-  <a href="./README.zh-CN.md">简体中文</a>
-</p>
+Capture real computer work, extract the workflow and judgment behind it, then run that experience with your AI agent.
 
-![A reviewable OysterWorkflow graph with actions, decisions, branches, and verification](./assets/screenshots/03-workflow-graph.png)
+[**English**](./README.md) &nbsp;&nbsp;|&nbsp;&nbsp; [简体中文](https://github.com/ShuxinYang111/oysterworkflow/blob/main/README.zh-CN.md) &nbsp;&nbsp;|&nbsp;&nbsp; [Official Site](https://oysterworkflow.com/) &nbsp;&nbsp;|&nbsp;&nbsp; [Download](https://github.com/ShuxinYang111/oysterworkflow/releases/latest) &nbsp;&nbsp;|&nbsp;&nbsp; [Roadmap](https://github.com/ShuxinYang111/oysterworkflow/blob/main/ROADMAP.md) &nbsp;&nbsp;|&nbsp;&nbsp; [Feedback](https://github.com/ShuxinYang111/oysterworkflow/issues)
+
+<!-- PROJECT SHIELDS -->
+
+[![][release-shield]][release-link]
+[![][downloads-shield]][release-link]
+[![][platform-shield]][release-link]<br/>
+[![][contributors-shield]][contributors-link]
+[![][forks-shield]][forks-link]
+[![][stars-shield]][stars-link]
+[![][issues-shield]][issues-link]<br/>
+[![][license-shield]][license-link]
+
+**Share OysterWorkflow**
+
+[![][share-x-shield]][share-x-link]
+[![][share-reddit-shield]][share-reddit-link]
+[![][share-linkedin-shield]][share-linkedin-link]
+
+</div>
 
 ## Powerful AI still needs your workflow and judgment
 
 AI can reason, but it does not automatically know which signal matters, when to branch, how to recover, or what "done" means in your work.
 
-OysterWorkflow learns these patterns from real computer work. You demonstrate the task in the apps you already use, review the extracted workflow graph, and hand a pinned revision to an agent.
+Most real computer work is more than instructions. It is a pattern of noticing, deciding, trying, fixing, verifying, and finishing. OysterWorkflow captures what people observe, how they react, and how they complete the task, then turns that work memory into a reviewable workflow an agent can reuse.
 
 ## From real work to reusable agent experience
 
+Raw work is messy. OysterWorkflow extracts the pattern.
+
 1. **Capture real work.** Record screen states, visible text, mouse and keyboard actions, app context, and optional voice coaching while you work normally.
-2. **Learn the pattern.** Extract goals, decision branches, preferences, exceptions, retry logic, verification checks, and completion conditions.
-3. **Run the workflow.** Turn the evidence into a reviewable, revisioned graph that Oyster AI Worker, Codex, or another compatible agent can follow.
+2. **Learn the pattern.** Extract goals, decision branches, preferences, exceptions, recovery moves, verification checks, and completion conditions.
+3. **Run the workflow.** Turn the evidence into a reviewable, revisioned experience layer that Codex or another compatible agent can follow.
+
+### Watch real work become reusable agent experience
+
+<p align="center">
+  <a href="https://github.com/user-attachments/assets/261f1fd1-933d-4989-83c0-4757012d9097">
+    <img src="./assets/readme/oysterworkflow-demo-preview.gif" alt="Watch OysterWorkflow turn real work into reusable agent experience" width="100%" />
+  </a>
+</p>
 
 ## See what OysterWorkflow learns
 
-<table>
-  <tr>
-    <td width="50%">
-      <img src="./assets/screenshots/01-recorder-dashboard.png" alt="OysterWorkflow recorder controls and capture status" />
-      <br />
-      <strong>Capture the work</strong><br />
-      Record the screen, visible text, inputs, app context, and optional narration.
-    </td>
-    <td width="50%">
-      <img src="./assets/screenshots/02-workflow-candidates.png" alt="OysterWorkflow candidate workflow review" />
-      <br />
-      <strong>Choose the pattern</strong><br />
-      Review the meaningful workflows detected inside a noisy work session.
-    </td>
-  </tr>
-</table>
+OysterWorkflow does not learn a macro. It learns what to notice, how to decide, which context to carry forward, and when a person should review the next move.
 
-The result preserves more than a checklist:
+<p align="center">
+  <img src="./assets/readme/feature-capture.png" alt="OysterWorkflow captures real multi-app work and separates repeatable signals from noise" width="100%" />
+</p>
 
-- what context the agent should notice or ignore
-- which actions and decisions move the task forward
-- how to recover from changed pages, failed attempts, and ambiguous states
-- how to verify the outcome and know when the task is complete
+<br />
 
-## Run an OysterWorkflow workflow in Codex
+<p align="center">
+  <img src="./assets/readme/feature-pattern.png" alt="OysterWorkflow turns captured evidence into inspectable workflow steps with intent, hints, assets, and approval rules" width="100%" />
+</p>
+
+## Run an OysterWorkflow in Codex
 
 The Codex plugin connects Codex to the OysterWorkflow Runtime on the same Mac. OysterWorkflow owns the workflow graph, revision, transitions, retry limits, and durable run state. Codex performs the real actions with the apps and tools installed and authorized in Codex.
 
@@ -79,7 +90,7 @@ The beta connects to the local MCP endpoint at `http://127.0.0.1:3034/api/codex/
 
 ### macOS Apple Silicon
 
-Current installer: `OysterWorkflow-0.2.0-arm64.dmg`. Use the download link at the top of this page.
+Download the latest macOS installer from [Releases](https://github.com/ShuxinYang111/oysterworkflow/releases/latest).
 
 1. Open the DMG and drag `OysterWorkflow.app` into `Applications`.
 2. Launch OysterWorkflow and grant the requested permissions.
@@ -89,21 +100,46 @@ Screen Recording, Accessibility, and Input Monitoring permissions support deskto
 
 ### Windows x64
 
-**[Download the Windows 0.1.0 build](https://github.com/ShuxinYang111/oysterworkflow/releases/download/v0.1.0/OysterWorkflow-Setup-0.1.0.exe)**
+[Download the Windows 0.1.0 build](https://github.com/ShuxinYang111/oysterworkflow/releases/download/v0.1.0/OysterWorkflow-Setup-0.1.0.exe).
 
 The Windows build is an earlier release. The Codex plugin and the newest workflow graph experience currently require macOS Apple Silicon.
 
-## Open-source core
+## Open source
 
-[OysterWorkflow Core](https://github.com/ShuxinYang111/oysterworkflow-core) is available under Apache-2.0. It includes the Screenpipe ingest client, trace normalization, deduplication, segmentation, workflow discovery, OpenClaw skill extraction, and generated skill quality evaluation.
+OysterWorkflow is open source under the [GNU General Public License v3.0](https://www.gnu.org/licenses/gpl-3.0.html). The project includes the desktop app, workflow runtime, Codex plugin, documentation, and the workflow pipeline for turning captured evidence into reviewable agent experience.
 
-This repository is the public home for desktop releases, documentation, screenshots, the Codex plugin, and issue tracking. The desktop app source code is not included here.
+Bundled third-party components keep their own license terms. See [THIRD-PARTY-NOTICES.md](https://github.com/ShuxinYang111/oysterworkflow/blob/main/THIRD-PARTY-NOTICES.md) for details.
 
-## Feedback and licensing
+## Feedback and contributing
 
 - [Report an issue](https://github.com/ShuxinYang111/oysterworkflow/issues)
-- [Read the roadmap](./ROADMAP.md)
-- [Contribute feedback](./CONTRIBUTING.md)
-- [Review third-party notices](./THIRD-PARTY-NOTICES.md)
+- [Read the roadmap](https://github.com/ShuxinYang111/oysterworkflow/blob/main/ROADMAP.md)
+- [Read the contribution guide](https://github.com/ShuxinYang111/oysterworkflow/blob/main/CONTRIBUTING.md)
+- [Review third-party notices](https://github.com/ShuxinYang111/oysterworkflow/blob/main/THIRD-PARTY-NOTICES.md)
 
-Public desktop releases use the [PolyForm Noncommercial 1.0.0](./LICENSE) license. Commercial use requires separate written permission. See the [plain-language license summary](./LICENSE-SUMMARY.md) or contact [shuxin.y.97@gmail.com](mailto:shuxin.y.97@gmail.com).
+Bug reports, workflow-generation feedback, documentation improvements, integration ideas, and pull requests are welcome. Do not include credentials, customer data, private URLs, or unredacted workflow evidence in public issues.
+
+<!-- LINK DEFINITIONS -->
+
+[release-link]: https://github.com/ShuxinYang111/oysterworkflow/releases/latest
+[contributors-link]: https://github.com/ShuxinYang111/oysterworkflow/graphs/contributors
+[forks-link]: https://github.com/ShuxinYang111/oysterworkflow/network/members
+[stars-link]: https://github.com/ShuxinYang111/oysterworkflow/stargazers
+[issues-link]: https://github.com/ShuxinYang111/oysterworkflow/issues
+[license-link]: https://www.gnu.org/licenses/gpl-3.0.html
+
+[release-shield]: https://img.shields.io/github/v/release/ShuxinYang111/oysterworkflow?color=007B78&labelColor=0F172A&logo=github&logoColor=white&style=flat-square
+[downloads-shield]: https://img.shields.io/github/downloads/ShuxinYang111/oysterworkflow/total?color=5DD5D0&label=downloads&labelColor=0F172A&style=flat-square
+[platform-shield]: https://img.shields.io/badge/platform-macOS%20Apple%20Silicon-DDE7E7?labelColor=0F172A&logo=apple&logoColor=white&style=flat-square
+[contributors-shield]: https://img.shields.io/github/contributors/ShuxinYang111/oysterworkflow?color=B9F227&labelColor=0F172A&style=flat-square
+[forks-shield]: https://img.shields.io/github/forks/ShuxinYang111/oysterworkflow?color=8AE8FF&labelColor=0F172A&style=flat-square
+[stars-shield]: https://img.shields.io/github/stars/ShuxinYang111/oysterworkflow?color=FFCB47&labelColor=0F172A&style=flat-square
+[issues-shield]: https://img.shields.io/github/issues/ShuxinYang111/oysterworkflow?color=FF80EB&labelColor=0F172A&style=flat-square
+[license-shield]: https://img.shields.io/badge/license-GPL--3.0-F4F7F7?labelColor=0F172A&logo=gnu&logoColor=white&style=flat-square
+
+[share-x-link]: https://x.com/intent/tweet?text=Turn%20real%20work%20into%20reusable%20workflows%20with%20OysterWorkflow.&url=https%3A%2F%2Fgithub.com%2FShuxinYang111%2Foysterworkflow
+[share-reddit-link]: https://www.reddit.com/submit?url=https%3A%2F%2Fgithub.com%2FShuxinYang111%2Foysterworkflow&title=OysterWorkflow%20-%20Turn%20real%20work%20into%20reusable%20workflows
+[share-linkedin-link]: https://www.linkedin.com/sharing/share-offsite/?url=https%3A%2F%2Fgithub.com%2FShuxinYang111%2Foysterworkflow
+[share-x-shield]: https://img.shields.io/badge/share%20on-X-0F172A?logo=x&logoColor=white&style=flat-square
+[share-reddit-shield]: https://img.shields.io/badge/share%20on-Reddit-0F172A?logo=reddit&logoColor=white&style=flat-square
+[share-linkedin-shield]: https://img.shields.io/badge/share%20on-LinkedIn-0F172A?logo=linkedin&logoColor=white&style=flat-square

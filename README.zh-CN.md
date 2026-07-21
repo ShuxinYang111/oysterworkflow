@@ -106,4 +106,4 @@ Windows 版是较早的版本。Codex 插件和最新的工作流图体验目前
 - [参与反馈](./CONTRIBUTING.md)
 - [查看第三方组件声明](./THIRD-PARTY-NOTICES.md)
 
-桌面公开发行版使用 [PolyForm Noncommercial 1.0.0](./LICENSE) 许可证。商业使用需要单独书面授权。你可以阅读[简明许可说明](./LICENSE-SUMMARY.md)，或联系 [shuxin.y.97@gmail.com](mailto:shuxin.y.97@gmail.com)。
+OysterWorkflow 使用 [GNU General Public License v3.0](./LICENSE) 开源。你可以运行、研究、修改和再发布；分发修改版本或二进制时，需要遵守 GPL-3.0 的源码提供和同许可证要求。详情请阅读[简明许可说明](./LICENSE-SUMMARY.md)。
