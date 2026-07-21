@@ -42,6 +42,6 @@ Until then, this repository welcomes public feedback through issues rather than 
 
 ## License Notes
 
-Public releases are licensed under PolyForm Noncommercial 1.0.0. Commercial use requires separate written permission.
+OysterWorkflow is licensed under the GNU General Public License v3.0. Contributions are accepted with the understanding that they may be distributed under GPL-3.0.
 
-For commercial licensing or partnership questions, contact `shuxin.y.97@gmail.com`.
+For partnership or alternative licensing questions, contact `shuxin.y.97@gmail.com`.

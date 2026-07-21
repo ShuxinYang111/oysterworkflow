@@ -4,60 +4,25 @@ This file is a plain-language summary for convenience only.
 
 The actual legal terms are in [LICENSE](./LICENSE). If anything here conflicts with the license text, the license text controls.
 
-## What the Public License Allows
+## License
 
-OysterWorkflow public releases are licensed under PolyForm Noncommercial 1.0.0.
+OysterWorkflow is licensed under the GNU General Public License v3.0.
 
-That means people may use the software for noncommercial purposes such as:
+The GPL-3.0 allows people and organizations to:
 
-- personal evaluation
-- study
-- research
-- internal testing
-- educational or nonprofit contexts that fit the license terms
+- run the software for private or commercial purposes
+- study how the software works
+- modify the software
+- redistribute copies of the software
 
-## What the Public License Does Not Allow
+## Distribution Requirements
 
-The public license does not grant commercial rights.
+When distributing OysterWorkflow, modified versions, or covered object code, distributors must follow the GPL-3.0 requirements. These requirements include preserving license and copyright notices, licensing covered modifications under GPL-3.0, and making the corresponding source code available as required by the license.
 
-That means you should not assume you can:
+The complete and controlling terms are in [LICENSE](./LICENSE).
 
-- sell the app
-- bundle it into a paid service or paid product
-- use it as part of a commercial offering
-- redistribute it for commercial gain
+## Third-Party Components
 
-Commercial use requires a separate written license from the author.
+Bundled third-party components keep their own license terms. See [THIRD-PARTY-NOTICES.md](./THIRD-PARTY-NOTICES.md) and [SCREENPIPE-LICENSE.md](./SCREENPIPE-LICENSE.md) for details.
 
-Contact: `shuxin.y.97@gmail.com`
-
-## Source Code Availability
-
-Public releases do not include rights to the private source code.
-
-If OysterWorkflow is published through a public GitHub repository, that public repository is intended to host release binaries, documentation, and issue tracking unless the author explicitly publishes source code there.
-
-## Reverse Engineering
-
-This summary does not claim that distributing binaries makes reverse engineering impossible.
-
-The practical protection model is:
-
-- source code remains private
-- users receive compiled app releases
-- commercial rights are withheld unless separately licensed
-
-## Recommended Use in a Public GitHub Repo
-
-If you publish OysterWorkflow publicly while keeping the source closed, include at least:
-
-- `README.md`
-- `LICENSE`
-- `LICENSE-SUMMARY.md`
-- release artifacts on the Releases page
-
-That gives users a clear answer to three questions:
-
-- what the app does
-- how to download it
-- what they are and are not allowed to do with it
+This summary is not legal advice.

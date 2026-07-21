@@ -1,6 +1,6 @@
 # Third-Party Notices
 
-This file covers third-party components bundled with OysterWorkflow desktop release artifacts. OysterWorkflow's PolyForm Noncommercial license applies to OysterWorkflow code and does not replace or narrow these third-party license terms.
+This file covers third-party components bundled with OysterWorkflow desktop release artifacts. OysterWorkflow's GPL-3.0 license applies to OysterWorkflow code and does not replace or narrow these third-party license terms.
 
 ## Screenpipe
 
