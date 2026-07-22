@@ -8,7 +8,7 @@
 
 **Teach AI how your work actually gets done.**
 
-Capture real computer work, extract the workflow and judgment behind it, then run that experience with your AI agent.
+OysterWorkflow is an open-source work-experience layer for your AI agent, as well as a powerful automation tool for your daily work. It runs alongside you, observing on-screen information, mouse clicks, and keyboard input, while also receiving your voice instructions. Oyster use behavioral psychology model to infer your intent and decision-making process, automatically captures your workflows, and generates automation harnesses for your agents. Oysterworkflow works with Codex, Claude, and other AI agents.
 
 [**English**](./README.md) &nbsp;&nbsp;|&nbsp;&nbsp; [简体中文](https://github.com/ShuxinYang111/oysterworkflow/blob/main/README.zh-CN.md) &nbsp;&nbsp;|&nbsp;&nbsp; [Official Site](https://oysterworkflow.com/) &nbsp;&nbsp;|&nbsp;&nbsp; [Download](https://github.com/ShuxinYang111/oysterworkflow/releases/latest) &nbsp;&nbsp;|&nbsp;&nbsp; [Roadmap](https://github.com/ShuxinYang111/oysterworkflow/blob/main/ROADMAP.md) &nbsp;&nbsp;|&nbsp;&nbsp; [Feedback](https://github.com/ShuxinYang111/oysterworkflow/issues)
 
