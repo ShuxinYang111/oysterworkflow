@@ -84,7 +84,27 @@ Start a new Codex task and try:
 Use OysterWorkflow to run "Screen sales inquiries and prepare replies"
 ```
 
-The beta connects to the local MCP endpoint at `http://127.0.0.1:3034/api/codex/mcp`, so OysterWorkflow must remain running during execution.
+The plugin starts a local STDIO bridge that discovers OysterWorkflow's private per-launch Runtime connection. Users do not configure a port, copy tokens, or expose an MCP endpoint publicly. OysterWorkflow must remain running during execution.
+
+## Connect Claude, OpenClaw, Hermes, or another MCP client
+
+Copy the prompt below into the AI client you want to configure. It tells that agent how to connect only itself to OysterWorkflow's packaged local bridge.
+
+```text
+Connect the AI agent you are currently running to the OysterWorkflow desktop app on this computer through its local STDIO MCP bridge.
+
+Requirements:
+1. Configure only this current AI client. Do not modify MCP settings for other clients.
+2. Confirm OysterWorkflow is installed. If it is missing, stop and send me to https://github.com/ShuxinYang111/oysterworkflow/releases/latest.
+3. Locate the packaged launcher named oysterworkflow-mcp on macOS or oysterworkflow-mcp.cmd on Windows. The typical macOS path is /Applications/OysterWorkflow.app/Contents/Resources/mcp/oysterworkflow-mcp. On Windows, locate it under the installed OysterWorkflow app's resources\mcp directory.
+4. Add the launcher as a local stdio MCP server named oysterworkflow using this client's supported MCP CLI or configuration file. Use the launcher as the command with no arguments. Do not connect directly to a localhost port, copy runtime tokens, or expose the server publicly.
+5. If this client is Codex and supports plugins, prefer the first-party OysterWorkflow plugin: add the marketplace ShuxinYang111/oysterworkflow, then install oysterworkflow@oysterworkflow.
+6. Start OysterWorkflow if it is closed. Reload MCP servers, or tell me exactly which restart or new conversation is required.
+7. Verify that the server initializes and tools/list includes search, fetch, prepare_workflow_run, get_workflow_run, advance_workflow_run, and cancel_workflow_run. Do not execute a workflow during setup.
+8. Report the exact configuration or commands you changed and the verification result. Ask before overwriting an existing oysterworkflow MCP entry.
+```
+
+For launcher paths and post-install notes, see [Connect an AI Agent to OysterWorkflow](./docs/connect-your-agent.md).
 
 ## Download and start
 
