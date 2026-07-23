@@ -53,12 +53,14 @@ describe("runtime tools bundle builder", () => {
 
     const manifest = JSON.parse(
       await readFile(join(outDir, "runtime-tools-bundle.json"), "utf8"),
-    ) as { uv: { archiveSha256: string; version: string } };
+    ) as { uv: { archiveSha256: string | null; version: string } };
     expect(manifest.uv).toMatchObject({
       archiveSha256:
-        process.platform === "win32" && process.arch === "x64"
-          ? "fe0c7815acf4fc45f8a5eff58ed3cf7ae2e15c3cf1dceadbd10c816ec1690cc1"
-          : "66e37d91f839e12481d7b932a1eccbfe732560f42c1cfb89faddfa2454534ba8",
+        process.platform === "darwin" && process.arch === "arm64"
+          ? "66e37d91f839e12481d7b932a1eccbfe732560f42c1cfb89faddfa2454534ba8"
+          : process.platform === "win32" && process.arch === "x64"
+            ? "fe0c7815acf4fc45f8a5eff58ed3cf7ae2e15c3cf1dceadbd10c816ec1690cc1"
+            : null,
       version: "0.11.7",
     });
     if (
