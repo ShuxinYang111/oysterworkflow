@@ -454,12 +454,20 @@ function assertSequentialSteps(steps: ValidatedSkill["steps"]): void {
   }
 }
 
+/**
+ * EN: Builds a canonical generated install name with a cross-platform version suffix.
+ * 中文: 构建带跨平台一致版本后缀的规范生成安装名。
+ * @param rawName requested name or skill title.
+ * @param skillId fallback identifier when the requested name is empty.
+ * @returns canonical generated install name.
+ */
 function buildGeneratedInstallName(rawName: string, skillId: string): string {
   const normalized = slugifyName(rawName);
   const baseName = normalized || `skill-${skillId.slice(0, 8).toLowerCase()}`;
-  return baseName.startsWith(GENERATED_PREFIX)
+  const generatedName = baseName.startsWith(GENERATED_PREFIX)
     ? baseName
     : `${GENERATED_PREFIX}${baseName}`;
+  return normalizeInstallNameForLookup(generatedName);
 }
 
 function normalizeInstallNameForLookup(input: string): string {

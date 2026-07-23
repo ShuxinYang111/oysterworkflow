@@ -63,10 +63,13 @@ describe("Hermes bundle builder", () => {
       expect(parsedManifest).toMatchObject({
         executableName: "hermes",
         strategy: "managed-install-launcher",
-        bundledNode: {
-          relativePath: "node",
-          strategy: "electron-run-as-node",
-        },
+        bundledNode:
+          process.platform === "darwin"
+            ? {
+                relativePath: "node",
+                strategy: "electron-run-as-node",
+              }
+            : null,
         bundledWhatsAppBridge: {
           relativePath: "hermes-agent-source/scripts/whatsapp-bridge",
           dependencyStrategy: "bundled-production-node-modules",

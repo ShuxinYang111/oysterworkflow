@@ -3159,6 +3159,7 @@ if [ "$1" = "-p" ] && [ "$3" = "chat" ]; then
   echo "OYSTERWORKFLOW_WORKER_READY"
   printf '%s' 'OYSTERWORKFLOW_PROVIDER_STATUS {"status":"degraded","kind":"llm_timeout","recoverability":"retryable",' >&2
   printf '%s\\n' '"provider":"test-provider","model":"gpt-test","message":"Provider timed out while answering the worker.","retryable":true,"retryCount":1,"maxRetries":3,"checkedAt":"2026-07-07T10:00:00.000Z"}' >&2
+  sleep 0.2
   echo "Workflow completed after retry."
   echo 'OYSTERWORKFLOW_SESSION_STATUS {"status":"succeeded","message":"Workflow completed","user_action":null}'
   exit 0
