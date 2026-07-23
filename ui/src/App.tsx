@@ -2379,9 +2379,7 @@ function workflowRunEventFromProductRun(run: ProductRun): WorkflowRunEvent {
     id: run.id,
     workflowName: run.workflowTitle,
     status: statusMap[run.status],
-    detail: productizeWorkerFacingText(
-      run.errorMessage ?? productRunDetail(run),
-    ),
+    detail: productizeWorkerFacingText(productRunDetail(run)),
     tone: toneMap[run.status],
   };
 }
@@ -2404,6 +2402,9 @@ function productRunDetail(run: ProductRun): string {
   }
   if (run.status === "cancelled") {
     return "Cancelled before completion";
+  }
+  if (run.status === "failed") {
+    return "AI worker could not complete this run. Check Activity for details.";
   }
   return formatProductRunTimestamp(run);
 }
@@ -5489,6 +5490,10 @@ function WorkersPage({
     );
   }, [filteredInstalledWorkflows, installedWorkflowPage]);
   const activeRun = activeProductRunForWorker(productState, selectedWorker.id);
+  const agentSessionRun =
+    activeRun ??
+    productState?.runs.find((run) => run.workerId === selectedWorker.id) ??
+    null;
   const workerChannelPlatform =
     productWorker?.config?.channel?.platform ?? "none";
   const workerChannelIconClassName =
@@ -5500,6 +5505,7 @@ function WorkersPage({
   const agentRunEvents = productAgentConversationEventsForWorker(
     productState,
     selectedWorker.id,
+    agentSessionRun?.id,
   );
   const recentRunItems = productState
     ? productState.runs

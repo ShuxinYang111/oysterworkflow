@@ -23,6 +23,7 @@ import type {
   ProductCapabilityProviderId,
 } from "../../src/product/contracts.js";
 import type {
+  DesktopUpdateErrorCode,
   DesktopUpdatePhase,
   DesktopUpdateSnapshot,
 } from "../../src/desktop-update/contracts.js";
@@ -331,6 +332,7 @@ const UPDATE_COPY: Record<
     preserveDataNote: string;
     status: Record<DesktopUpdatePhase, string>;
     description: Record<DesktopUpdatePhase, string>;
+    error: Record<DesktopUpdateErrorCode, string>;
   }
 > = {
   en: {
@@ -376,6 +378,14 @@ const UPDATE_COPY: Record<
       installing: "OysterWorkflow will close, install the update, and reopen.",
       error: "The update operation did not complete. Try again.",
     },
+    error: {
+      release_metadata_unavailable:
+        "The Windows release is temporarily missing update information. Try again later.",
+      network_unavailable:
+        "OysterWorkflow could not reach the update service. Check your connection and try again.",
+      operation_failed:
+        "OysterWorkflow could not complete the update operation. Try again.",
+    },
   },
   zh: {
     eyebrow: "软件更新",
@@ -417,6 +427,12 @@ const UPDATE_COPY: Record<
       up_to_date: "这台设备正在运行当前最新版本。",
       installing: "OysterWorkflow 将退出、安装更新，然后重新打开。",
       error: "更新操作未完成，请重试。",
+    },
+    error: {
+      release_metadata_unavailable:
+        "当前 Windows 版本的更新信息暂未发布，请稍后重试。",
+      network_unavailable: "无法连接更新服务，请检查网络后重试。",
+      operation_failed: "无法完成更新操作，请稍后重试。",
     },
   },
 };
@@ -1038,9 +1054,9 @@ function UpdatesSettingsSection(
         </div>
       ) : null}
 
-      {snapshot.errorMessage ? (
+      {snapshot.phase === "error" ? (
         <p className="inline-error" role="alert">
-          {snapshot.errorMessage}
+          {copy.error[snapshot.errorCode ?? "operation_failed"]}
         </p>
       ) : null}
 

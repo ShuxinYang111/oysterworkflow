@@ -33,7 +33,7 @@ const sourceSeedDirectoryName = "hermes-agent-source";
 const sourceSeedOutDir = path.resolve(outDir, sourceSeedDirectoryName);
 const posixLauncherPath = path.resolve(outDir, "hermes");
 const packagedNodeLauncherPath = path.resolve(outDir, "node");
-const windowsLauncherPath = path.resolve(outDir, "hermes.exe");
+const windowsLauncherPath = path.resolve(outDir, "hermes.ps1");
 const manifestPath = path.resolve(outDir, "hermes-bundle.json");
 const explicitSourceSeedPath =
   process.env.OYSTERWORKFLOW_HERMES_SOURCE_PATH?.trim();
@@ -113,7 +113,7 @@ await writeFile(
   `${JSON.stringify(
     {
       strategy: "managed-install-launcher",
-      executableName: process.platform === "win32" ? "hermes.exe" : "hermes",
+      executableName: process.platform === "win32" ? "hermes.ps1" : "hermes",
       installScriptUrl,
       installScriptSha256,
       installDir: "$HERMES_HOME/hermes-agent",
@@ -148,7 +148,7 @@ await writeFile(
           : null,
       bundledWhatsAppBridge,
       notes:
-        "The launcher installs Hermes Agent into OysterWorkflow's managed HERMES_HOME on first use. macOS packages include an Electron-backed Node launcher and production WhatsApp bridge dependencies so end users do not need Node or npm.",
+        "The launcher installs Hermes Agent into OysterWorkflow's managed HERMES_HOME on first use. Windows uses Hermes' native PowerShell installer; macOS packages include an Electron-backed Node launcher and production WhatsApp bridge dependencies.",
     },
     null,
     2,
@@ -160,7 +160,7 @@ process.stdout.write(
   [
     `Bundled Hermes launcher prepared at ${posixLauncherPath}`,
     `Bundled Node launcher prepared at ${packagedNodeLauncherPath}`,
-    `Bundled Hermes Windows placeholder prepared at ${windowsLauncherPath}`,
+    `Bundled native Windows Hermes launcher prepared at ${windowsLauncherPath}`,
     `Bundled Hermes manifest prepared at ${manifestPath}`,
     ...(sourceSeedPath
       ? [`Bundled Hermes source seed prepared at ${sourceSeedOutDir}`]
@@ -332,6 +332,7 @@ async function installBundledWhatsAppBridgeDependencies(sourceRoot) {
       cwd: bridgeDirectory,
       env: { ...process.env, CI: "1" },
       maxBuffer: 16 * 1024 * 1024,
+      shell: process.platform === "win32",
     },
   );
   const nodeModulesDirectory = path.join(bridgeDirectory, "node_modules");
@@ -874,10 +875,214 @@ ELECTRON_RUN_AS_NODE=1 exec "$ELECTRON_BINARY" "$@"
 }
 
 function renderWindowsLauncher() {
-  return `@echo off
-echo OysterWorkflow managed Hermes is not available on native Windows yet.
-echo Hermes Agent currently requires WSL2 on Windows.
-exit /b 1
+  const bundleRevision =
+    sourceSeedDigest ?? sourceSeedMetadata?.commit ?? "network-install";
+  const pinnedCommit = sourceSeedMetadata?.commit ?? "";
+  return String.raw`$ErrorActionPreference = "Stop"
+Set-StrictMode -Version Latest
+
+$HermesArguments = @($args)
+$ScriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
+$RuntimeHome = if ($env:HERMES_HOME) {
+  $env:HERMES_HOME
+} else {
+  Join-Path $env:APPDATA "oysterworkflow\hermes"
+}
+$InstallDir = Join-Path $RuntimeHome "hermes-agent"
+$Runner = Join-Path $InstallDir "venv\Scripts\hermes.exe"
+$OfficialMarker = Join-Path $InstallDir ".hermes-bootstrap-complete"
+$BundleMarker = Join-Path $InstallDir ".oysterworkflow-bundle-revision"
+$BundledSourceDir = Join-Path $ScriptDir "${sourceSeedDirectoryName}"
+$BundledInstaller = Join-Path $BundledSourceDir "scripts\install.ps1"
+$BundledUv = Join-Path $ScriptDir "oysterworkflow-uv.exe"
+$ManagedBinDir = Join-Path $RuntimeHome "bin"
+$ManagedUv = Join-Path $ManagedBinDir "uv.exe"
+$InstallLock = Join-Path $RuntimeHome ".oysterworkflow-hermes-install.lock"
+$LockOwnerFile = Join-Path $InstallLock "owner"
+$BundleRevision = "${bundleRevision}"
+$PinnedCommit = "${pinnedCommit}"
+$InstallWaitSeconds = if ($env:OYSTERWORKFLOW_HERMES_INSTALL_WAIT_SECONDS) {
+  [int]$env:OYSTERWORKFLOW_HERMES_INSTALL_WAIT_SECONDS
+} else {
+  300
+}
+$InstallStaleSeconds = if ($env:OYSTERWORKFLOW_HERMES_INSTALL_STALE_SECONDS) {
+  [int]$env:OYSTERWORKFLOW_HERMES_INSTALL_STALE_SECONDS
+} else {
+  1800
+}
+$LockHeld = $false
+
+function Test-ManagedHermesReady {
+  return (Test-Path -LiteralPath $Runner -PathType Leaf) -and
+    (Test-Path -LiteralPath $OfficialMarker -PathType Leaf)
+}
+
+function Test-LockOwnerAlive {
+  param([int]$OwnerProcessId)
+  if ($OwnerProcessId -le 0) {
+    return $false
+  }
+  return $null -ne (Get-Process -Id $OwnerProcessId -ErrorAction SilentlyContinue)
+}
+
+function Remove-StaleInstallLock {
+  if (-not (Test-Path -LiteralPath $InstallLock -PathType Container)) {
+    return $true
+  }
+  $owner = @(Get-Content -LiteralPath $LockOwnerFile -ErrorAction SilentlyContinue)
+  $ownerProcessId = 0
+  $ownerStartedAt = 0L
+  if ($owner.Count -ge 1) {
+    [void][int]::TryParse($owner[0], [ref]$ownerProcessId)
+  }
+  if ($owner.Count -ge 2) {
+    [void][long]::TryParse($owner[1], [ref]$ownerStartedAt)
+  }
+  $ageSeconds = [DateTimeOffset]::UtcNow.ToUnixTimeSeconds() - $ownerStartedAt
+  if ((Test-LockOwnerAlive $ownerProcessId) -and $ageSeconds -lt $InstallStaleSeconds) {
+    return $false
+  }
+  $staleLock = "$InstallLock.stale.$PID.$([Guid]::NewGuid().ToString('N'))"
+  try {
+    Move-Item -LiteralPath $InstallLock -Destination $staleLock -ErrorAction Stop
+    Remove-Item -LiteralPath $staleLock -Recurse -Force -ErrorAction SilentlyContinue
+    [Console]::Error.WriteLine("Recovering stale Hermes installation lock.")
+    return $true
+  } catch {
+    return $false
+  }
+}
+
+function Acquire-InstallLock {
+  $waitStartedAt = [DateTimeOffset]::UtcNow.ToUnixTimeSeconds()
+  while ($true) {
+    try {
+      New-Item -ItemType Directory -Path $InstallLock -ErrorAction Stop | Out-Null
+      @($PID, [DateTimeOffset]::UtcNow.ToUnixTimeSeconds()) |
+        Set-Content -LiteralPath $LockOwnerFile -Encoding ascii
+      $script:LockHeld = $true
+      return
+    } catch {
+      if (Test-ManagedHermesReady) {
+        return
+      }
+      if (Remove-StaleInstallLock) {
+        continue
+      }
+      $waitedSeconds =
+        [DateTimeOffset]::UtcNow.ToUnixTimeSeconds() - $waitStartedAt
+      if ($waitedSeconds -ge $InstallWaitSeconds) {
+        throw "Timed out after $InstallWaitSeconds seconds waiting for another Hermes installation."
+      }
+      Start-Sleep -Seconds 1
+    }
+  }
+}
+
+function Release-InstallLock {
+  if (-not $script:LockHeld) {
+    return
+  }
+  $owner = @(Get-Content -LiteralPath $LockOwnerFile -ErrorAction SilentlyContinue)
+  if ($owner.Count -ge 1 -and $owner[0] -eq [string]$PID) {
+    Remove-Item -LiteralPath $InstallLock -Recurse -Force -ErrorAction SilentlyContinue
+  }
+  $script:LockHeld = $false
+}
+
+function Invoke-InstallerStage {
+  param([string]$Stage)
+  $stageArguments = @(
+    "-NoProfile",
+    "-NonInteractive",
+    "-ExecutionPolicy",
+    "Bypass",
+    "-File",
+    $BundledInstaller,
+    "-Stage",
+    $Stage,
+    "-NonInteractive",
+    "-SkipSetup",
+    "-Json",
+    "-HermesHome",
+    $RuntimeHome,
+    "-InstallDir",
+    $InstallDir
+  )
+  if ($PinnedCommit) {
+    $stageArguments += @("-Commit", $PinnedCommit)
+  }
+  $previousPreference = $ErrorActionPreference
+  $ErrorActionPreference = "Continue"
+  & powershell.exe @stageArguments 2>&1 |
+    ForEach-Object { [Console]::Error.WriteLine([string]$_) }
+  $stageExitCode = $LASTEXITCODE
+  $ErrorActionPreference = $previousPreference
+  if ($stageExitCode -ne 0) {
+    throw "Hermes installer stage '$Stage' failed with exit code $stageExitCode."
+  }
+}
+
+function Install-ManagedHermes {
+  if (-not (Test-Path -LiteralPath $BundledInstaller -PathType Leaf)) {
+    throw "The bundled native Windows Hermes installer is missing: $BundledInstaller"
+  }
+  New-Item -ItemType Directory -Path $RuntimeHome -Force | Out-Null
+  New-Item -ItemType Directory -Path $ManagedBinDir -Force | Out-Null
+  if (Test-Path -LiteralPath $BundledUv -PathType Leaf) {
+    Copy-Item -LiteralPath $BundledUv -Destination $ManagedUv -Force
+  }
+  $env:HERMES_HOME = $RuntimeHome
+  $env:Path = "$ManagedBinDir;$env:Path"
+
+  if (Test-Path -LiteralPath $InstallDir) {
+    Remove-Item -LiteralPath $InstallDir -Recurse -Force
+  }
+  New-Item -ItemType Directory -Path $InstallDir -Force | Out-Null
+  Get-ChildItem -LiteralPath $BundledSourceDir -Force |
+    Copy-Item -Destination $InstallDir -Recurse -Force
+
+  [Console]::Error.WriteLine("OysterWorkflow is installing native Hermes Agent for Windows...")
+  foreach ($stage in @(
+    "uv",
+    "python",
+    "git",
+    "node",
+    "system-packages",
+    "venv",
+    "dependencies",
+    "config-templates",
+    "platform-sdks",
+    "bootstrap-marker"
+  )) {
+    Invoke-InstallerStage $stage
+  }
+  [System.IO.File]::WriteAllText(
+    $BundleMarker,
+    $BundleRevision + [Environment]::NewLine,
+    [System.Text.UTF8Encoding]::new($false)
+  )
+  if (-not (Test-ManagedHermesReady)) {
+    throw "Hermes installation completed without a usable Windows runner: $Runner"
+  }
+}
+
+if (-not (Test-ManagedHermesReady)) {
+  New-Item -ItemType Directory -Path $RuntimeHome -Force | Out-Null
+  Acquire-InstallLock
+  try {
+    if (-not (Test-ManagedHermesReady)) {
+      Install-ManagedHermes
+    }
+  } finally {
+    Release-InstallLock
+  }
+}
+
+$env:HERMES_HOME = $RuntimeHome
+& $Runner @HermesArguments
+exit $LASTEXITCODE
 `;
 }
 

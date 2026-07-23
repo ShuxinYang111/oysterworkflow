@@ -350,6 +350,146 @@ exit 1
     });
   });
 
+  it("starts and continues a general worker session without workflows", async () => {
+    const turnInputs: Array<{
+      prompt: string;
+      skills?: string[];
+      resumeSessionId?: string | null;
+    }> = [];
+    const installSkill = vi.fn(async (input: { workflowId: string }) => ({
+      skillReference: `test-skill:${input.workflowId}`,
+      installReference: `test-install:${input.workflowId}`,
+      skillName: `test-${input.workflowId}`,
+      skillPath: join(tempRoot, "skills", input.workflowId, "SKILL.md"),
+    }));
+    let turnCount = 0;
+    const workerExecutor = {
+      kind: "test-executor",
+      skillScope: {},
+      probeStatus: async () => ({
+        command: "test-executor",
+        available: true,
+        model: "test-model",
+        provider: "test-provider",
+        providerHealth: defaultHermesProviderHealth(),
+        enabledToolsets: [],
+        missingComputerUseToolsets: [],
+        computerUseReady: true,
+        computerUseSummary: "Test executor ready",
+        configSource: "Injected test executor",
+        configPath: null,
+        runtimeHome: null,
+        lastCheckedAt: new Date().toISOString(),
+        lastProbeSessionId: null,
+        lastError: null,
+      }),
+      provisionAgent: async () => ({
+        agentReference: "test-agent:sales",
+        agentLabel: "test-agent-sales",
+        agentPath: null,
+        output: "Test agent provisioned",
+      }),
+      installSkill,
+      startTurn: async (input: {
+        prompt: string;
+        skills?: string[];
+        resumeSessionId?: string | null;
+      }) => {
+        turnInputs.push(input);
+        turnCount += 1;
+        const initializing = turnCount === 1;
+        const result = {
+          ok: true,
+          sessionId: "general-worker-session",
+          output: initializing
+            ? "General worker ready for the next command."
+            : "General worker command completed.",
+          errorMessage: null,
+          sessionStatus: initializing ? "running" : "succeeded",
+          sessionStatusMessage: initializing
+            ? "General worker ready for the next command."
+            : "General worker command completed.",
+          userAction: null,
+        };
+        return {
+          ready: Promise.resolve(result),
+          completion: Promise.resolve(result),
+          stop: () => false,
+        };
+      },
+    };
+
+    const { createProductStore } = await import("../src/product/store.js");
+    const store = createProductStore({
+      runtimeConfig: createRuntimeConfig(tempRoot),
+      workerExecutor,
+    } as never);
+
+    const seeded = await store.getState();
+    for (const workflow of seeded.installedWorkflows) {
+      await store.deleteInstalledWorkflow(workflow.id);
+    }
+    installSkill.mockClear();
+    expect((await store.getState()).installedWorkflows).toHaveLength(0);
+
+    const initialized = await store.startWorker("sales");
+    const run = initialized.state.runs[0]!;
+
+    expect(run).toMatchObject({
+      workerId: "sales",
+      installedWorkflowId: "system-general-worker-session",
+      workflowTitle: "General AI worker session",
+      kind: "worker_session",
+      status: "running",
+      hermesSessionId: "general-worker-session",
+    });
+    expect(installSkill).not.toHaveBeenCalled();
+    expect(turnInputs[0]).toMatchObject({
+      skills: [],
+    });
+    expect(turnInputs[0]?.prompt).toContain(
+      "General AI worker session (no workflow installed).",
+    );
+
+    await store.sendCommand(
+      "sales",
+      "Reply with a short readiness confirmation.",
+    );
+
+    expect(turnInputs[1]).toMatchObject({
+      skills: [],
+      resumeSessionId: "general-worker-session",
+    });
+    expect(turnInputs[1]?.prompt).toContain(
+      "Session mode: General AI worker session (no workflow installed).",
+    );
+    expect(turnInputs[1]?.prompt).toContain(
+      "User command: Reply with a short readiness confirmation.",
+    );
+
+    await waitForState(async () => {
+      const state = await store.getState();
+      return state.runEvents.some(
+        (event) =>
+          event.runId === run.id &&
+          event.status === "AI worker completed" &&
+          event.body === "General worker command completed.",
+      );
+    });
+    const completed = await store.getState();
+    expect(
+      completed.runEvents.some(
+        (event) =>
+          event.runId === run.id &&
+          event.status === "AI worker session" &&
+          event.body.includes("general AI worker session"),
+      ),
+    ).toBe(true);
+
+    await store.stopWorker("sales");
+    await store.shutdown();
+  });
+
   it("keeps a started worker session available after a command succeeds", async () => {
     const turnInputs: Array<{
       resumeSessionId?: string | null;

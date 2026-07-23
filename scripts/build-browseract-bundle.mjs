@@ -34,6 +34,7 @@ const runtimeRevision = await hashRuntimeConfig();
 const runtimeConfigOutDir = path.join(outDir, "runtime-config");
 const posixLauncherPath = path.resolve(outDir, "browser-act");
 const windowsLauncherPath = path.resolve(outDir, "browser-act.cmd");
+const windowsPowerShellLauncherPath = path.resolve(outDir, "browser-act.ps1");
 const manifestPath = path.resolve(outDir, "browseract-bundle.json");
 
 await rm(outDir, { recursive: true, force: true });
@@ -49,6 +50,11 @@ await chmod(posixLauncherPath, 0o755);
 await writeFile(windowsLauncherPath, renderWindowsLauncher(), "utf8");
 await chmod(windowsLauncherPath, 0o755);
 await writeFile(
+  windowsPowerShellLauncherPath,
+  renderWindowsPowerShellLauncher(),
+  "utf8",
+);
+await writeFile(
   manifestPath,
   `${JSON.stringify(
     {
@@ -56,7 +62,7 @@ await writeFile(
       providerId: "chrome",
       implementationId: "browseract.chrome-direct",
       executableName:
-        process.platform === "win32" ? "browser-act.cmd" : "browser-act",
+        process.platform === "win32" ? "browser-act.ps1" : "browser-act",
       cliPackage: pinnedPackage,
       pinnedVersion,
       skillHandshakeVersion: pinnedSkillVersion,
@@ -83,6 +89,7 @@ process.stdout.write(
   [
     `Bundled Chrome helper launcher prepared at ${posixLauncherPath}`,
     `Bundled Chrome helper Windows launcher prepared at ${windowsLauncherPath}`,
+    `Bundled Chrome helper Windows PowerShell launcher prepared at ${windowsPowerShellLauncherPath}`,
     `Bundled Chrome helper manifest prepared at ${manifestPath}`,
   ].join("\n") + "\n",
 );
@@ -455,6 +462,134 @@ exit /b %ERRORLEVEL%
 `;
 }
 
+function renderWindowsPowerShellLauncher() {
+  return `$ErrorActionPreference = "Stop"
+$RemainingArgs = @($args)
+$HomeRoot = if ($env:OYSTERWORKFLOW_BROWSERACT_HOME) {
+  $env:OYSTERWORKFLOW_BROWSERACT_HOME
+} else {
+  Join-Path $env:APPDATA "oysterworkflow\\browseract"
+}
+$ScriptDir = $PSScriptRoot
+$ProjectSourceDir = if ($env:OYSTERWORKFLOW_BROWSERACT_PROJECT_SOURCE_DIR) {
+  $env:OYSTERWORKFLOW_BROWSERACT_PROJECT_SOURCE_DIR
+} else {
+  Join-Path $ScriptDir "..\\config\\browseract-runtime"
+}
+if (
+  -not (Test-Path -LiteralPath (Join-Path $ProjectSourceDir "uv.lock")) -and
+  (Test-Path -LiteralPath (Join-Path $ScriptDir "runtime-config\\uv.lock"))
+) {
+  $ProjectSourceDir = Join-Path $ScriptDir "runtime-config"
+}
+$VenvDir = Join-Path $HomeRoot "venv"
+$ToolBin = Join-Path $VenvDir "Scripts\\browser-act.exe"
+$RevisionFile = Join-Path $HomeRoot "runtime-revision"
+$BundleRevision = "${runtimeRevision}"
+$SkillVersion = "${pinnedSkillVersion}"
+
+function Invoke-BrowserAct {
+  param([string[]]$Arguments)
+  & $ToolBin @Arguments
+  exit $LASTEXITCODE
+}
+
+$OverrideCommand = $env:OYSTERWORKFLOW_BROWSERACT_COMMAND
+if ($OverrideCommand -and (Test-Path -LiteralPath $OverrideCommand)) {
+  if (
+    $RemainingArgs.Count -gt 0 -and
+    $RemainingArgs[0] -in @("--oyster-managed-status", "--oyster-managed-install")
+  ) {
+    & $OverrideCommand "--version"
+  } else {
+    & $OverrideCommand @RemainingArgs
+  }
+  exit $LASTEXITCODE
+}
+
+$IsReady =
+  (Test-Path -LiteralPath $ToolBin) -and
+  (Test-Path -LiteralPath $RevisionFile) -and
+  ((Get-Content -LiteralPath $RevisionFile -Raw).Trim() -eq $BundleRevision)
+
+if (
+  $RemainingArgs.Count -gt 0 -and
+  $RemainingArgs[0] -eq "--oyster-managed-status"
+) {
+  if (-not $IsReady) {
+    [Console]::Error.WriteLine("BrowserAct managed runtime is not installed.")
+    exit 3
+  }
+  Invoke-BrowserAct @("--version")
+}
+
+$ProjectFile = Join-Path $ProjectSourceDir "pyproject.toml"
+$LockFile = Join-Path $ProjectSourceDir "uv.lock"
+if (-not (Test-Path -LiteralPath $ProjectFile)) {
+  [Console]::Error.WriteLine("BrowserAct locked runtime configuration is missing: $ProjectSourceDir")
+  exit 127
+}
+if (-not (Test-Path -LiteralPath $LockFile)) {
+  [Console]::Error.WriteLine("BrowserAct frozen dependency lock is missing: $LockFile")
+  exit 127
+}
+
+if (-not $IsReady) {
+  $UvBin = if ($env:OYSTERWORKFLOW_UV_COMMAND) {
+    $env:OYSTERWORKFLOW_UV_COMMAND
+  } else {
+    Join-Path $ScriptDir "oysterworkflow-uv.exe"
+  }
+  if (-not (Test-Path -LiteralPath $UvBin)) {
+    $UvCommand = Get-Command "uv.exe" -ErrorAction SilentlyContinue
+    if ($UvCommand) {
+      $UvBin = $UvCommand.Source
+    }
+  }
+  if (-not (Test-Path -LiteralPath $UvBin)) {
+    [Console]::Error.WriteLine("Bundled uv sidecar is missing: $UvBin")
+    exit 127
+  }
+
+  New-Item -ItemType Directory -Path $HomeRoot -Force | Out-Null
+  $env:UV_PROJECT_ENVIRONMENT = $VenvDir
+  $env:UV_CACHE_DIR = Join-Path $HomeRoot "cache"
+  $env:UV_PYTHON_INSTALL_DIR = Join-Path $HomeRoot "python"
+  $env:UV_HTTP_TIMEOUT = if ($env:OYSTERWORKFLOW_BROWSERACT_HTTP_TIMEOUT_SECONDS) {
+    $env:OYSTERWORKFLOW_BROWSERACT_HTTP_TIMEOUT_SECONDS
+  } else {
+    "30"
+  }
+  $env:UV_HTTP_RETRIES = if ($env:OYSTERWORKFLOW_BROWSERACT_HTTP_RETRIES) {
+    $env:OYSTERWORKFLOW_BROWSERACT_HTTP_RETRIES
+  } else {
+    "3"
+  }
+  & $UvBin "sync" "--frozen" "--no-dev" "--no-install-project" "--project" $ProjectSourceDir "--python" "3.12"
+  if ($LASTEXITCODE -ne 0) {
+    exit $LASTEXITCODE
+  }
+  if (-not (Test-Path -LiteralPath $ToolBin)) {
+    [Console]::Error.WriteLine("BrowserAct installation completed without an executable: $ToolBin")
+    exit 127
+  }
+  Set-Content -LiteralPath $RevisionFile -Value $BundleRevision -Encoding Ascii
+}
+
+& $ToolBin "get-skills" "core" "--skill-version" $SkillVersion | Out-Null
+if ($LASTEXITCODE -ne 0) {
+  exit $LASTEXITCODE
+}
+if (
+  $RemainingArgs.Count -gt 0 -and
+  $RemainingArgs[0] -eq "--oyster-managed-install"
+) {
+  Invoke-BrowserAct @("--version")
+}
+Invoke-BrowserAct $RemainingArgs
+`;
+}
+
 async function validateRuntimeLock() {
   const [projectText, lockText] = await Promise.all([
     readFile(runtimeProjectPath, "utf8"),
@@ -466,7 +601,7 @@ async function validateRuntimeLock() {
     );
   }
   const packagePattern = new RegExp(
-    `name = "${pinnedPackage}"\\nversion = "${pinnedVersion.replaceAll(".", "\\.")}"`,
+    `name = "${pinnedPackage}"\\r?\\nversion = "${pinnedVersion.replaceAll(".", "\\.")}"`,
     "u",
   );
   if (!packagePattern.test(lockText)) {

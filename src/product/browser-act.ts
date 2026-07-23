@@ -190,9 +190,13 @@ export function isManagedBrowserActLauncher(
   if (!commandPath) {
     return false;
   }
+  const normalizedPath = commandPath.replaceAll("\\", "/");
+  const commandName = basename(normalizedPath).toLowerCase();
   return (
-    basename(commandPath) === "oysterworkflow-browseract" ||
-    commandPath.includes("/out/bundled/browseract/browser-act")
+    commandName === "oysterworkflow-browseract" ||
+    commandName === "oysterworkflow-browseract.cmd" ||
+    commandName === "oysterworkflow-browseract.ps1" ||
+    normalizedPath.includes("/out/bundled/browseract/browser-act")
   );
 }
 
@@ -703,10 +707,12 @@ function runBrowserActCommand(
 
   return new Promise((resolveRun, rejectRun) => {
     const useProcessGroup = process.platform !== "win32";
-    const child = spawn(command, args, {
+    const invocation = resolveBrowserActInvocation(command, args);
+    const child = spawn(invocation.command, invocation.args, {
       detached: useProcessGroup,
       env: process.env,
       stdio: ["ignore", "pipe", "pipe"],
+      windowsHide: true,
     });
     let stdout = "";
     let stderr = "";
@@ -803,6 +809,36 @@ function runBrowserActCommand(
       abortCommand();
     }
   });
+}
+
+function resolveBrowserActInvocation(
+  command: string,
+  args: string[],
+): { command: string; args: string[] } {
+  if (process.platform !== "win32") {
+    return { command, args };
+  }
+  if (/\.ps1$/iu.test(command)) {
+    return {
+      command: "powershell.exe",
+      args: [
+        "-NoProfile",
+        "-NonInteractive",
+        "-ExecutionPolicy",
+        "Bypass",
+        "-File",
+        command,
+        ...args,
+      ],
+    };
+  }
+  if (/\.(?:cmd|bat)$/iu.test(command)) {
+    return {
+      command: process.env.ComSpec || "cmd.exe",
+      args: ["/d", "/s", "/c", command, ...args],
+    };
+  }
+  return { command, args };
 }
 
 function appendBoundedOutput(current: string, chunk: Buffer): string {

@@ -24,6 +24,7 @@ import {
   hermesGatewayStatusIsRunning,
   installHermesSkill,
   probeHermesStatus,
+  provisionHermesAgent,
   readHermesGatewayChannelSetup,
   startHermesProgressLogWatcher,
   startHermesWorkerTurn,
@@ -41,6 +42,173 @@ afterEach(async () => {
 });
 
 describe("product Hermes integration", () => {
+  if (process.platform === "win32") {
+    it("provisions a worker profile through a PowerShell Hermes launcher", async () => {
+      const hermesPath = join(tempRoot, "fake-hermes.ps1");
+      const llmConfigPath = join(tempRoot, "llm.config.json");
+      const profilesRoot = join(tempRoot, "profiles");
+      const profileName = "ow-worker-windows-worker";
+      const profilePath = join(profilesRoot, profileName);
+      const profileMarker = join(tempRoot, "profile-created");
+      const argumentLogPath = join(tempRoot, "hermes-args.log");
+      const psLiteral = (value: string): string =>
+        `'${value.replace(/'/gu, "''")}'`;
+      await writeFile(
+        llmConfigPath,
+        `${JSON.stringify({
+          provider: "test",
+          baseUrl: "https://example.test/v1",
+          wireApi: "responses",
+          model: "gpt-test",
+          apiKey: "test-key",
+        })}\n`,
+        "utf8",
+      );
+      await writeFile(
+        hermesPath,
+        `$ErrorActionPreference = "Stop"
+$ProfileMarker = ${psLiteral(profileMarker)}
+$ProfilePath = ${psLiteral(profilePath)}
+Add-Content -LiteralPath ${psLiteral(argumentLogPath)} -Value ($args -join " ")
+if ($args.Count -ge 4 -and $args[0] -eq "-p" -and $args[2] -eq "profile" -and $args[3] -eq "show") {
+  if (Test-Path -LiteralPath $ProfileMarker) {
+    [Console]::Out.WriteLine("Profile path: $ProfilePath")
+    exit 0
+  }
+  exit 1
+}
+if ($args.Count -ge 3 -and $args[0] -eq "profile" -and $args[1] -eq "create") {
+  New-Item -ItemType Directory -Path $ProfilePath -Force | Out-Null
+  Set-Content -LiteralPath $ProfileMarker -Value "created"
+  [Console]::Out.WriteLine("Created profile $($args[2])")
+  exit 0
+}
+exit 2
+`,
+        "utf8",
+      );
+
+      await expect(
+        provisionHermesAgent({
+          workerId: "worker",
+          workerName: "Windows Worker",
+          configSource: {
+            label: "test",
+            commandPath: hermesPath,
+            llmConfigPath,
+            runtimeHome: join(tempRoot, "hermes-home"),
+            profilesRoot,
+          },
+        }),
+      ).resolves.toMatchObject({
+        profileName,
+        agentReference: `hermes-profile:${profileName}`,
+        profilePath,
+      });
+      const argumentLog = await readFile(argumentLogPath, "utf8");
+      expect(argumentLog).toContain(
+        `-p ${profileName} profile show ${profileName}`,
+      );
+      expect(argumentLog).toContain(
+        `profile create ${profileName} --clone --no-alias`,
+      );
+    });
+
+    it("exports a worker session through a PowerShell Hermes launcher", async () => {
+      const hermesPath = join(tempRoot, "fake-hermes-export.ps1");
+      const llmConfigPath = join(tempRoot, "llm.config.json");
+      const profilesRoot = join(tempRoot, "profiles");
+      const argumentLogPath = join(tempRoot, "hermes-export-args.log");
+      const profileName = "ow-worker-export";
+      const sessionId = "20260723_001122_2f379a";
+      const assistantMessage = [
+        "PowerShell session export completed.",
+        'OYSTERWORKFLOW_SESSION_STATUS {"status":"running","message":"Ready for another command","user_action":null}',
+      ].join("\n");
+      const exportPayload = JSON.stringify({
+        id: sessionId,
+        source: "oysterworkflow-worker",
+        messages: [
+          {
+            id: 1,
+            session_id: sessionId,
+            role: "assistant",
+            content: assistantMessage,
+            timestamp: 1784784682,
+            active: 1,
+          },
+        ],
+      });
+      const psLiteral = (value: string): string =>
+        `'${value.replace(/'/gu, "''")}'`;
+      await writeFile(
+        llmConfigPath,
+        `${JSON.stringify({
+          provider: "test",
+          baseUrl: "https://example.test/v1",
+          wireApi: "responses",
+          model: "gpt-test",
+          apiKey: "test-key",
+        })}\n`,
+        "utf8",
+      );
+      await writeFile(
+        hermesPath,
+        `$ErrorActionPreference = "Stop"
+Add-Content -LiteralPath ${psLiteral(argumentLogPath)} -Value ($args -join " ")
+if ($args.Count -ge 3 -and $args[0] -eq "-p" -and $args[2] -eq "chat") {
+  [Console]::Out.WriteLine("Session: ${sessionId}")
+  [Console]::Out.WriteLine("OYSTERWORKFLOW_WORKER_READY")
+  exit 0
+}
+if ($args.Count -ge 7 -and $args[0] -eq "-p" -and $args[2] -eq "sessions" -and $args[3] -eq "export") {
+  if ($args[4] -eq "-") {
+    throw "PowerShell must receive a file output path instead of a bare dash."
+  }
+  if ($args[5] -ne "--session-id" -or $args[6] -ne "${sessionId}") {
+    throw "Unexpected session export arguments."
+  }
+  [System.IO.File]::WriteAllText(
+    $args[4],
+    ${psLiteral(exportPayload)},
+    [System.Text.UTF8Encoding]::new($false)
+  )
+  exit 0
+}
+throw "Unexpected fake Hermes arguments: $($args -join ' ')"
+`,
+        "utf8",
+      );
+
+      const handle = await startHermesWorkerTurn({
+        cwd: tempRoot,
+        prompt: "initialize",
+        workerAgentReference: `hermes-profile:${profileName}`,
+        configSource: {
+          label: "test",
+          commandPath: hermesPath,
+          llmConfigPath,
+          runtimeHome: join(tempRoot, "hermes-home"),
+          profilesRoot,
+        },
+      });
+
+      await expect(handle.completion).resolves.toMatchObject({
+        ok: true,
+        sessionId,
+        sessionStatus: "running",
+        sessionStatusMessage: "Ready for another command",
+        output: assistantMessage,
+        errorMessage: null,
+      });
+      const argumentLog = await readFile(argumentLogPath, "utf8");
+      expect(argumentLog).toContain(
+        `-p ${profileName} sessions export ${tmpdir()}`,
+      );
+      expect(argumentLog).not.toContain("sessions export - --session-id");
+    });
+  }
+
   it("validates QR setup process ownership before bounded tree termination", async () => {
     const setupId = "setup-owned-qr-process";
     const profileName = "ow-qr-owner";

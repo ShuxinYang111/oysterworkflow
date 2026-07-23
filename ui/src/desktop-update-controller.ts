@@ -46,9 +46,9 @@ export function useDesktopUpdateController(
           setSnapshot(next);
         }
       })
-      .catch((error: unknown) => {
+      .catch(() => {
         if (active) {
-          setSnapshot((current) => toLocalErrorSnapshot(current, error));
+          setSnapshot((current) => toLocalErrorSnapshot(current));
         }
       });
     return () => {
@@ -61,8 +61,12 @@ export function useDesktopUpdateController(
     async (operation: () => Promise<DesktopUpdateSnapshot>): Promise<void> => {
       try {
         setSnapshot(await operation());
-      } catch (error) {
-        setSnapshot((current) => toLocalErrorSnapshot(current, error));
+      } catch {
+        try {
+          setSnapshot(await getDesktopUpdateState());
+        } catch {
+          setSnapshot((current) => toLocalErrorSnapshot(current));
+        }
       }
     },
     [],
@@ -78,12 +82,12 @@ export function useDesktopUpdateController(
 
 function toLocalErrorSnapshot(
   current: DesktopUpdateSnapshot,
-  error: unknown,
 ): DesktopUpdateSnapshot {
   return {
     ...current,
     phase: "error",
     progress: null,
-    errorMessage: error instanceof Error ? error.message : String(error),
+    errorMessage: "OysterWorkflow could not complete the update operation.",
+    errorCode: "operation_failed",
   };
 }

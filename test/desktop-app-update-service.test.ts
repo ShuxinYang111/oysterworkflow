@@ -134,6 +134,50 @@ describe("desktop app update service", () => {
     });
   });
 
+  it("treats a missing manifest on the current latest release as up to date", async () => {
+    const driver = new FakeUpdaterDriver();
+    driver.checkError = new Error(
+      'Cannot find latest.yml in the latest release artifacts (https://github.com/ShuxinYang111/oysterworkflow/releases/download/v0.2.2/latest.yml): HttpError: 404 "method: GET\\nurl: https://github.com/ShuxinYang111/oysterworkflow/releases/download/v0.2.2/latest.yml\\nHeaders: secret"',
+    );
+    const service = createDesktopUpdateService({
+      driver,
+      currentVersion: "0.2.2",
+      isPackaged: true,
+      platform: "win32",
+      now: () => new Date("2026-07-23T08:00:00.000Z"),
+    });
+
+    await expect(service.checkForUpdates()).resolves.toMatchObject({
+      phase: "up_to_date",
+      checkedAt: "2026-07-23T08:00:00.000Z",
+      errorMessage: null,
+      errorCode: null,
+    });
+  });
+
+  it("hides release response details when newer update metadata is missing", async () => {
+    const driver = new FakeUpdaterDriver();
+    driver.checkError = new Error(
+      "Cannot find latest.yml in the latest release artifacts (https://github.com/ShuxinYang111/oysterworkflow/releases/download/v0.2.3/latest.yml): HttpError: 404 Headers: secret",
+    );
+    const service = createDesktopUpdateService({
+      driver,
+      currentVersion: "0.2.2",
+      isPackaged: true,
+      platform: "win32",
+    });
+
+    await expect(service.checkForUpdates()).rejects.toThrow("Headers: secret");
+    expect(service.getSnapshot()).toMatchObject({
+      phase: "error",
+      errorCode: "release_metadata_unavailable",
+      errorMessage:
+        "The Windows release is temporarily missing update information. Try again later.",
+    });
+    expect(service.getSnapshot().errorMessage).not.toContain("Headers");
+    expect(service.getSnapshot().errorMessage).not.toContain("github.com");
+  });
+
   it("does not contact the release channel from development builds", async () => {
     const driver = new FakeUpdaterDriver();
     const checkSpy = vi.spyOn(driver, "checkForUpdates");
@@ -168,7 +212,8 @@ describe("desktop app update service", () => {
     expect(service.getSnapshot()).toMatchObject({
       phase: "error",
       availableVersion: "0.3.0",
-      errorMessage: "download interrupted",
+      errorCode: "operation_failed",
+      errorMessage: "OysterWorkflow could not complete the update operation.",
     });
   });
 

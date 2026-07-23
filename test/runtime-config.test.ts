@@ -69,7 +69,7 @@ describe("runtime config resolution", () => {
       path.join(os.homedir(), "Library", "oysterworkflow", "hermes", "skills"),
     );
     expect(config.browserActCommandPath).toBe(
-      path.join(
+      path.resolve(
         "/repo/oysterworkflow",
         "out",
         "bundled",
@@ -141,7 +141,7 @@ describe("runtime config resolution", () => {
       path.join(expectedAppDataDir, "config", "skill-manager.config.json"),
     );
     expect(config.screenpipeBinaryPath.endsWith("screenpipe.exe")).toBe(true);
-    expect(config.browserActCommandPath?.endsWith("browser-act.cmd")).toBe(
+    expect(config.browserActCommandPath?.endsWith("browser-act.ps1")).toBe(
       true,
     );
   });

@@ -225,7 +225,7 @@ function resolveHermesHelperExecutableName(
   platform: NodeJS.Platform | string,
 ): string {
   return platform === "win32"
-    ? "oysterworkflow-hermes.exe"
+    ? "oysterworkflow-hermes.ps1"
     : "oysterworkflow-hermes";
 }
 
@@ -233,20 +233,20 @@ function resolveBrowserActHelperExecutableName(
   platform: NodeJS.Platform | string,
 ): string {
   return platform === "win32"
-    ? "oysterworkflow-browseract.cmd"
+    ? "oysterworkflow-browseract.ps1"
     : "oysterworkflow-browseract";
 }
 
 function resolveBundledHermesExecutableName(
   platform: NodeJS.Platform | string,
 ): string {
-  return platform === "win32" ? "hermes.exe" : "hermes";
+  return platform === "win32" ? "hermes.ps1" : "hermes";
 }
 
 function resolveBundledBrowserActExecutableName(
   platform: NodeJS.Platform | string,
 ): string {
-  return platform === "win32" ? "browser-act.cmd" : "browser-act";
+  return platform === "win32" ? "browser-act.ps1" : "browser-act";
 }
 
 function selectPathApi(platform: NodeJS.Platform | string): path.PlatformPath {

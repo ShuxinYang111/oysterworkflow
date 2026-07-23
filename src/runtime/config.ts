@@ -447,7 +447,7 @@ function resolveDefaultHermesCommandPath(input: {
   platform: NodeJS.Platform | string;
   projectRootDir: string;
 }): string | null {
-  const executableName = input.platform === "win32" ? "hermes.exe" : "hermes";
+  const executableName = input.platform === "win32" ? "hermes.ps1" : "hermes";
   const candidates = [
     resolve(input.projectRootDir, "out", "bundled", "hermes", executableName),
     resolve(input.projectRootDir, "vendor", "hermes", executableName),
@@ -471,7 +471,7 @@ function resolveDefaultBrowserActCommandPath(input: {
   projectRootDir: string;
 }): string | null {
   const executableName =
-    input.platform === "win32" ? "browser-act.cmd" : "browser-act";
+    input.platform === "win32" ? "browser-act.ps1" : "browser-act";
   const candidates = [
     resolve(
       input.projectRootDir,
