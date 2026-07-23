@@ -1,0 +1,38 @@
+{
+  "schemaVersion": "oysterworkflow-rulepack-v1",
+  "id": "app.word",
+  "level": "app",
+  "target": "word",
+  "name": "Microsoft Word App",
+  "status": "draft",
+  "description": "Rules for Microsoft Word document writing and editing workflows, including new documents, revisions, formatting, saving, and exporting.",
+  "compatibleSurfaces": ["surface.desktop_app"],
+  "whenToApply": [
+    "The phase mainly happens in Microsoft Word or a DOCX document.",
+    "The phase needs to create, edit, revise, structure, format, save, or export a Word document."
+  ],
+  "whenNotToApply": [
+    "Word is only a final viewer and the editing happens in another app.",
+    "The phase only reads a DOCX and answers in chat without modifying or generating a document."
+  ],
+  "generationGuidance": [
+    "Confirm whether the agent is creating a new document, editing an existing document, or saving a copy.",
+    "Separate source material, user requirements, agent assumptions, and content that needs confirmation.",
+    "Require user approval before overwriting, deleting, or heavily rewriting existing user content.",
+    "After saving or exporting, validate visible document content plus file name, format, and location."
+  ],
+  "hardRequirements": [
+    "Do not treat generated chat text as a completed Word file.",
+    "Every save or export phase must validate the file exists and its visible content or structure matches the target.",
+    "Missing source material or conflicting writing requirements must become a stop condition."
+  ],
+  "runtimeReference": {
+    "title": "Microsoft Word App Rules",
+    "path": "docs/harness/references/app-word/runtime.md",
+    "packagePath": "app-word.md",
+    "purpose": "Word-specific writing, editing, save/export, and validation rules.",
+    "whenToRead": [
+      "Before executing any phase that creates, edits, saves, or exports a Word document."
+    ]
+  }
+}

@@ -1,0 +1,10 @@
+[project]
+name = "oysterworkflow-browseract-runtime"
+version = "0.2.0"
+requires-python = ">=3.12,<3.13"
+dependencies = [
+  "browser-act-cli==1.0.6",
+]
+
+[tool.uv]
+package = false

@@ -1,0 +1,175 @@
+{
+  "source": "/Users/appleuser/Documents/New project/desktop/assets/app-icon.png",
+  "generated_at": "2026-07-06",
+  "brand_name": "OysterWorkflow",
+  "assets": [
+    {
+      "file": "oyster-app-icon-classic-1024.png",
+      "use": "App icon / installer / default brand mark",
+      "size": "1024x1024",
+      "note": "Original logo preserved with rounded app-icon corners."
+    },
+    {
+      "file": "oyster-app-icon-light-1024.png",
+      "use": "Light backgrounds / app stores / presentations",
+      "size": "1024x1024",
+      "note": "Warm pearl background and subtle gold ring for light surfaces."
+    },
+    {
+      "file": "oyster-app-icon-dark-1024.png",
+      "use": "Dark mode / launchers / dark slide decks",
+      "size": "1024x1024",
+      "note": "High contrast dark badge while preserving the original oyster render."
+    },
+    {
+      "file": "oyster-social-avatar-circle-1024.png",
+      "use": "Social avatar / profile photo / round-crop contexts",
+      "size": "1024x1024",
+      "note": "Circular transparent crop with a gold rim."
+    },
+    {
+      "file": "oyster-favicon-pearl-512.png",
+      "use": "Favicon / tiny touchpoints",
+      "size": "512x512",
+      "note": "Pearl-focused crop for better recognizability at small sizes."
+    },
+    {
+      "file": "favicon/oyster-favicon-pearl-256.png",
+      "use": "Favicon size set",
+      "size": "256x256",
+      "note": "Downsampled from the pearl-focused favicon master."
+    },
+    {
+      "file": "favicon/oyster-favicon-pearl-128.png",
+      "use": "Favicon size set",
+      "size": "128x128",
+      "note": "Downsampled from the pearl-focused favicon master."
+    },
+    {
+      "file": "favicon/oyster-favicon-pearl-64.png",
+      "use": "Favicon size set",
+      "size": "64x64",
+      "note": "Downsampled from the pearl-focused favicon master."
+    },
+    {
+      "file": "favicon/oyster-favicon-pearl-32.png",
+      "use": "Favicon size set",
+      "size": "32x32",
+      "note": "Downsampled from the pearl-focused favicon master."
+    },
+    {
+      "file": "oyster-wordmark-light-2400x800.png",
+      "use": "Website header / light docs / proposals",
+      "size": "2400x800",
+      "note": "Horizontal lockup on a light pearl background."
+    },
+    {
+      "file": "oyster-wordmark-dark-2400x800.png",
+      "use": "Dark docs / video title cards / dark UI surfaces",
+      "size": "2400x800",
+      "note": "Horizontal lockup optimized for dark backgrounds."
+    },
+    {
+      "file": "oyster-wordmark-transparent-ink-2400x800.png",
+      "use": "Transparent overlay for light/neutral backgrounds",
+      "size": "2400x800",
+      "note": "Transparent wordmark with dark text."
+    },
+    {
+      "file": "oyster-wordmark-transparent-white-2400x800.png",
+      "use": "Transparent overlay for dark/photo backgrounds",
+      "size": "2400x800",
+      "note": "Transparent wordmark with white text."
+    },
+    {
+      "file": "oyster-launch-cover-cn-en-1920x1080.png",
+      "use": "Launch screen / release notes / presentation cover",
+      "size": "1920x1080",
+      "note": "16:9 cover with bilingual product descriptor."
+    },
+    {
+      "file": "oyster-social-banner-1500x500.png",
+      "use": "LinkedIn/X/GitHub-style social banner",
+      "size": "1500x500",
+      "note": "Wide banner for social headers and project pages."
+    },
+    {
+      "file": "oyster-watermark-transparent-1024.png",
+      "use": "Slide/document watermark",
+      "size": "1024x1024",
+      "note": "Low-opacity transparent logo for backgrounds and overlays."
+    },
+    {
+      "file": "oyster-mark-mono-ink-transparent-1024.png",
+      "use": "One-color mark for light backgrounds / stamps",
+      "size": "1024x1024",
+      "note": "Duotone/monochrome adaptation derived from the original logo."
+    },
+    {
+      "file": "oyster-mark-mono-white-transparent-1024.png",
+      "use": "One-color mark for dark backgrounds / video overlays",
+      "size": "1024x1024",
+      "note": "Duotone/monochrome adaptation derived from the original logo."
+    },
+    {
+      "file": "oyster-source-app-icon-1024.png",
+      "use": "Source reference / original app icon",
+      "size": "1024x1024",
+      "note": "Unmodified source copied from desktop/assets/app-icon.png."
+    },
+    {
+      "file": "oyster-dark-native-app-1024.png",
+      "use": "Dark-native app icon / dark launchers",
+      "size": "1024x1024",
+      "note": "Generated dark oyster render with macOS-style rounded mask; no pasted light source square."
+    },
+    {
+      "file": "oyster-dark-obsidian-plate-1024.png",
+      "use": "Premium dark square plate / website cards / slide dividers",
+      "size": "1024x1024",
+      "note": "Square dark brand plate using the generated oyster render and subtle glass treatment."
+    },
+    {
+      "file": "oyster-dark-editorial-square-1024.png",
+      "use": "Editorial square / social post / dark blog image",
+      "size": "1024x1024",
+      "note": "Dark social/editorial variant with extra negative space and restrained accent bars."
+    },
+    {
+      "file": "oyster-dark-native-wordmark-2400x800.png",
+      "use": "Dark-native horizontal wordmark / website header / deck title",
+      "size": "2400x800",
+      "note": "Dark brand plate with generated oyster art, product name, and bilingual descriptor."
+    },
+    {
+      "file": "oyster-dark-transparent-lockup-2400x800.png",
+      "use": "Transparent dark lockup / overlays on dark UI or video",
+      "size": "2400x800",
+      "note": "Transparent canvas with embedded dark oyster tile and white wordmark for dark surfaces."
+    },
+    {
+      "file": "oyster-dark-native-hero-1920x1080.png",
+      "use": "Dark launch cover / video title / release cover",
+      "size": "1920x1080",
+      "note": "16:9 dark hero composition with generated oyster art and bilingual brand text."
+    },
+    {
+      "file": "oyster-dark-native-social-banner-1500x500.png",
+      "use": "Dark social banner / profile header",
+      "size": "1500x500",
+      "note": "Dark header art for social profiles and repository pages."
+    },
+    {
+      "file": "oyster-dark-native-strip-1600x500.png",
+      "use": "Dark compact strip / app sidebar / docs header",
+      "size": "1600x500",
+      "note": "Compact dark header composition for constrained horizontal spaces."
+    },
+    {
+      "file": "oyster-dark-native-source-generated-1024.png",
+      "use": "Generated dark master / reference source",
+      "size": "1024x1024",
+      "note": "Generated from the original oyster logo as a natural dark-mode brand render."
+    }
+  ]
+}

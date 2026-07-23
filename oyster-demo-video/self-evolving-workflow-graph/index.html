@@ -1,0 +1,566 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>OysterWorkflow Self-Evolving Graph</title>
+    <link rel="stylesheet" href="presentation.css" />
+    <link rel="stylesheet" href="controls.css" />
+  </head>
+  <body>
+    <main class="stage-shell" aria-live="polite">
+      <div class="stage" id="stage">
+        <section class="slide active" data-screen-label="01 One observed path">
+          <header class="brand-bar">
+            <div class="brand-lockup">
+              <img src="assets/oysterworkflow-icon.png" alt="OysterWorkflow" />
+              <span>OysterWorkflow</span>
+            </div>
+            <div class="scene-name">01 / 05</div>
+          </header>
+          <div class="scene-grid">
+            <div class="scene-copy">
+              <p class="eyebrow reveal">
+                <span class="zh">一次真实执行</span
+                ><span class="en">One real execution</span>
+              </p>
+              <h1 class="reveal delay-1">
+                <span class="zh">第一次录制，只看见一条路径。</span>
+                <span class="en">The first recording reveals one path.</span>
+              </h1>
+              <p class="lead reveal delay-2">
+                <span class="zh">系统先把具体操作压缩成可复用的语义节点。</span>
+                <span class="en"
+                  >The system compresses concrete actions into reusable semantic
+                  nodes.</span
+                >
+              </p>
+              <div class="truth-note reveal delay-3">
+                <span class="zh">这不是完整规则，只是第一份证据。</span>
+                <span class="en"
+                  >This is evidence, not the complete policy.</span
+                >
+              </div>
+            </div>
+            <div
+              class="graph-panel reveal delay-2"
+              aria-label="Observed email workflow"
+            >
+              <svg viewBox="0 0 1050 760" aria-hidden="true">
+                <path class="edge active-edge" d="M525 150 L525 220" />
+                <path class="edge active-edge" d="M525 340 L525 410" />
+                <path class="edge active-edge" d="M525 530 L525 600" />
+              </svg>
+              <div class="graph-node action" style="left: 370px; top: 36px">
+                <div class="node-type">Action</div>
+                <div class="node-title">
+                  <span class="zh">阅读客户询盘</span
+                  ><span class="en">Review inbound inquiry</span>
+                </div>
+                <div class="node-caption">
+                  <span class="zh">提取发送者与需求</span
+                  ><span class="en">Extract sender and request context</span>
+                </div>
+              </div>
+              <div class="graph-node decision" style="left: 370px; top: 220px">
+                <div class="node-type">Decision</div>
+                <div class="node-title">
+                  <span class="zh">判断是否真实可信</span
+                  ><span class="en">Decide whether it is legitimate</span>
+                </div>
+              </div>
+              <div class="graph-node action" style="left: 370px; top: 410px">
+                <div class="node-type">Action</div>
+                <div class="node-title">
+                  <span class="zh">评估需求与可行性</span
+                  ><span class="en">Evaluate request and feasibility</span>
+                </div>
+              </div>
+              <div class="graph-node terminal" style="left: 370px; top: 600px">
+                <div class="node-type">Terminal</div>
+                <div class="node-title">
+                  <span class="zh">回复草稿已保存</span
+                  ><span class="en">Reply draft saved</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="slide" data-screen-label="02 A new case arrives">
+          <header class="brand-bar">
+            <div class="brand-lockup">
+              <img src="assets/oysterworkflow-icon.png" alt="OysterWorkflow" />
+              <span>OysterWorkflow</span>
+            </div>
+            <div class="scene-name">02 / 05</div>
+          </header>
+          <div class="scene-grid">
+            <div class="scene-copy">
+              <p class="eyebrow reveal">
+                <span class="zh">新的真实 Case</span
+                ><span class="en">A new real case</span>
+              </p>
+              <h1 class="reveal delay-1">
+                <span class="zh">这一次，判断结果不同。</span>
+                <span class="en">This time, the judgment changes.</span>
+              </h1>
+              <p class="lead reveal delay-2">
+                <span class="zh"
+                  >相同的判断节点被复用，但旧图没有对应的结束路线。</span
+                >
+                <span class="en"
+                  >The same decision is reused, but the existing graph lacks the
+                  observed exit.</span
+                >
+              </p>
+              <div class="truth-note reveal delay-3">
+                <span class="zh">Candidate 只提出缺失部分，不重写整张图。</span>
+                <span class="en"
+                  >The candidate proposes the missing route, not a replacement
+                  graph.</span
+                >
+              </div>
+            </div>
+            <div class="graph-panel reveal delay-2">
+              <div class="case-ribbon">
+                <span
+                  ><span class="zh">新邮件：域名可疑，请求模糊</span
+                  ><span class="en"
+                    >New email: suspicious domain and vague request</span
+                  ></span
+                >
+                <strong>NEW CASE</strong>
+              </div>
+              <svg viewBox="0 0 1050 760" aria-hidden="true">
+                <path class="edge active-edge" d="M350 230 L350 310" />
+                <path class="edge active-edge" d="M350 430 L350 560" />
+                <path
+                  class="edge candidate-edge"
+                  d="M505 370 C650 370 660 540 745 540"
+                />
+              </svg>
+              <div class="graph-node action" style="left: 195px; top: 116px">
+                <div class="node-type">Action</div>
+                <div class="node-title">
+                  <span class="zh">阅读客户询盘</span
+                  ><span class="en">Review inbound inquiry</span>
+                </div>
+              </div>
+              <div class="graph-node decision" style="left: 195px; top: 310px">
+                <div class="node-type">Decision</div>
+                <div class="node-title">
+                  <span class="zh">判断是否真实可信</span
+                  ><span class="en">Decide whether it is legitimate</span>
+                </div>
+              </div>
+              <div class="graph-node action" style="left: 195px; top: 560px">
+                <div class="node-type">Action</div>
+                <div class="node-title">
+                  <span class="zh">继续评估需求</span
+                  ><span class="en">Continue request evaluation</span>
+                </div>
+              </div>
+              <div
+                class="graph-node terminal candidate"
+                style="left: 690px; top: 480px"
+              >
+                <div class="node-type">Candidate terminal</div>
+                <div class="node-title">
+                  <span class="zh">欺诈邮件，停止处理</span
+                  ><span class="en">Fraudulent email, stop</span>
+                </div>
+                <div class="node-caption">
+                  <span class="zh">只来自本次新证据</span
+                  ><span class="en">Grounded in the new case</span>
+                </div>
+              </div>
+              <div class="edge-label" style="left: 555px; top: 390px">
+                <span class="zh">判断为欺诈</span
+                ><span class="en">Fraudulent</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="slide" data-screen-label="03 Merge the missing route">
+          <header class="brand-bar">
+            <div class="brand-lockup">
+              <img src="assets/oysterworkflow-icon.png" alt="OysterWorkflow" />
+              <span>OysterWorkflow</span>
+            </div>
+            <div class="scene-name">03 / 05</div>
+          </header>
+          <div class="full-scene">
+            <div class="full-scene-header">
+              <h2 class="reveal">
+                <span class="zh">复用已有判断，只增加真实的新路线。</span
+                ><span class="en"
+                  >Reuse the judgment. Add only the observed route.</span
+                >
+              </h2>
+              <p class="lead reveal delay-1">
+                <span class="zh"
+                  >Call 4 找到 Workflow Family，Call 5 提出完整 Merge
+                  Proposal，代码再校验并应用。</span
+                ><span class="en"
+                  >Call 4 finds the family. Call 5 proposes the merge. Code
+                  validates before apply.</span
+                >
+              </p>
+            </div>
+            <div class="merge-board reveal delay-2">
+              <div class="merge-column">
+                <div class="column-title">
+                  <span>New case candidate</span><span>2 nodes</span>
+                </div>
+                <div class="mini-stack">
+                  <div class="mini-node decision candidate">
+                    <strong
+                      ><span class="zh">判断是否真实可信</span
+                      ><span class="en">Decide legitimacy</span></strong
+                    >
+                    <span
+                      ><span class="zh">映射到已有节点</span
+                      ><span class="en">Maps to an existing node</span></span
+                    >
+                  </div>
+                  <div class="mini-node terminal candidate">
+                    <strong
+                      ><span class="zh">欺诈邮件，停止</span
+                      ><span class="en">Fraudulent, stop</span></strong
+                    >
+                    <span
+                      ><span class="zh">图中没有，需要新增</span
+                      ><span class="en">Missing from the graph</span></span
+                    >
+                  </div>
+                </div>
+              </div>
+              <div class="mapping-column">
+                <div class="mapping-word">reuse</div>
+                <div class="mapping-line"></div>
+                <div class="mapping-word">add</div>
+                <div class="mapping-line"></div>
+              </div>
+              <div class="merge-column">
+                <div class="column-title">
+                  <span>Canonical graph</span
+                  ><span class="revision-chip">Revision 2</span>
+                </div>
+                <div class="mini-stack">
+                  <div class="mini-node">
+                    <strong
+                      ><span class="zh">阅读客户询盘</span
+                      ><span class="en">Review inquiry</span></strong
+                    >
+                    <span>Action</span>
+                  </div>
+                  <div class="mini-node decision">
+                    <strong
+                      ><span class="zh">判断是否真实可信</span
+                      ><span class="en">Decide legitimacy</span></strong
+                    >
+                    <span
+                      ><span class="zh">现在拥有两条已知路线</span
+                      ><span class="en">Now has two known routes</span></span
+                    >
+                  </div>
+                  <div
+                    style="
+                      display: grid;
+                      grid-template-columns: 1fr 1fr;
+                      gap: 22px;
+                    "
+                  >
+                    <div class="mini-node" style="width: 270px">
+                      <strong
+                        ><span class="zh">继续评估</span
+                        ><span class="en">Continue</span></strong
+                      >
+                      <span>Action</span>
+                    </div>
+                    <div class="mini-node terminal" style="width: 270px">
+                      <strong
+                        ><span class="zh">欺诈停止</span
+                        ><span class="en">Fraud stop</span></strong
+                      >
+                      <span>Terminal</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="slide" data-screen-label="04 Repeated work compounds">
+          <header class="brand-bar">
+            <div class="brand-lockup">
+              <img src="assets/oysterworkflow-icon.png" alt="OysterWorkflow" />
+              <span>OysterWorkflow</span>
+            </div>
+            <div class="scene-name">04 / 05</div>
+          </header>
+          <div class="full-scene">
+            <div class="full-scene-header">
+              <h2 class="reveal">
+                <span class="zh">每一次不同的处理，都让图更接近真实工作。</span
+                ><span class="en"
+                  >Each different outcome makes the graph closer to real
+                  work.</span
+                >
+              </h2>
+            </div>
+            <div class="growth-layout">
+              <div class="growth-graph reveal delay-1">
+                <svg
+                  viewBox="0 0 1050 680"
+                  aria-hidden="true"
+                  style="
+                    position: absolute;
+                    inset: 0;
+                    width: 100%;
+                    height: 100%;
+                  "
+                >
+                  <path class="edge active-edge" d="M525 126 L525 185" />
+                  <path class="edge active-edge" d="M525 300 L525 360" />
+                  <path class="edge" d="M375 245 C245 245 240 390 180 390" />
+                  <path
+                    class="edge future-edge"
+                    d="M675 245 C820 245 820 370 850 370"
+                  />
+                  <path class="edge active-edge" d="M525 478 L525 548" />
+                  <path class="edge" d="M375 420 C270 420 260 565 210 565" />
+                  <path
+                    class="edge active-edge"
+                    d="M675 420 C780 420 780 565 830 565"
+                  />
+                </svg>
+                <div class="graph-node action" style="left: 370px; top: 26px">
+                  <div class="node-type">Action</div>
+                  <div class="node-title">
+                    <span class="zh">阅读并验证询盘</span
+                    ><span class="en">Review and verify inquiry</span>
+                  </div>
+                </div>
+                <div
+                  class="graph-node decision"
+                  style="left: 370px; top: 185px"
+                >
+                  <div class="node-type">Decision</div>
+                  <div class="node-title">
+                    <span class="zh">是否真实可信</span
+                    ><span class="en">Is it legitimate?</span>
+                  </div>
+                </div>
+                <div
+                  class="graph-node terminal"
+                  style="left: 25px; top: 334px; width: 290px"
+                >
+                  <div class="node-type">Terminal</div>
+                  <div class="node-title">
+                    <span class="zh">欺诈，停止</span
+                    ><span class="en">Fraud, stop</span>
+                  </div>
+                </div>
+                <div
+                  class="graph-node wait"
+                  style="left: 720px; top: 314px; width: 300px"
+                >
+                  <div class="node-type">Wait</div>
+                  <div class="node-title">
+                    <span class="zh">等待工程确认</span
+                    ><span class="en">Wait for engineering</span>
+                  </div>
+                </div>
+                <div
+                  class="graph-node decision"
+                  style="left: 370px; top: 360px"
+                >
+                  <div class="node-type">Decision</div>
+                  <div class="node-title">
+                    <span class="zh">是否值得继续</span
+                    ><span class="en">Is it worth pursuing?</span>
+                  </div>
+                </div>
+                <div
+                  class="graph-node terminal"
+                  style="left: 55px; top: 522px; width: 310px"
+                >
+                  <div class="node-type">Terminal</div>
+                  <div class="node-title">
+                    <span class="zh">礼貌回拒</span
+                    ><span class="en">Polite rejection</span>
+                  </div>
+                </div>
+                <div
+                  class="graph-node terminal"
+                  style="left: 685px; top: 522px; width: 310px"
+                >
+                  <div class="node-type">Terminal</div>
+                  <div class="node-title">
+                    <span class="zh">推进合作</span
+                    ><span class="en">Advance opportunity</span>
+                  </div>
+                </div>
+              </div>
+              <div class="growth-summary reveal delay-2">
+                <div class="summary-line">
+                  <strong
+                    ><span class="zh">稳定节点被复用</span
+                    ><span class="en">Stable nodes are reused</span></strong
+                  >
+                  <span
+                    ><span class="zh">新 case 不会复制整条旧流程。</span
+                    ><span class="en"
+                      >A new case does not duplicate the old workflow.</span
+                    ></span
+                  >
+                </div>
+                <div class="summary-line">
+                  <strong
+                    ><span class="zh">差异成为路线</span
+                    ><span class="en">Differences become routes</span></strong
+                  >
+                  <span
+                    ><span class="zh"
+                      >欺诈、低价值、等待和恢复都得到明确位置。</span
+                    ><span class="en"
+                      >Fraud, low value, waiting, and recovery gain explicit
+                      positions.</span
+                    ></span
+                  >
+                </div>
+                <div class="summary-line">
+                  <strong
+                    ><span class="zh">每次修改都有 Revision</span
+                    ><span class="en">Every change has a revision</span></strong
+                  >
+                  <span
+                    ><span class="zh"
+                      >运行中的 Agent
+                      固定使用一个版本，不被新学习静默改变。</span
+                    ><span class="en"
+                      >An active run stays pinned to one graph revision.</span
+                    ></span
+                  >
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section
+          class="slide"
+          data-screen-label="05 From learned graph to execution"
+        >
+          <header class="brand-bar">
+            <div class="brand-lockup">
+              <img src="assets/oysterworkflow-icon.png" alt="OysterWorkflow" />
+              <span>OysterWorkflow</span>
+            </div>
+            <div class="scene-name">05 / 05</div>
+          </header>
+          <div class="full-scene">
+            <div class="product-layout">
+              <div class="product-copy">
+                <p class="eyebrow reveal">
+                  <span class="zh">从学习到执行</span
+                  ><span class="en">From learning to execution</span>
+                </p>
+                <h2 class="reveal delay-1">
+                  <span class="zh">图最终成为 Agent 的工作控制面。</span
+                  ><span class="en"
+                    >The graph becomes the Agent's work control plane.</span
+                  >
+                </h2>
+                <div class="architecture-list reveal delay-2">
+                  <div class="architecture-row">
+                    <strong>Graph</strong>
+                    <span
+                      ><span class="zh">决定当前节点与合法路线</span
+                      ><span class="en"
+                        >Defines the current node and legal routes</span
+                      ></span
+                    >
+                  </div>
+                  <div class="architecture-row">
+                    <strong>Runtime</strong>
+                    <span
+                      ><span class="zh">保存状态、验证结果、暂停与恢复</span
+                      ><span class="en"
+                        >Stores state, validates, pauses, and resumes</span
+                      ></span
+                    >
+                  </div>
+                  <div class="architecture-row">
+                    <strong>Agent</strong>
+                    <span
+                      ><span class="zh">在节点目标内自主完成具体操作</span
+                      ><span class="en"
+                        >Acts autonomously inside the node objective</span
+                      ></span
+                    >
+                  </div>
+                </div>
+              </div>
+              <div class="product-frame reveal delay-2">
+                <img
+                  src="assets/sales-canonical-workflow.png"
+                  alt="OysterWorkflow canonical sales workflow graph"
+                />
+                <div class="next-layer">
+                  <span class="zh"
+                    >下一层：Graph Runner 按节点调度 Agent。当前产品已把
+                    Canonical Graph 打包给 Agent 阅读，但 Runtime
+                    逐节点控制仍是下一步。</span
+                  >
+                  <span class="en"
+                    >Next layer: Graph Runner schedules the Agent node by node.
+                    Canonical Graph packaging exists today; Runtime enforcement
+                    is the next step.</span
+                  >
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </main>
+
+    <nav class="controls" aria-label="Presentation controls">
+      <button class="control-button" id="previousButton" type="button">
+        <span class="zh">上一幕</span><span class="en">Previous</span>
+      </button>
+      <button class="control-button primary" id="playButton" type="button">
+        <span class="zh">播放</span><span class="en">Play</span>
+      </button>
+      <input
+        class="timeline"
+        id="timeline"
+        type="range"
+        min="0"
+        max="4"
+        step="1"
+        value="0"
+        aria-label="Scene timeline"
+      />
+      <div class="control-meta" id="controlMeta">01 / 05</div>
+      <button
+        class="control-button language-switch"
+        id="languageButton"
+        type="button"
+        aria-label="Toggle language"
+      >
+        EN
+      </button>
+      <button class="control-button" id="nextButton" type="button">
+        <span class="zh">下一幕</span><span class="en">Next</span>
+      </button>
+    </nav>
+
+    <script src="presentation.js"></script>
+  </body>
+</html>

@@ -1,0 +1,5 @@
+{
+  "submodulePath": "vendor/hermes-agent",
+  "forkRepository": "https://github.com/ShuxinYang111/hermes-agent",
+  "upstreamRepository": "https://github.com/NousResearch/hermes-agent"
+}

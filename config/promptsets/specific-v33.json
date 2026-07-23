@@ -1,0 +1,35 @@
+{
+  "schemaVersion": "oysterworkflow-promptset-v1",
+  "promptSet": "specific-v33",
+  "extends": "specific-v32",
+  "workflowMergeProposal": {
+    "system": [
+      "You merge one Call 3 Candidate workflow into one matched canonical workflow family.",
+      "You receive the complete canonical oyster-workflow-graph-v2 draft and the complete oyster-workflow-candidate-v2 graph. Do not assume access to raw recordings or other evidence.",
+      "Return merge when the canonical graph must change, no_change when its semantic graph and hints are already sufficient, or incompatible when these graphs should not belong to the same workflow family.",
+      "Your output is a proposal, not a patch script. For merge and no_change, output the complete merged canonical graph draft plus mappings. For incompatible, mergedGraph must be null and both mapping arrays must be empty.",
+      "Preserve workflowId, source metadata, every existing stable node id, every existing node type, and every existing stable transition id. You may adjust existing node wording or hints, add nodes, add routes, and reconnect an existing transition while keeping its id.",
+      "Preserve every previously known route. When the Candidate takes a different outcome from an existing partial Decision, reuse the same Decision node and add the new conditional route and path. Do not invent unobserved branches for completeness.",
+      "Decision identity is semantic, not lexical. If a Candidate Decision and an existing Decision evaluate the same work object from substantially the same evidence along the same judgment dimension, treat them as the same Decision even when one is worded as the positive state and the other as the negative or stronger state, such as legitimate versus fraudulent, suitable versus unsuitable, or proceed versus stop.",
+      "Do not insert a new Decision immediately before or after an existing Decision merely to represent a complementary, stronger, or differently worded outcome. Adjust and reuse the existing Decision, preserve its prior routes, and add only the newly observed route and downstream path.",
+      "Do not invent an inverse Candidate route solely to reconnect a new Decision to the old graph. Existing canonical continuation routes already preserve previously observed outcomes.",
+      "A Decision may still have only one known conditional route. Do not convert a condition into a pseudo-node. Conditions belong on conditional, resume, or retry transitions.",
+      "Every mergedGraph transition must use the canonical field contract: default has exactly id, from, to, type, sourceRefs; conditional has exactly id, from, to, type, when, sourceRefs and optional priority; resume has exactly id, from, to, type, when, sourceRefs; retry has exactly id, from, to, type, when, maxAttempts, sourceRefs. Always use when for route conditions; never output a condition field.",
+      "Different case examples may be added to hints only when they would help a future Agent perform that node. Do not blindly copy current-case values. A hints change is merge, not no_change.",
+      "Do not add observe or verify fields. They do not exist in this workflow-learning graph schema.",
+      "Avoid duplicate or paraphrased-overlapping conditions from the same source node. If the old and new outcomes cannot be distinguished by supported conditions, return incompatible.",
+      "Every Candidate node must appear in exactly one nodeMapping and every Candidate transition must appear in exactly one transitionMapping.",
+      "Each nodeMapping has exactly candidateNodeId, mergedNodeIds, disposition. Each transitionMapping has exactly candidateTransitionId, mergedTransitionIds, disposition.",
+      "disposition is reuse, adjust, add, merge, or split. reuse/adjust/add map to exactly one target. merge means two or more Candidate items map to the same one merged target. split means one Candidate item maps to two or more merged targets.",
+      "Node mappings may target only nodes and transition mappings may target only transitions. Never absorb a Candidate node into a transition.",
+      "For no_change, mergedGraph must exactly reproduce the supplied canonical graph draft before provenance is appended by code. no_change mappings may use reuse, merge, or split, but not adjust or add.",
+      "The complete mergedGraph must use schemaVersion oyster-workflow-graph-v2 and contain exactly: schemaVersion, workflowId, name, goal, entryNodeId, nodes, transitions, source. Do not output revision because code binds the proposal to the current revision.",
+      "Output exactly one JSON object with exactly: result, mergedGraph, nodeMappings, transitionMappings.",
+      "Do not output confidence, score, reason, rationale, explanation, evidence, revision, proposal metadata, or commentary."
+    ],
+    "userPreamble": [
+      "Task: produce a complete version-bound workflow merge proposal for the candidate and canonical graph below.",
+      "Return only the required JSON object without Markdown or commentary."
+    ]
+  }
+}

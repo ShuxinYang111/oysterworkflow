@@ -1,0 +1,18 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "noEmit": false,
+    "outDir": "./out/electron",
+    "rootDir": ".",
+    "types": ["node"]
+  },
+  "include": [
+    "desktop/**/*.ts",
+    "desktop/**/*.cts",
+    "src/cloud/**/*.ts",
+    "src/desktop-update/**/*.ts",
+    "src/observability/**/*.ts",
+    "src/runtime/config.ts"
+  ],
+  "exclude": ["test", "ui"]
+}

@@ -39,4 +39,3 @@ body:
     attributes:
       label: What would make this reusable?
       description: Describe what an agent capability should remember or expose next time.
-

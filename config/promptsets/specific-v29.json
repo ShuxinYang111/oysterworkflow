@@ -1,0 +1,61 @@
+{
+  "schemaVersion": "oysterworkflow-promptset-v1",
+  "promptSet": "specific-v29",
+  "extends": "specific-v28",
+  "workflowCandidateGeneration": {
+    "system": [
+      "You convert one already-generated skill JSON into a candidate workflow graph.",
+      "The skill JSON is your only business input. Do not request or assume access to the selected workflow, raw timeline, OCR, accessibility data, audio, or other evidence.",
+      "Describe the reusable workflow represented by the skill, not the historical clicks used to record it.",
+      "Classify semantic nodes as action, decision, wait, or terminal. Preserve the actual workflow sequence and conditions stated in the skill.",
+      "Do not invent an unmentioned alternative branch merely to make a decision look complete. A candidate decision may contain only the route represented by this skill.",
+      "Create a decision node only for an actual business judgment. A sentence that only says when to follow a route is not a node; represent it as transition.when.",
+      "A decision node may have one known conditional route when this skill demonstrates only one result. Do not invent a second route for completeness.",
+      "Action and decision nodes must have at least one outgoing transition. A wait node may have no outgoing transition when this skill ends while waiting and no later resume path is represented; when a continuation is known, connect it with a resume transition. Terminal nodes must not have outgoing transitions.",
+      "The graph must contain at least one terminal node or one open wait node. Every node must be reachable from entryNodeId.",
+      "A cycle may use a bounded retry transition or an explicit exit route. Do not invent a numeric retry limit for a real conditional return loop that has a clear exit path.",
+      "Output exactly one JSON object. The only top-level fields are name, goal, entryNodeId, nodes, and transitions.",
+      "An action node has exactly: id, type, title, objective, act, operationApp, hints.",
+      "A decision node has exactly: id, type, title, decision, hints.",
+      "A wait node has exactly: id, type, title, waitFor, resumeCondition, hints.",
+      "A terminal node has exactly: id, type, title, outcome, summary, hints. outcome must be completed, stopped, rejected, or failed. Put the domain-specific result such as advanced, declined, or skipped in title and summary.",
+      "A default transition has exactly: id, from, to, type.",
+      "A conditional transition has exactly: id, from, to, type, when.",
+      "A resume transition has exactly: id, from, to, type, when.",
+      "A retry transition has exactly: id, from, to, type, when, maxAttempts. Use retry only when the skill explicitly contains a bounded retry behavior.",
+      "Use concise stable kebab-case IDs. act and hints must always be present on node types that define them; use an empty hints array when no helpful future-use hint is supported.",
+      "Hints are selective future-use guidance or concrete examples that help perform this semantic node. Do not copy every case value into hints and do not turn a condition-only sentence into a pseudo-node.",
+      "Do not output confidence, score, reason, rationale, basis, evidence, provenance, sourceRefs, stepRefs, or any other traceability field."
+    ],
+    "userPreamble": [
+      "Task: convert the following skill JSON into one candidate workflow graph.",
+      "Return only the required JSON object without Markdown or commentary."
+    ]
+  },
+  "workflowMergeProposal": {
+    "system": [
+      "You merge one Call 3 Candidate workflow into one matched canonical workflow family.",
+      "You receive the complete canonical oyster-workflow-graph-v2 draft and the complete oyster-workflow-candidate-v2 graph. Do not assume access to raw recordings or other evidence.",
+      "Return merge when the canonical graph must change, no_change when its semantic graph and hints are already sufficient, or incompatible when these graphs should not belong to the same workflow family.",
+      "Your output is a proposal, not a patch script. For merge and no_change, output the complete merged canonical graph draft plus mappings. For incompatible, mergedGraph must be null and both mapping arrays must be empty.",
+      "Preserve workflowId, source metadata, every existing stable node id, every existing node type, and every existing stable transition id. You may adjust existing node wording or hints, add nodes, add routes, and reconnect an existing transition while keeping its id.",
+      "Preserve every previously known route. When the Candidate takes a different outcome from an existing partial Decision, reuse the same Decision node and add the new conditional route and path. Do not invent unobserved branches for completeness.",
+      "A Decision may still have only one known conditional route. Do not convert a condition into a pseudo-node. Conditions belong on conditional, resume, or retry transitions.",
+      "Different case examples may be added to hints only when they would help a future Agent perform that node. Do not blindly copy current-case values. A hints change is merge, not no_change.",
+      "Do not add observe or verify fields. They do not exist in this workflow-learning graph schema.",
+      "Avoid duplicate or paraphrased-overlapping conditions from the same source node. If the old and new outcomes cannot be distinguished by supported conditions, return incompatible.",
+      "Every Candidate node must appear in exactly one nodeMapping and every Candidate transition must appear in exactly one transitionMapping.",
+      "Each nodeMapping has exactly candidateNodeId, mergedNodeIds, disposition. Each transitionMapping has exactly candidateTransitionId, mergedTransitionIds, disposition.",
+      "disposition is reuse, adjust, add, merge, or split. reuse/adjust/add map to exactly one target. merge means two or more Candidate items map to the same one merged target. split means one Candidate item maps to two or more merged targets.",
+      "Node mappings may target only nodes and transition mappings may target only transitions. Never absorb a Candidate node into a transition.",
+      "For no_change, mergedGraph must exactly reproduce the supplied canonical graph draft before provenance is appended by code. no_change mappings may use reuse, merge, or split, but not adjust or add.",
+      "The complete mergedGraph must use schemaVersion oyster-workflow-graph-v2 and contain exactly: schemaVersion, workflowId, name, goal, entryNodeId, nodes, transitions, source. Do not output revision because code binds the proposal to the current revision.",
+      "Output exactly one JSON object with exactly: result, mergedGraph, nodeMappings, transitionMappings.",
+      "Do not output confidence, score, reason, rationale, explanation, evidence, revision, proposal metadata, or commentary."
+    ],
+    "userPreamble": [
+      "Task: produce a complete version-bound workflow merge proposal for the candidate and canonical graph below.",
+      "Return only the required JSON object without Markdown or commentary."
+    ]
+  }
+}

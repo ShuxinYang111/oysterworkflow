@@ -1,0 +1,305 @@
+{
+  "name": "oysterworkflow",
+  "version": "0.2.2",
+  "license": "PolyForm-Noncommercial-1.0.0",
+  "private": true,
+  "type": "module",
+  "main": "out/electron/desktop/main.js",
+  "engines": {
+    "node": ">=22.13.0"
+  },
+  "scripts": {
+    "dev": "tsx src/cli/index.ts",
+    "ingest": "tsx src/cli/index.ts ingest",
+    "case-loop": "tsx src/cli/index.ts case-loop",
+    "runtime:dev": "tsx watch src/runtime/server.ts --mode dev",
+    "lab:ui": "npm --prefix ui run dev",
+    "lab:dev": "node scripts/lab-dev.mjs",
+    "codex-worker:probe": "node scripts/codex-worker-probe.mjs",
+    "codex-desktop:probe": "node scripts/codex-desktop-probe.mjs",
+    "build:runtime": "tsc -p tsconfig.build.json",
+    "build:electron": "tsc -p tsconfig.electron.json",
+    "build:runtime-tools": "node scripts/build-runtime-tools-bundle.mjs",
+    "build:mcp": "node scripts/build-mcp-bundle.mjs",
+    "build:screenpipe": "node scripts/build-screenpipe-bundle.mjs",
+    "build:hermes": "node scripts/build-hermes-bundle.mjs",
+    "build:browseract": "node scripts/build-browseract-bundle.mjs",
+    "build:desktop": "npm run build:runtime && npm run build:electron && npm run build:runtime-tools && npm run build:mcp && npm run build:screenpipe && npm run build:hermes && npm run build:browseract && npm --prefix ui run build",
+    "desktop:dev": "npm run build:desktop && electron out/electron/desktop/main.js",
+    "audit:packaged-app": "node scripts/audit-packaged-app.mjs",
+    "dist:mac": "npm run build:desktop && electron-builder --mac",
+    "dist:win": "npm run build:desktop && electron-builder --win nsis",
+    "typecheck": "tsc -p tsconfig.json --noEmit && tsc -p ui/tsconfig.json --noEmit && tsc -p tsconfig.electron.json --noEmit",
+    "lint": "eslint src desktop scripts test ui/src ui/test eslint.config.mjs",
+    "lint:fix": "eslint src desktop scripts test ui/src ui/test eslint.config.mjs --fix",
+    "format": "prettier . --write",
+    "format:check": "prettier . --check",
+    "test": "vitest run --dir test --exclude '**/e2e-cases.test.ts' --testTimeout=20000",
+    "test:watch": "vitest --dir test --exclude '**/e2e-cases.test.ts' --testTimeout=20000"
+  },
+  "dependencies": {
+    "@composio/core": "0.13.1",
+    "@sentry/electron": "^7.15.0",
+    "@supabase/supabase-js": "^2.110.2",
+    "clawhub": "0.20.0",
+    "commander": "^14.0.2",
+    "dotenv": "^16.6.1",
+    "electron-updater": "^6.8.9",
+    "express": "^5.1.0",
+    "js-tiktoken": "^1.0.21",
+    "pino": "^9.11.0",
+    "qrcode": "^1.5.4",
+    "undici": "7.28.0",
+    "zod": "^4.1.12"
+  },
+  "overrides": {
+    "undici": "$undici"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.39.5",
+    "@types/express": "^5.0.3",
+    "@types/node": "^24.7.2",
+    "@types/qrcode": "^1.5.6",
+    "electron": "^37.2.6",
+    "electron-builder": "^26.0.12",
+    "eslint": "^9.39.5",
+    "eslint-plugin-react-hooks": "^7.1.1",
+    "ffmpeg-static": "^5.3.0",
+    "ffprobe-static": "^3.1.0",
+    "globals": "^16.5.0",
+    "prettier": "^3.9.5",
+    "tsx": "^4.20.6",
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.62.0",
+    "vitest": "^3.2.4"
+  },
+  "build": {
+    "appId": "com.oysterworkflow.desktop",
+    "productName": "OysterWorkflow",
+    "protocols": [
+      {
+        "name": "OysterWorkflow Authentication",
+        "schemes": [
+          "oysterworkflow"
+        ]
+      }
+    ],
+    "publish": [
+      {
+        "provider": "github",
+        "owner": "ShuxinYang111",
+        "repo": "oysterworkflow"
+      }
+    ],
+    "afterPack": "scripts/audit-packaged-app.mjs",
+    "afterSign": "scripts/after-sign-macos.mjs",
+    "files": [
+      "out/electron/**/*",
+      "out/runtime/**/*",
+      "ui/dist/**/*",
+      "package.json",
+      "!**/node_modules/**/{test,tests,__tests__,test-fixtures,example,examples,benchmark,benchmarks,docs,doc,website}/**",
+      "!**/node_modules/**/*.test.*",
+      "!**/node_modules/**/*.spec.*",
+      "!**/node_modules/**/test.js",
+      "!**/node_modules/**/eslint.config.*",
+      "!**/node_modules/**/vitest.config.*",
+      "!**/node_modules/**/jest.config.*",
+      "!**/node_modules/**/rollup.config.*",
+      "!**/node_modules/**/tsconfig*.json",
+      "!**/node_modules/**/.nycrc",
+      "!**/node_modules/zod/src/**"
+    ],
+    "extraResources": [
+      {
+        "from": "LICENSE",
+        "to": "licenses/Apache-2.0.txt"
+      },
+      {
+        "from": "LICENSING.md",
+        "to": "licenses/LICENSE-SUMMARY.md"
+      },
+      {
+        "from": "legal/PolyForm-Noncommercial-1.0.0.md",
+        "to": "licenses/PolyForm-Noncommercial-1.0.0.md"
+      },
+      {
+        "from": "THIRD-PARTY-NOTICES.md",
+        "to": "licenses/THIRD-PARTY-NOTICES.md"
+      },
+      {
+        "from": "config/llm.config.json",
+        "to": "config/llm.config.json"
+      },
+      {
+        "from": "config/user-skill.config.json",
+        "to": "config/user-skill.config.json"
+      },
+      {
+        "from": "config/promptsets",
+        "to": "config/promptsets"
+      },
+      {
+        "from": "config/harness",
+        "to": "config/harness"
+      },
+      {
+        "from": "config/browseract-runtime",
+        "to": "config/browseract-runtime"
+      },
+      {
+        "from": "docs/harness",
+        "to": "docs/harness"
+      },
+      {
+        "from": "out/bundled/mcp",
+        "to": "mcp"
+      }
+    ],
+    "mac": {
+      "target": [
+        "dmg",
+        "zip"
+      ],
+      "electronUpdaterCompatibility": ">=2.16",
+      "hardenedRuntime": true,
+      "icon": "desktop/assets/app-icon.icns",
+      "category": "public.app-category.developer-tools",
+      "entitlements": "desktop/entitlements.mac.plist",
+      "entitlementsInherit": "desktop/entitlements.mac.inherit.plist",
+      "extendInfo": {
+        "NSMicrophoneUsageDescription": "OysterWorkflow needs microphone access so Screenpipe can transcribe your spoken workflow narration during recordings.",
+        "NSScreenCaptureUsageDescription": "OysterWorkflow needs screen recording access so it can capture steps and OCR evidence during workflow recording.",
+        "CGRequestScreenCaptureAccess": "OysterWorkflow needs screen recording access so it can capture steps and OCR evidence during workflow recording."
+      },
+      "extraFiles": [
+        {
+          "from": "out/bundled/screenpipe/screenpipe",
+          "to": "Resources/bin/oysterworkflow-screenpipe"
+        },
+        {
+          "from": "out/bundled/screenpipe/ffmpeg",
+          "to": "Resources/bin/ffmpeg"
+        },
+        {
+          "from": "out/bundled/screenpipe/ffprobe",
+          "to": "Resources/bin/ffprobe"
+        },
+        {
+          "from": "out/bundled/screenpipe/screenpipe-bundle.json",
+          "to": "Resources/bin/screenpipe-bundle.json"
+        },
+        {
+          "from": "out/bundled/screenpipe/THIRD-PARTY-NOTICES.md",
+          "to": "Resources/bin/THIRD-PARTY-NOTICES.md"
+        },
+        {
+          "from": "out/bundled/screenpipe/SCREENPIPE-LICENSE.md",
+          "to": "Resources/bin/SCREENPIPE-LICENSE.md"
+        },
+        {
+          "from": "out/bundled/screenpipe",
+          "to": "Resources/bin",
+          "filter": [
+            "*.metallib"
+          ]
+        },
+        {
+          "from": "out/bundled/hermes/hermes",
+          "to": "Resources/bin/oysterworkflow-hermes"
+        },
+        {
+          "from": "out/bundled/hermes/hermes-bundle.json",
+          "to": "Resources/bin/hermes-bundle.json"
+        },
+        {
+          "from": "out/bundled/hermes/hermes-agent-source",
+          "to": "Resources/bin/hermes-agent-source"
+        },
+        {
+          "from": "out/bundled/hermes/oysterworkflow-uv",
+          "to": "Resources/bin/oysterworkflow-uv"
+        },
+        {
+          "from": "out/bundled/hermes/node",
+          "to": "Resources/bin/node"
+        },
+        {
+          "from": "out/bundled/runtime-tools/runtime-tools-bundle.json",
+          "to": "Resources/bin/runtime-tools-bundle.json"
+        },
+        {
+          "from": "out/bundled/browseract/browser-act",
+          "to": "Resources/bin/oysterworkflow-browseract"
+        },
+        {
+          "from": "out/bundled/browseract/browseract-bundle.json",
+          "to": "Resources/bin/browseract-bundle.json"
+        }
+      ]
+    },
+    "win": {
+      "target": [
+        "nsis"
+      ],
+      "extraFiles": [
+        {
+          "from": "out/bundled/screenpipe/screenpipe.exe",
+          "to": "resources/bin/oysterworkflow-screenpipe.exe"
+        },
+        {
+          "from": "out/bundled/screenpipe/ffmpeg.exe",
+          "to": "resources/bin/ffmpeg.exe"
+        },
+        {
+          "from": "out/bundled/screenpipe/ffprobe.exe",
+          "to": "resources/bin/ffprobe.exe"
+        },
+        {
+          "from": "out/bundled/screenpipe/screenpipe-bundle.json",
+          "to": "resources/bin/screenpipe-bundle.json"
+        },
+        {
+          "from": "out/bundled/screenpipe/THIRD-PARTY-NOTICES.md",
+          "to": "resources/bin/THIRD-PARTY-NOTICES.md"
+        },
+        {
+          "from": "out/bundled/screenpipe/SCREENPIPE-LICENSE.md",
+          "to": "resources/bin/SCREENPIPE-LICENSE.md"
+        },
+        {
+          "from": "out/bundled/screenpipe",
+          "to": "resources/bin",
+          "filter": [
+            "*.dll"
+          ]
+        },
+        {
+          "from": "out/bundled/hermes/hermes.exe",
+          "to": "resources/bin/oysterworkflow-hermes.exe"
+        },
+        {
+          "from": "out/bundled/hermes/hermes-bundle.json",
+          "to": "resources/bin/hermes-bundle.json"
+        },
+        {
+          "from": "out/bundled/hermes/hermes-agent-source",
+          "to": "resources/bin/hermes-agent-source"
+        },
+        {
+          "from": "out/bundled/browseract/browser-act.cmd",
+          "to": "resources/bin/oysterworkflow-browseract.cmd"
+        },
+        {
+          "from": "out/bundled/browseract/browseract-bundle.json",
+          "to": "resources/bin/browseract-bundle.json"
+        }
+      ]
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true
+    }
+  }
+}

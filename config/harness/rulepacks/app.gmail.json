@@ -1,0 +1,38 @@
+{
+  "schemaVersion": "oysterworkflow-rulepack-v1",
+  "id": "app.gmail",
+  "level": "app",
+  "target": "gmail",
+  "name": "Gmail App",
+  "status": "draft",
+  "description": "Rules for Gmail workflows, including finding threads, reading context, drafting replies, sending, forwarding, archiving, deleting, unsubscribing, and handling attachments.",
+  "compatibleSurfaces": ["surface.browser"],
+  "whenToApply": [
+    "The phase mainly happens in Gmail or Google Workspace mail.",
+    "The phase needs to find a thread, read email context, draft a reply, send, forward, archive, delete, unsubscribe, move mail, or verify attachments."
+  ],
+  "whenNotToApply": [
+    "Gmail is only a notification source and the real task happens in another app.",
+    "The phase only copies information out of email without changing Gmail state."
+  ],
+  "generationGuidance": [
+    "Separate drafting from sending; a generated reply is not the same as a sent email.",
+    "Require the target thread to be identified by visible subject, sender, date, label, and/or message snippet before acting.",
+    "Require user approval before sending, forwarding, deleting, unsubscribing, or batch-moving messages.",
+    "After state changes, validate against Gmail-visible state such as draft marker, Sent, label, archive, trash, thread, or attachment names."
+  ],
+  "hardRequirements": [
+    "If multiple threads match, stop or ask the user to choose.",
+    "Sending or forwarding must validate To, Cc, Bcc, subject, body, and attachments before approval.",
+    "Draft-only workflows must not send the email."
+  ],
+  "runtimeReference": {
+    "title": "Gmail App Rules",
+    "path": "docs/harness/references/app-gmail/runtime.md",
+    "packagePath": "app-gmail.md",
+    "purpose": "Gmail-specific execution rules, validation rules, and common email workflow mistakes.",
+    "whenToRead": [
+      "Before executing any phase that reads, drafts, sends, forwards, archives, deletes, or moves Gmail messages."
+    ]
+  }
+}

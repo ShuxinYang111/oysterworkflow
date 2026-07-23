@@ -1,0 +1,162 @@
+[
+  {
+    "name": "search",
+    "title": "Search OysterWorkflow workflows / 搜索工作流",
+    "description": "Search workflows recorded, generated, or managed by OysterWorkflow. Results include whether an executable canonical graph exists. When natural-language terms have no literal match, matchMode=fallback returns candidates to compare by meaning. / 搜索 OysterWorkflow 录制、生成或管理的工作流，并返回是否存在可执行规范图。自然语言无字面匹配时，matchMode=fallback 会返回候选供语义比较。",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "query": {
+          "type": "string",
+          "description": "Title, description, app, or id."
+        },
+        "limit": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100,
+          "default": 20
+        }
+      },
+      "additionalProperties": false
+    },
+    "annotations": {
+      "readOnlyHint": true,
+      "destructiveHint": false
+    }
+  },
+  {
+    "name": "fetch",
+    "title": "Fetch OysterWorkflow workflow / 读取工作流",
+    "description": "Fetch workflow metadata and its revisioned canonical graph. Read the graph before preparing a run. / 读取工作流元数据和带 revision 的规范执行图；准备运行前应先读取。",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "workflowId": {
+          "type": "string"
+        }
+      },
+      "required": ["workflowId"],
+      "additionalProperties": false
+    },
+    "annotations": {
+      "readOnlyHint": true,
+      "destructiveHint": false
+    }
+  },
+  {
+    "name": "prepare_workflow_run",
+    "title": "Prepare agent-hosted workflow run / 准备 Agent 托管运行",
+    "description": "Pin the current workflow revision and create durable run state. This does not execute external actions. Execute only the returned current node with the current agent's tools, then advance. / 固定当前 revision 并创建持久运行状态；本工具不执行外部动作。之后仅使用当前 Agent 的工具执行返回节点，再推进状态。",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "workflowId": {
+          "type": "string"
+        },
+        "expectedRevisionId": {
+          "type": "string"
+        },
+        "inputs": {
+          "type": "object",
+          "additionalProperties": true
+        }
+      },
+      "required": ["workflowId"],
+      "additionalProperties": false
+    },
+    "annotations": {
+      "readOnlyHint": false,
+      "destructiveHint": false,
+      "idempotentHint": false
+    }
+  },
+  {
+    "name": "get_workflow_run",
+    "title": "Get workflow run state / 读取运行状态",
+    "description": "Read the pinned revision, current node, available transitions, and next action for an agent-hosted run. / 读取 Agent 托管运行的固定 revision、当前节点、可选 transition 与下一动作。",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "runId": {
+          "type": "string"
+        }
+      },
+      "required": ["runId"],
+      "additionalProperties": false
+    },
+    "annotations": {
+      "readOnlyHint": true,
+      "destructiveHint": false
+    }
+  },
+  {
+    "name": "advance_workflow_run",
+    "title": "Advance workflow run / 推进工作流运行",
+    "description": "After the current agent completes or observes the current node, record evidence and traverse one validated transition. currentNodeId is an optimistic concurrency guard. / 当前 Agent 完成或观察节点后，记录证据并沿一条已校验 transition 推进；currentNodeId 用于并发保护。",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "runId": {
+          "type": "string"
+        },
+        "currentNodeId": {
+          "type": "string"
+        },
+        "transitionId": {
+          "type": "string"
+        },
+        "summary": {
+          "type": "string"
+        },
+        "evidence": {
+          "type": "array",
+          "maxItems": 100,
+          "items": {
+            "type": "object",
+            "properties": {
+              "kind": {
+                "type": "string",
+                "enum": ["observation", "url", "artifact", "receipt"]
+              },
+              "value": {
+                "type": "string"
+              },
+              "label": {
+                "type": "string"
+              }
+            },
+            "required": ["kind", "value"],
+            "additionalProperties": false
+          }
+        }
+      },
+      "required": ["runId", "currentNodeId", "summary"],
+      "additionalProperties": false
+    },
+    "annotations": {
+      "readOnlyHint": false,
+      "destructiveHint": false,
+      "idempotentHint": false
+    }
+  },
+  {
+    "name": "cancel_workflow_run",
+    "title": "Cancel workflow run / 取消工作流运行",
+    "description": "Cancel local run state and stop further workflow actions. This cannot undo external actions already taken by the current agent. / 取消本地运行并停止后续动作；无法撤销当前 Agent 已完成的外部操作。",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "runId": {
+          "type": "string"
+        }
+      },
+      "required": ["runId"],
+      "additionalProperties": false
+    },
+    "annotations": {
+      "readOnlyHint": false,
+      "destructiveHint": true,
+      "idempotentHint": true
+    }
+  }
+]
