@@ -1,9 +1,9 @@
 {
   "mcpServers": {
     "oysterworkflow": {
-      "type": "http",
-      "url": "http://127.0.0.1:3034/api/codex/mcp",
-      "note": "Local OysterWorkflow MCP endpoint. OysterWorkflow must be running before Codex uses these tools."
+      "command": "node",
+      "args": ["./mcp/server.mjs"],
+      "cwd": "."
     }
   }
 }
