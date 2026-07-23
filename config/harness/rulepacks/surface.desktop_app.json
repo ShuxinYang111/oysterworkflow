@@ -1,0 +1,34 @@
+{
+  "schemaVersion": "oysterworkflow-rulepack-v1",
+  "id": "surface.desktop_app",
+  "level": "surface",
+  "target": "desktop_app",
+  "name": "Desktop App Surface",
+  "status": "draft",
+  "description": "Rules for workflows executed in a native desktop application, including window focus, document state, local dialogs, and save/export flows.",
+  "whenToApply": [
+    "The phase happens in a native macOS or desktop application.",
+    "The agent must inspect app windows, edit local content, use app menus, save files, or export artifacts through a desktop UI."
+  ],
+  "whenNotToApply": [
+    "The phase happens in a browser tab or web application.",
+    "The phase is only terminal command execution."
+  ],
+  "generationGuidance": [
+    "Require the phase to confirm the active app, active document or window, and whether the agent is editing an original or a new copy.",
+    "Require validation after save, export, import, destructive edit, or document state changes.",
+    "Add user approval before overwriting user files, deleting content, sending from an app, or changing shared/local settings.",
+    "Stop when the target app, window, document, permission dialog, or save/export result cannot be observed."
+  ],
+  "hardRequirements": [
+    "Every desktop app phase must include the expected app/window/document state.",
+    "Every overwrite, destructive edit, or shared-location save must include an approval checkpoint."
+  ],
+  "runtimeReference": {
+    "title": "Desktop App Surface Rules",
+    "path": "docs/harness/references/surface-desktop-app/runtime.md",
+    "packagePath": "surface-desktop-app.md",
+    "purpose": "Desktop app execution rules and common local UI automation mistakes.",
+    "whenToRead": ["Before executing any phase that uses a native desktop app."]
+  }
+}

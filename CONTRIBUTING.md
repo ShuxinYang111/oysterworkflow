@@ -1,47 +1,58 @@
-# Contributing to OysterWorkflow
+# Contributing to OysterWorkflow / 参与 OysterWorkflow
 
-Thanks for taking a look at OysterWorkflow.
+Thank you for helping improve OysterWorkflow. Before opening a pull request,
+read [LICENSING.md](./LICENSING.md) because this repository contains
+both Apache-2.0 open-core code and PolyForm-covered desktop-product code.
 
-This public repository is currently a release, documentation, and issue-tracking home. The application source code is private today, so the most useful contributions are high-signal feedback, workflow examples, installation reports, and integration requests.
+感谢你帮助改进 OysterWorkflow。提交 Pull Request 前请先阅读
+[LICENSING.md](./LICENSING.md)，因为本仓库同时包含 Apache-2.0
+开放核心和受 PolyForm 约束的桌面产品代码。
 
-OysterWorkflow is easiest to improve when feedback explains the work experience an agent should inherit: the goal, the real path, the important screen states, the user's preferences, the recovery moves, and the checks that prove the task is done.
+## Contribution License
 
-## Useful Feedback
+- Contributions to Apache-2.0 files are submitted under Apache-2.0, consistent
+  with section 5 of that license.
+- Contributions to PolyForm-covered files are submitted under PolyForm
+  Noncommercial 1.0.0 unless a separate contributor agreement applies.
+- Maintainers may require a separate contributor agreement before accepting a
+  desktop-product contribution that must remain available for official
+  commercial licensing.
+- Third-party code must keep its original license and attribution. Do not copy
+  code into this repository unless its license is compatible with the target
+  scope.
 
-Please open an issue if you can share:
+- 对 Apache-2.0 文件的贡献依照 Apache-2.0 第 5 条，以 Apache-2.0 提交。
+- 对 PolyForm 覆盖文件的贡献默认依照 PolyForm Noncommercial 1.0.0 提交，除非
+  另有贡献者协议。
+- 如果桌面产品贡献需要继续支持官方商业授权，维护者可能要求先签署单独的贡献者协议。
+- 第三方代码必须保留原许可证与署名；许可证与目标范围不兼容时，不得复制进入仓库。
 
-- installation, Windows setup, or macOS permission problems
-- confusing recorder, candidate workflow, or skill review behavior
-- examples of workflows you would like to capture
-- generated skill artifacts that feel wrong, incomplete, or surprisingly useful
-- missing goal retention, preference alignment, retry logic, or verification checks
-- OpenClaw integration questions or runtime expectations
-- integration requests for Codex, Claude Code, Cursor, OpenAI Agents, or custom agent stacks
-- feature requests around export, review, privacy, or team workflows
+## Development Checks
 
-## Good Workflow Examples
+Install dependencies and run the normal checks before submitting:
 
-Helpful workflow reports usually include:
+```bash
+npm install
+npm run typecheck
+npm test
+```
 
-- the app or website category, without sensitive account details
-- what the human is trying to accomplish
-- what screen states, text, or decision points matter
-- where repetition happens
-- where the workflow can fail or become ambiguous
-- how the human recovers when the path changes
-- what proves the task is finished
-- what a reusable agent capability should remember or expose
+按照项目约定，不要默认运行 e2e。只有在维护者或任务明确指定 case、catalog 或专项验证
+目标时才运行 e2e，并将产物保存在仓库根目录的 `.runs/` 下。
 
-Please redact personal data, private URLs, credentials, customer data, account numbers, and anything you would not want in a public issue.
+## Pull Request Scope
 
-## Source Code Status
+- Keep each pull request focused on one problem.
+- Explain which layer owns the change: UI, service/runtime, domain/contract, or
+  CLI/integration.
+- Add or update tests for behavior changes.
+- Do not commit credentials, customer data, recordings, generated runs, build
+  output, or private URLs.
+- User-facing behavior and documentation should remain understandable in both
+  English and Chinese.
 
-The OysterWorkflow source code is currently private. Future partial source, SDK, or integration surfaces are being considered, especially where community feedback can improve artifact formats, evaluation loops, and runtime integration.
-
-Until then, this repository welcomes public feedback through issues rather than pull requests against application source.
-
-## License Notes
-
-OysterWorkflow is licensed under the GNU General Public License v3.0. Contributions are accepted with the understanding that they may be distributed under GPL-3.0.
-
-For partnership or alternative licensing questions, contact `shuxin.y.97@gmail.com`.
+- 每个 Pull Request 聚焦一个问题。
+- 说明改动所属层级：UI、service/runtime、domain/contract 或 CLI/integration。
+- 行为发生变化时补充或更新测试。
+- 不得提交凭证、客户数据、录屏、生成的 run、构建产物或私有 URL。
+- 面向用户的行为和文档应同时兼顾中英文场景。

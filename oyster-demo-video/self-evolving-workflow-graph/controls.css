@@ -1,0 +1,145 @@
+.controls {
+  position: fixed;
+  z-index: 100;
+  left: 50%;
+  bottom: 20px;
+  width: min(980px, calc(100vw - 32px));
+  min-height: 58px;
+  transform: translateX(-50%);
+  display: grid;
+  grid-template-columns: auto auto minmax(180px, 1fr) auto auto auto;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 10px;
+  border: 1px solid rgba(254, 254, 254, 0.44);
+  border-radius: 999px;
+  background: rgba(15, 23, 42, 0.92);
+  box-shadow: 0 18px 50px rgba(15, 23, 42, 0.24);
+  backdrop-filter: blur(18px);
+}
+
+.control-button {
+  min-width: 82px;
+  min-height: 42px;
+  border: 1px solid rgba(254, 254, 254, 0.13);
+  border-radius: 999px;
+  color: #f8fafc;
+  background: rgba(254, 254, 254, 0.07);
+  font-size: 15px;
+  font-weight: 750;
+  transition:
+    background 160ms ease,
+    transform 160ms ease;
+}
+
+.control-button:hover {
+  background: rgba(254, 254, 254, 0.14);
+}
+
+.control-button:active {
+  transform: translateY(1px);
+}
+
+.control-button.primary {
+  color: #062d2c;
+  background: #8ed8d2;
+}
+
+.control-button.primary:hover {
+  background: #a6e4df;
+}
+
+.timeline {
+  width: 100%;
+  accent-color: #8ed8d2;
+}
+
+.control-meta {
+  min-width: 96px;
+  color: #cbd5e1;
+  font-family: "SFMono-Regular", Consolas, monospace;
+  font-size: 14px;
+  text-align: center;
+}
+
+.language-switch {
+  min-width: 64px;
+}
+
+.en {
+  display: none;
+}
+
+body.lang-en .zh {
+  display: none;
+}
+
+body.lang-en .en {
+  display: initial;
+}
+
+.slide.active .reveal {
+  animation: reveal-up 620ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.slide.active .reveal.delay-1 {
+  animation-delay: 110ms;
+}
+
+.slide.active .reveal.delay-2 {
+  animation-delay: 220ms;
+}
+
+.slide.active .reveal.delay-3 {
+  animation-delay: 330ms;
+}
+
+.slide.active .candidate {
+  animation: candidate-arrives 760ms 280ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.slide.active .mapping-line {
+  animation: mapping-draw 900ms 420ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes reveal-up {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes candidate-arrives {
+  from {
+    opacity: 0;
+    transform: translateX(60px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+}
+
+@keyframes mapping-draw {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.001ms !important;
+    animation-delay: 0ms !important;
+    transition-duration: 0.001ms !important;
+  }
+}

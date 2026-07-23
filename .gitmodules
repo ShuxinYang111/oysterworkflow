@@ -1,0 +1,6 @@
+[submodule "vendor/screenpipe"]
+	path = vendor/screenpipe
+	url = https://github.com/ShuxinYang111/screenpipe.git
+[submodule "vendor/hermes-agent"]
+	path = vendor/hermes-agent
+	url = https://github.com/ShuxinYang111/hermes-agent.git

@@ -6,7 +6,7 @@
     "name": "OysterWorkflow",
     "url": "https://github.com/ShuxinYang111/oysterworkflow"
   },
-  "homepage": "https://oysterworkflow.com/",
+  "homepage": "https://oysterworkflow.vercel.app/",
   "repository": "https://github.com/ShuxinYang111/oysterworkflow",
   "license": "PolyForm-Noncommercial-1.0.0",
   "keywords": ["workflow", "automation", "codex", "mcp", "oysterworkflow"],
@@ -18,7 +18,7 @@
     "category": "Productivity",
     "capabilities": ["Interactive", "Read", "Write"],
     "defaultPrompt": [
-      "用 OysterWorkflow 执行‘筛选销售询盘并准备回复’",
+      "用 OysterWorkflow 执行“筛选销售询盘并准备回复”",
       "Find my OysterWorkflow workflows that Codex can run",
       "Continue my current OysterWorkflow run"
     ],

@@ -1,0 +1,36 @@
+{
+  "schemaVersion": "oysterworkflow-rulepack-v1",
+  "id": "surface.browser",
+  "level": "surface",
+  "target": "browser",
+  "name": "Browser Surface",
+  "status": "draft",
+  "description": "Rules for workflows executed in a web browser, including page context, navigation, form state, uploads, downloads, and externally visible web actions.",
+  "whenToApply": [
+    "The phase happens in a browser tab or web application.",
+    "The agent must navigate pages, inspect web state, fill forms, click buttons, upload files, download files, or verify browser-visible results."
+  ],
+  "whenNotToApply": [
+    "The phase happens entirely in a native desktop app.",
+    "The phase is only terminal command execution."
+  ],
+  "generationGuidance": [
+    "Require the phase to confirm the active website, page, account context, and relevant page state before taking action.",
+    "Do not treat a click, form fill, or URL change as completion; require a visible page, download, upload, saved state, or submitted state to be observed.",
+    "For submit, send, publish, purchase, delete, or other externally visible actions, add an approval checkpoint before the action.",
+    "When login, permissions, human verification, or ambiguous page state blocks progress, stop and report the missing browser context."
+  ],
+  "hardRequirements": [
+    "Every browser phase must include observable validation after state-changing actions.",
+    "Every external browser submission must include an approval checkpoint unless the source skill explicitly says it is draft-only or read-only."
+  ],
+  "runtimeReference": {
+    "title": "Browser Surface Rules",
+    "path": "docs/harness/references/surface-browser/runtime.md",
+    "packagePath": "surface-browser.md",
+    "purpose": "Browser execution rules and common browser automation mistakes.",
+    "whenToRead": [
+      "Before executing any phase that uses a browser or web application."
+    ]
+  }
+}

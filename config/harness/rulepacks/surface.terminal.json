@@ -1,0 +1,36 @@
+{
+  "schemaVersion": "oysterworkflow-rulepack-v1",
+  "id": "surface.terminal",
+  "level": "surface",
+  "target": "terminal",
+  "name": "Terminal Surface",
+  "status": "draft",
+  "description": "Rules for workflows executed through terminal commands, scripts, CLIs, local files, and command output validation.",
+  "whenToApply": [
+    "The phase primarily uses shell commands, scripts, CLIs, package managers, or terminal output.",
+    "The phase validates a local file, generated artifact, or command result through terminal inspection."
+  ],
+  "whenNotToApply": [
+    "The phase only uses browser or desktop app UI.",
+    "The terminal is only mentioned as a possible provider fallback rather than the actual workflow surface."
+  ],
+  "generationGuidance": [
+    "Require commands to be scoped to the working directory and explain what observable output proves success.",
+    "Require validation through exit code, generated files, command output, or inspected artifacts.",
+    "Add user approval before destructive commands, credential changes, package installs, network uploads, or production-impacting operations.",
+    "Stop when required paths, tools, credentials, permissions, or command outputs are missing or ambiguous."
+  ],
+  "hardRequirements": [
+    "Every terminal phase must include a validation command or observable command output.",
+    "Destructive shell actions must be represented as approval checkpoints."
+  ],
+  "runtimeReference": {
+    "title": "Terminal Surface Rules",
+    "path": "docs/harness/references/surface-terminal/runtime.md",
+    "packagePath": "surface-terminal.md",
+    "purpose": "Terminal execution rules and common command automation mistakes.",
+    "whenToRead": [
+      "Before executing any phase that uses terminal commands or scripts."
+    ]
+  }
+}

@@ -1,0 +1,26 @@
+.agents/
+.cache/
+.codex/
+.runs/
+coverage/
+dist/
+node_modules/
+out/
+outputs/
+oyster-pitch-deck/
+oyster-demo-video/
+plan/
+supabase/.temp/
+tmp/
+ui/dist/
+ui/node_modules/
+vendor/
+
+# Keep canonical legal terms byte-for-byte unchanged.
+legal/PolyForm-Noncommercial-1.0.0.md
+
+# Generated lockfiles are maintained by their package managers.
+config/browseract-runtime/uv.lock
+config/promptsets/
+package-lock.json
+ui/package-lock.json

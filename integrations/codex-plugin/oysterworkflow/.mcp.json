@@ -1,0 +1,9 @@
+{
+  "mcpServers": {
+    "oysterworkflow": {
+      "command": "node",
+      "args": ["./mcp/server.mjs"],
+      "cwd": "."
+    }
+  }
+}
