@@ -21,6 +21,7 @@ config/llm.crs.config.json
 dist/
 ui/dist/
 outputs/
+/output/
 tmp/
 supabase/.temp/
 oyster-pitch-deck/
