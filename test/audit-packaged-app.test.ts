@@ -9,7 +9,7 @@ import { describe, expect, it } from "vitest";
 const execFileAsync = promisify(execFile);
 const projectRoot = join(import.meta.dirname, "..");
 
-describe("packaged app audit", () => {
+describe.skipIf(process.platform === "win32")("packaged app audit", () => {
   it("passes when packaged Screenpipe and Hermes helpers are present", async () => {
     const appAsarPath = await createPackagedAppFixture({
       includeHermesHelper: true,

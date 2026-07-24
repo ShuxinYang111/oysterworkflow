@@ -29,6 +29,7 @@
     "audit:packaged-app": "node scripts/audit-packaged-app.mjs",
     "dist:mac": "npm run build:desktop && electron-builder --mac",
     "dist:win": "npm run build:desktop && electron-builder --win nsis",
+    "release:win": "npm run build:desktop && electron-builder --win nsis --publish always",
     "typecheck": "tsc -p tsconfig.json --noEmit && tsc -p ui/tsconfig.json --noEmit && tsc -p tsconfig.electron.json --noEmit",
     "lint": "eslint src desktop scripts test ui/src ui/test eslint.config.mjs",
     "lint:fix": "eslint src desktop scripts test ui/src ui/test eslint.config.mjs --fix",
@@ -242,6 +243,7 @@
       "target": [
         "nsis"
       ],
+      "icon": "desktop/assets/app-icon.ico",
       "extraFiles": [
         {
           "from": "out/bundled/screenpipe/screenpipe.exe",
@@ -275,8 +277,8 @@
           ]
         },
         {
-          "from": "out/bundled/hermes/hermes.exe",
-          "to": "resources/bin/oysterworkflow-hermes.exe"
+          "from": "out/bundled/hermes/hermes.ps1",
+          "to": "resources/bin/oysterworkflow-hermes.ps1"
         },
         {
           "from": "out/bundled/hermes/hermes-bundle.json",
@@ -287,12 +289,20 @@
           "to": "resources/bin/hermes-agent-source"
         },
         {
-          "from": "out/bundled/browseract/browser-act.cmd",
-          "to": "resources/bin/oysterworkflow-browseract.cmd"
+          "from": "out/bundled/browseract/browser-act.ps1",
+          "to": "resources/bin/oysterworkflow-browseract.ps1"
         },
         {
           "from": "out/bundled/browseract/browseract-bundle.json",
           "to": "resources/bin/browseract-bundle.json"
+        },
+        {
+          "from": "out/bundled/runtime-tools/oysterworkflow-uv.exe",
+          "to": "resources/bin/oysterworkflow-uv.exe"
+        },
+        {
+          "from": "out/bundled/runtime-tools/runtime-tools-bundle.json",
+          "to": "resources/bin/runtime-tools-bundle.json"
         }
       ]
     },

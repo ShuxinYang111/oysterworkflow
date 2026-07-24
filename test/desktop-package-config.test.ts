@@ -73,8 +73,8 @@ describe("desktop packaging config", () => {
     expect(packageJson.build.win.extraFiles).toEqual(
       expect.arrayContaining([
         {
-          from: "out/bundled/hermes/hermes.exe",
-          to: "resources/bin/oysterworkflow-hermes.exe",
+          from: "out/bundled/hermes/hermes.ps1",
+          to: "resources/bin/oysterworkflow-hermes.ps1",
         },
         {
           from: "out/bundled/hermes/hermes-bundle.json",
@@ -85,12 +85,20 @@ describe("desktop packaging config", () => {
           to: "resources/bin/hermes-agent-source",
         },
         {
-          from: "out/bundled/browseract/browser-act.cmd",
-          to: "resources/bin/oysterworkflow-browseract.cmd",
+          from: "out/bundled/browseract/browser-act.ps1",
+          to: "resources/bin/oysterworkflow-browseract.ps1",
         },
         {
           from: "out/bundled/browseract/browseract-bundle.json",
           to: "resources/bin/browseract-bundle.json",
+        },
+        {
+          from: "out/bundled/runtime-tools/oysterworkflow-uv.exe",
+          to: "resources/bin/oysterworkflow-uv.exe",
+        },
+        {
+          from: "out/bundled/runtime-tools/runtime-tools-bundle.json",
+          to: "resources/bin/runtime-tools-bundle.json",
         },
       ]),
     );
@@ -112,6 +120,9 @@ describe("desktop packaging config", () => {
     expect(packageJson.dependencies["electron-updater"]).toMatch(/^\^6\./u);
     expect(packageJson.scripts["dist:mac"]).toBe(
       "npm run build:desktop && electron-builder --mac",
+    );
+    expect(packageJson.scripts["release:win"]).toBe(
+      "npm run build:desktop && electron-builder --win nsis --publish always",
     );
     expect(packageJson.build.publish).toContainEqual({
       provider: "github",

@@ -35,23 +35,36 @@ describe("Hermes bundle builder", () => {
         OYSTERWORKFLOW_HERMES_SOURCE_PATH: sourceSeedDir,
       });
 
-      const [launcher, nodeLauncher, manifest, launcherStat, nodeLauncherStat] =
-        await Promise.all([
-          readFile(testBundle.launcherPath, "utf8"),
-          readFile(testBundle.nodeLauncherPath, "utf8"),
-          readFile(testBundle.manifestPath, "utf8"),
-          stat(testBundle.launcherPath),
-          stat(testBundle.nodeLauncherPath),
-        ]);
+      const [
+        launcher,
+        windowsLauncher,
+        nodeLauncher,
+        manifest,
+        launcherStat,
+        nodeLauncherStat,
+      ] = await Promise.all([
+        readFile(testBundle.launcherPath, "utf8"),
+        readFile(testBundle.windowsLauncherPath, "utf8"),
+        readFile(testBundle.nodeLauncherPath, "utf8"),
+        readFile(testBundle.manifestPath, "utf8"),
+        stat(testBundle.launcherPath),
+        stat(testBundle.nodeLauncherPath),
+      ]);
 
-      expect(launcherStat.mode & 0o111).toBeGreaterThan(0);
-      expect(nodeLauncherStat.mode & 0o111).toBeGreaterThan(0);
+      if (process.platform !== "win32") {
+        expect(launcherStat.mode & 0o111).toBeGreaterThan(0);
+        expect(nodeLauncherStat.mode & 0o111).toBeGreaterThan(0);
+      }
       expect(nodeLauncher).toContain("ELECTRON_RUN_AS_NODE=1");
       expect(nodeLauncher).toContain("MacOS/OysterWorkflow");
       expect(launcher).toContain("HERMES_HOME");
       expect(launcher).toContain("INSTALLER_HOME");
       expect(launcher).toContain("scripts/install.sh");
       expect(launcher).not.toContain(homedir());
+      expect(windowsLauncher).toContain("scripts\\install.ps1");
+      expect(windowsLauncher).toContain("venv\\Scripts\\hermes.exe");
+      expect(windowsLauncher).toContain("Install-ManagedHermes");
+      expect(windowsLauncher).not.toContain("requires WSL2");
       const parsedManifest = JSON.parse(manifest) as {
         bundledSource: { digest: string };
         installScriptSha256: string;
@@ -61,7 +74,7 @@ describe("Hermes bundle builder", () => {
         };
       };
       expect(parsedManifest).toMatchObject({
-        executableName: "hermes",
+        executableName: process.platform === "win32" ? "hermes.ps1" : "hermes",
         strategy: "managed-install-launcher",
         bundledNode:
           process.platform === "darwin"
@@ -704,6 +717,7 @@ async function createBundleTestRoot(prefix = "oyster-hermes-bundle-") {
     tempRoot,
     bundledHermesDir,
     launcherPath: join(bundledHermesDir, "hermes"),
+    windowsLauncherPath: join(bundledHermesDir, "hermes.ps1"),
     nodeLauncherPath: join(bundledHermesDir, "node"),
     manifestPath: join(bundledHermesDir, "hermes-bundle.json"),
   };

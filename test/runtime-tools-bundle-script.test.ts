@@ -28,8 +28,14 @@ describe("runtime tools bundle builder", () => {
     const root = await mkdtemp(join(tmpdir(), "oyster-runtime-tools-"));
     tempRoots.push(root);
     const outDir = join(root, "bundle");
-    const fakeUv = join(root, "uv");
-    await writeFile(fakeUv, "#!/bin/sh\necho 'uv 0.11.7'\n", "utf8");
+    const fakeUv = join(root, process.platform === "win32" ? "uv.cmd" : "uv");
+    await writeFile(
+      fakeUv,
+      process.platform === "win32"
+        ? "@echo off\r\necho uv 0.11.7\r\n"
+        : "#!/bin/sh\necho 'uv 0.11.7'\n",
+      "utf8",
+    );
     await chmod(fakeUv, 0o755);
 
     await execFileAsync(
@@ -47,15 +53,24 @@ describe("runtime tools bundle builder", () => {
 
     const manifest = JSON.parse(
       await readFile(join(outDir, "runtime-tools-bundle.json"), "utf8"),
-    ) as { uv: { archiveSha256: string; version: string } };
+    ) as { uv: { archiveSha256: string | null; version: string } };
     expect(manifest.uv).toMatchObject({
-      archiveSha256:
-        "66e37d91f839e12481d7b932a1eccbfe732560f42c1cfb89faddfa2454534ba8",
+      archiveSha256: expectedUvArchiveSha256(),
       version: "0.11.7",
     });
-    if (process.platform === "darwin" && process.arch === "arm64") {
+    if (
+      (process.platform === "darwin" && process.arch === "arm64") ||
+      (process.platform === "win32" && process.arch === "x64")
+    ) {
       await expect(
-        stat(join(outDir, "oysterworkflow-uv")),
+        stat(
+          join(
+            outDir,
+            process.platform === "win32"
+              ? "oysterworkflow-uv.cmd"
+              : "oysterworkflow-uv",
+          ),
+        ),
       ).resolves.toMatchObject({
         mode: expect.any(Number),
       });
@@ -81,3 +96,13 @@ describe("runtime tools bundle builder", () => {
     ).rejects.toThrow("must be a positive integer");
   });
 });
+
+function expectedUvArchiveSha256(): string | null {
+  if (process.platform === "darwin" && process.arch === "arm64") {
+    return "66e37d91f839e12481d7b932a1eccbfe732560f42c1cfb89faddfa2454534ba8";
+  }
+  if (process.platform === "win32" && process.arch === "x64") {
+    return "fe0c7815acf4fc45f8a5eff58ed3cf7ae2e15c3cf1dceadbd10c816ec1690cc1";
+  }
+  return null;
+}

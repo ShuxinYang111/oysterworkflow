@@ -1027,12 +1027,15 @@ const productRuntimeMock = vi.hoisted(() => {
       );
     }),
     productAgentConversationEventsForWorker: vi.fn(
-      (productState: any, workerId: string) => {
+      (productState: any, workerId: string, runId?: string | null) => {
         if (!productState) {
           return [];
         }
         return productState.runEvents
-          .filter((item: any) => item.workerId === workerId)
+          .filter(
+            (item: any) =>
+              item.workerId === workerId && (!runId || item.runId === runId),
+          )
           .filter(isAgentConversationEvent)
           .sort(
             (left: any, right: any) =>
@@ -2328,6 +2331,60 @@ describe("OysterWorkflow product UI", () => {
     await waitFor(() => {
       expect(installUpdate).toHaveBeenCalledTimes(1);
     });
+  });
+
+  it("localizes update failures without showing release response details", async () => {
+    window.localStorage.setItem(
+      "oysterworkflow.startup-llm-setup-completed",
+      "1",
+    );
+    window.localStorage.setItem("oysterworkflow.app-language", "zh");
+    const updateError = {
+      supported: true,
+      phase: "error" as const,
+      currentVersion: "0.2.2",
+      availableVersion: null,
+      releaseName: null,
+      releaseNotes: null,
+      releaseDate: null,
+      checkedAt: "2026-07-23T08:05:00.000Z",
+      progress: null,
+      errorMessage:
+        "Cannot find latest.yml: HttpError 404 Headers: private details",
+      errorCode: "release_metadata_unavailable" as const,
+    };
+    (window as any).oysterworkflow = {
+      runtime: {
+        apiBaseUrl: "",
+        mode: "desktop",
+        platform: "win32",
+      },
+      desktop: {
+        getUpdateState: vi.fn(async () => updateError),
+        checkForUpdates: vi.fn(async () => updateError),
+        downloadUpdate: vi.fn(),
+        installUpdate: vi.fn(),
+        onUpdateStateChanged: vi.fn(() => () => undefined),
+      },
+    };
+    const user = userEvent.setup();
+
+    render(<App />);
+    await user.click(await screen.findByRole("button", { name: "设置" }));
+    const settings = await screen.findByRole("dialog", { name: "设置" });
+    await user.click(
+      within(settings).getByRole("button", { name: "软件更新" }),
+    );
+
+    expect(
+      await within(settings).findByText(
+        "当前 Windows 版本的更新信息暂未发布，请稍后重试。",
+      ),
+    ).toBeInTheDocument();
+    expect(
+      within(settings).queryByText(/latest\.yml/iu),
+    ).not.toBeInTheDocument();
+    expect(within(settings).queryByText(/Headers/iu)).not.toBeInTheDocument();
   });
 
   it("tests the edited model fields without saving them", async () => {
@@ -4077,6 +4134,7 @@ describe("OysterWorkflow product UI", () => {
     expect(
       await screen.findByRole("heading", { name: "Test Worker" }),
     ).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Start worker" })).toBeEnabled();
     await user.click(screen.getByRole("button", { name: "Workflows" }));
     expect(
       await screen.findByRole("heading", { name: "No workflows yet" }),

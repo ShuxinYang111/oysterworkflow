@@ -644,17 +644,22 @@ export function activeProductRunForWorker(
  * 中文: 从当前 workspace 快照中返回某个 worker 最近的 Agent 面板对话历史。
  * @param state current product state snapshot.
  * @param workerId worker whose conversation should be restored.
+ * @param runId optional run that owns the current Agent-panel session.
  * @returns at most 100 displayable run events, oldest first.
  */
 export function productAgentConversationEventsForWorker(
   state: ProductStateSnapshot | null,
   workerId: string,
+  runId?: string | null,
 ): ProductRunEvent[] {
   if (!state) {
     return [];
   }
   const events = state.runEvents
-    .filter((event) => event.workerId === workerId)
+    .filter(
+      (event) =>
+        event.workerId === workerId && (!runId || event.runId === runId),
+    )
     .sort(
       (left, right) => Date.parse(right.createdAt) - Date.parse(left.createdAt),
     );

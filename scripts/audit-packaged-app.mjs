@@ -89,17 +89,24 @@ const REQUIRED_HELPER_RESOURCES = {
       json: true,
     },
     {
-      relativePath: path.join("bin", "oysterworkflow-hermes.exe"),
+      relativePath: path.join("bin", "oysterworkflow-hermes.ps1"),
     },
     {
       relativePath: path.join("bin", "hermes-bundle.json"),
       json: true,
     },
     {
-      relativePath: path.join("bin", "oysterworkflow-browseract.cmd"),
+      relativePath: path.join("bin", "oysterworkflow-browseract.ps1"),
     },
     {
       relativePath: path.join("bin", "browseract-bundle.json"),
+      json: true,
+    },
+    {
+      relativePath: path.join("bin", "oysterworkflow-uv.exe"),
+    },
+    {
+      relativePath: path.join("bin", "runtime-tools-bundle.json"),
       json: true,
     },
   ],
@@ -241,15 +248,12 @@ function collectMissingHelperResources(appAsarPath, options = {}) {
   }
 
   findings.push(...collectHermesSourceSeedFindings(resourceRoot, platform));
-  findings.push(...collectBrowserActRuntimeFindings(resourceRoot, platform));
+  findings.push(...collectBrowserActRuntimeFindings(resourceRoot));
 
   return findings;
 }
 
-function collectBrowserActRuntimeFindings(resourceRoot, platform) {
-  if (platform !== "darwin") {
-    return [];
-  }
+function collectBrowserActRuntimeFindings(resourceRoot) {
   const manifestPath = path.join(resourceRoot, "bin", "browseract-bundle.json");
   if (!existsSync(manifestPath)) {
     return [];
@@ -316,12 +320,12 @@ function collectHermesSourceSeedFindings(resourceRoot, platform) {
     findings.push(
       "bin/hermes-bundle.json is missing a valid bundledSource digest",
     );
-  } else {
+  } else if (platform !== "win32") {
     const launcherPath = path.join(
       resourceRoot,
       "bin",
-      manifest.executableName === "hermes.exe"
-        ? "oysterworkflow-hermes.exe"
+      manifest.executableName === "hermes.ps1"
+        ? "oysterworkflow-hermes.ps1"
         : "oysterworkflow-hermes",
     );
     if (

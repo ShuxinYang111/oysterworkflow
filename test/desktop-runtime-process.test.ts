@@ -380,10 +380,10 @@ describe("desktop runtime process helpers", () => {
       win.join(resourcesPath, "bin", "oysterworkflow-screenpipe.exe"),
     );
     expect(paths.hermesCommandPath).toBe(
-      win.join(resourcesPath, "bin", "oysterworkflow-hermes.exe"),
+      win.join(resourcesPath, "bin", "oysterworkflow-hermes.ps1"),
     );
     expect(paths.browserActCommandPath).toBe(
-      win.join(resourcesPath, "bin", "oysterworkflow-browseract.cmd"),
+      win.join(resourcesPath, "bin", "oysterworkflow-browseract.ps1"),
     );
   });
 
@@ -420,10 +420,10 @@ describe("desktop runtime process helpers", () => {
       win.join(repoRoot, "out", "bundled", "screenpipe", "screenpipe.exe"),
     );
     expect(paths.hermesCommandPath).toBe(
-      win.join(repoRoot, "out", "bundled", "hermes", "hermes.exe"),
+      win.join(repoRoot, "out", "bundled", "hermes", "hermes.ps1"),
     );
     expect(paths.browserActCommandPath).toBe(
-      win.join(repoRoot, "out", "bundled", "browseract", "browser-act.cmd"),
+      win.join(repoRoot, "out", "bundled", "browseract", "browser-act.ps1"),
     );
     expect(paths.bundledLlmConfigPath).toBe(
       win.join(repoRoot, "config", "llm.config.json"),

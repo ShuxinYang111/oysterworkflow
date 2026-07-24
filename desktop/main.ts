@@ -447,9 +447,11 @@ async function main(): Promise<void> {
     userDataPath: app.getPath("userData"),
     resourcesPath: process.resourcesPath,
   });
-  app.setActivationPolicy("regular");
-  app.dock?.show();
-  logStartup("set macOS activation policy", "regular");
+  if (process.platform === "darwin") {
+    app.setActivationPolicy("regular");
+    app.dock?.show();
+    logStartup("set macOS activation policy", "regular");
+  }
   applyDevelopmentDockIcon();
   registerAuthProtocol();
 

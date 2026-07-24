@@ -95,5 +95,6 @@ export function unsupportedDesktopUpdateState(): DesktopUpdateSnapshot {
     checkedAt: null,
     progress: null,
     errorMessage: null,
+    errorCode: null,
   };
 }

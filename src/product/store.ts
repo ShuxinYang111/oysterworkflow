@@ -312,6 +312,8 @@ interface OwnedChannelSetupProcess {
 }
 
 const HERMES_WORKER_COMMAND_MAX_TURNS = 100;
+const GENERAL_WORKER_SESSION_ID = "system-general-worker-session";
+const GENERAL_WORKER_SESSION_TITLE = "General AI worker session";
 const CHANNEL_SETUP_STARTUP_TIMEOUT_MS = 30_000;
 const PURE_DEMO_SEED_MIGRATION_ID = "pure-demo-seed-to-empty-v1";
 const PRODUCT_STORE_OPERATION_DRAIN_TIMEOUT_MS = 1_250;
@@ -3539,37 +3541,47 @@ export function createProductStore(input: ProductStoreInput): ProductStore {
         const current = await loadState();
         assertStoreAcceptingOperations("start worker");
         const currentWorker = requireWorker(current, workerId);
-        const currentWorkflow = requireWorkerSessionWorkflow(
+        const currentWorkflow = findWorkerSessionWorkflow(
           current,
           currentWorker,
         );
-        requireInstalledWorkflowReadyForRun(currentWorkflow);
+        if (currentWorkflow) {
+          requireInstalledWorkflowReadyForRun(currentWorkflow);
+        }
         requireNoActiveRun(current, currentWorker.id);
         requireWorkerDeviceReady(current, currentWorker);
-        requireDeployTargetReady(current, currentWorker, currentWorkflow);
-        const authoritativeWorkflow = current.workflows.find(
-          (workflow) => workflow.id === currentWorkflow.workflowId,
-        );
-        const sourceSkillPath = await selectWorkflowSourcePath(
-          [
-            currentWorkflow.sourceSkillPath === currentWorkflow.hermesSkillPath
-              ? null
-              : currentWorkflow.sourceSkillPath,
-            authoritativeWorkflow?.artifactPath,
-          ],
-          workflowRequiresCanonicalGraph(authoritativeWorkflow),
-        );
-        await requireCanonicalWorkflowSource(
-          authoritativeWorkflow,
-          sourceSkillPath,
-        );
-        await logWorkflowInstallDiagnostic("start.refresh_requested", {
-          workerId: currentWorker.id,
-          workflowId: currentWorkflow.workflowId,
-          sourceSkillPath,
-          installedSkillPath: currentWorkflow.hermesSkillPath,
-          source: await inspectWorkflowSourcePath(sourceSkillPath),
-        });
+        if (currentWorkflow) {
+          requireDeployTargetReady(current, currentWorker, currentWorkflow);
+        }
+        const authoritativeWorkflow = currentWorkflow
+          ? current.workflows.find(
+              (workflow) => workflow.id === currentWorkflow.workflowId,
+            )
+          : undefined;
+        let sourceSkillPath: string | null = null;
+        if (currentWorkflow) {
+          sourceSkillPath = await selectWorkflowSourcePath(
+            [
+              currentWorkflow.sourceSkillPath ===
+              currentWorkflow.hermesSkillPath
+                ? null
+                : currentWorkflow.sourceSkillPath,
+              authoritativeWorkflow?.artifactPath,
+            ],
+            workflowRequiresCanonicalGraph(authoritativeWorkflow),
+          );
+          await requireCanonicalWorkflowSource(
+            authoritativeWorkflow,
+            sourceSkillPath,
+          );
+          await logWorkflowInstallDiagnostic("start.refresh_requested", {
+            workerId: currentWorker.id,
+            workflowId: currentWorkflow.workflowId,
+            sourceSkillPath,
+            installedSkillPath: currentWorkflow.hermesSkillPath,
+            source: await inspectWorkflowSourcePath(sourceSkillPath),
+          });
+        }
         assertStoreAcceptingOperations("start worker");
         const workerAgent = await workerExecutor.provisionAgent({
           workerId: currentWorker.id,
@@ -3579,31 +3591,34 @@ export function createProductStore(input: ProductStoreInput): ProductStore {
           workerAgent.agentReference,
           "start worker",
         );
-        const workerSkill = await workerExecutor.installSkill({
-          workflowId: currentWorkflow.workflowId,
-          workflowTitle: currentWorkflow.workflowTitle,
-          description: currentWorkflow.description,
-          apps: currentWorkflow.apps,
-          workerAgentReference: workerAgent.agentReference,
-          sourceSkillPath,
-        });
-        await assertStoreOpenAfterWorkerReference(
-          workerAgent.agentReference,
-          "start worker",
-        );
-        requireCanonicalWorkflowInstall(
-          authoritativeWorkflow,
-          sourceSkillPath,
-          workerSkill,
-        );
-        await logWorkflowInstallDiagnostic("start.refresh_materialized", {
-          workerId: currentWorker.id,
-          workflowId: currentWorkflow.workflowId,
-          sourceSkillPath,
-          installedSkillPath: workerSkill.skillPath,
-          workflowGraphPath: workerSkill.workflowGraphPath ?? null,
-          workflowRevisionId: workerSkill.workflowRevisionId ?? null,
-        });
+        let workerSkill: WorkerExecutorSkill | null = null;
+        if (currentWorkflow && sourceSkillPath) {
+          workerSkill = await workerExecutor.installSkill({
+            workflowId: currentWorkflow.workflowId,
+            workflowTitle: currentWorkflow.workflowTitle,
+            description: currentWorkflow.description,
+            apps: currentWorkflow.apps,
+            workerAgentReference: workerAgent.agentReference,
+            sourceSkillPath,
+          });
+          await assertStoreOpenAfterWorkerReference(
+            workerAgent.agentReference,
+            "start worker",
+          );
+          requireCanonicalWorkflowInstall(
+            authoritativeWorkflow,
+            sourceSkillPath,
+            workerSkill,
+          );
+          await logWorkflowInstallDiagnostic("start.refresh_materialized", {
+            workerId: currentWorker.id,
+            workflowId: currentWorkflow.workflowId,
+            sourceSkillPath,
+            installedSkillPath: workerSkill.skillPath,
+            workflowGraphPath: workerSkill.workflowGraphPath ?? null,
+            workflowRevisionId: workerSkill.workflowRevisionId ?? null,
+          });
+        }
         await assertStoreOpenAfterWorkerReference(
           workerAgent.agentReference,
           "start worker",
@@ -3612,34 +3627,40 @@ export function createProductStore(input: ProductStoreInput): ProductStore {
         const prepared = await updateState((draft) => {
           assertStoreAcceptingOperations("start worker");
           const worker = requireWorker(draft, workerId);
-          const installedWorkflow = requireInstalledWorkflow(
-            draft,
-            currentWorkflow.id,
-          );
+          const installedWorkflow = currentWorkflow
+            ? requireInstalledWorkflow(draft, currentWorkflow.id)
+            : null;
           requireWorkerDeviceReady(draft, worker);
-          requireInstalledWorkflowReadyForRun(installedWorkflow);
+          if (installedWorkflow) {
+            requireInstalledWorkflowReadyForRun(installedWorkflow);
+          }
           requireNoActiveRun(draft, worker.id);
-          requireDeployTargetReady(draft, worker, installedWorkflow);
-          draft.installedWorkflows = draft.installedWorkflows.map((workflow) =>
-            workflow.id === installedWorkflow.id
-              ? {
-                  ...workflow,
-                  hermesSkillReference: workerSkill.skillReference,
-                  hermesInstallReference: workerSkill.installReference,
-                  hermesSkillName: workerSkill.skillName,
-                  hermesSkillPath: workerSkill.skillPath,
-                  sourceSkillPath,
-                  sourceWorkflowRevisionId:
-                    workerSkill.workflowRevisionId ?? null,
-                }
-              : workflow,
-          );
+          if (installedWorkflow && workerSkill && sourceSkillPath) {
+            requireDeployTargetReady(draft, worker, installedWorkflow);
+            draft.installedWorkflows = draft.installedWorkflows.map(
+              (workflow) =>
+                workflow.id === installedWorkflow.id
+                  ? {
+                      ...workflow,
+                      hermesSkillReference: workerSkill.skillReference,
+                      hermesInstallReference: workerSkill.installReference,
+                      hermesSkillName: workerSkill.skillName,
+                      hermesSkillPath: workerSkill.skillPath,
+                      sourceSkillPath,
+                      sourceWorkflowRevisionId:
+                        workerSkill.workflowRevisionId ?? null,
+                    }
+                  : workflow,
+            );
+          }
           const now = new Date().toISOString();
           run = {
             id: createProductEntityId("run"),
             workerId: worker.id,
-            installedWorkflowId: installedWorkflow.id,
-            workflowTitle: installedWorkflow.workflowTitle,
+            installedWorkflowId:
+              installedWorkflow?.id ?? GENERAL_WORKER_SESSION_ID,
+            workflowTitle:
+              installedWorkflow?.workflowTitle ?? GENERAL_WORKER_SESSION_TITLE,
             kind: "worker_session",
             status: "running",
             command: null,
@@ -3663,7 +3684,8 @@ export function createProductStore(input: ProductStoreInput): ProductStore {
             item.id === worker.id
               ? {
                   ...item,
-                  selectedInstalledWorkflowId: installedWorkflow.id,
+                  selectedInstalledWorkflowId:
+                    installedWorkflow?.id ?? item.selectedInstalledWorkflowId,
                   config: {
                     ...item.config,
                     hermesAgentReference: workerAgent.agentReference,
@@ -3688,10 +3710,7 @@ export function createProductStore(input: ProductStoreInput): ProductStore {
 
         const preparedRun = run!;
         const preparedWorker = requireWorker(prepared, preparedRun.workerId);
-        const preparedWorkflow = requireInstalledWorkflow(
-          prepared,
-          preparedRun.installedWorkflowId,
-        );
+        const preparedWorkflow = installedWorkflowForRun(prepared, preparedRun);
         const workerSignals = createWorkerSignalCallbacks(preparedRun.id);
         let handle: WorkerExecutorTurnHandle | null = null;
         try {
@@ -3703,7 +3722,7 @@ export function createProductStore(input: ProductStoreInput): ProductStore {
               database.installationId,
             ),
             workerAgentReference: preparedWorker.config.hermesAgentReference,
-            skills: [preparedWorkflow.hermesSkillName],
+            skills: preparedWorkflow ? [preparedWorkflow.hermesSkillName] : [],
             maxTurns: HERMES_WORKER_COMMAND_MAX_TURNS,
             prompt: buildInitializeWorkerPrompt(
               preparedWorker,
@@ -4113,12 +4132,16 @@ export function createProductStore(input: ProductStoreInput): ProductStore {
             status: "Command",
             body: command,
           });
+          const generalSession =
+            run.installedWorkflowId === GENERAL_WORKER_SESSION_ID;
           const workflowEvent = productEvent({
             runId: run.id,
             workerId: worker.id,
             source: "executor",
-            status: "Workflow selected",
-            body: `Using ${run.workflowTitle}. Sending the command to the AI worker with allow_all policy.`,
+            status: generalSession ? "AI worker session" : "Workflow selected",
+            body: generalSession
+              ? "Using the general AI worker session. Sending the command with allow_all policy."
+              : `Using ${run.workflowTitle}. Sending the command to the AI worker with allow_all policy.`,
           });
           draft.commands = [commandRecord, ...draft.commands];
           draft.runEvents = [workflowEvent, commandEvent, ...draft.runEvents];
@@ -4127,10 +4150,7 @@ export function createProductStore(input: ProductStoreInput): ProductStore {
         assertStoreAcceptingOperations("send worker command");
         const activeRun = run!;
         const worker = requireWorker(accepted, activeRun.workerId);
-        const installedWorkflow = requireInstalledWorkflow(
-          accepted,
-          activeRun.installedWorkflowId,
-        );
+        const installedWorkflow = installedWorkflowForRun(accepted, activeRun);
         observeWorkerAgentReference(worker.config.hermesAgentReference);
         const workerSignals = createWorkerSignalCallbacks(activeRun.id);
         let commandHandle: WorkerExecutorTurnHandle | null = null;
@@ -4143,7 +4163,9 @@ export function createProductStore(input: ProductStoreInput): ProductStore {
               database.installationId,
             ),
             workerAgentReference: worker.config.hermesAgentReference,
-            skills: [installedWorkflow.hermesSkillName],
+            skills: installedWorkflow
+              ? [installedWorkflow.hermesSkillName]
+              : [],
             resumeSessionId: activeRun.hermesSessionId,
             maxTurns: HERMES_WORKER_COMMAND_MAX_TURNS,
             prompt: buildWorkerCommandPrompt({
@@ -5672,24 +5694,31 @@ function requireInstalledWorkflow(
   return workflow;
 }
 
-function requireWorkerSessionWorkflow(
+function findWorkerSessionWorkflow(
   state: ProductState,
   worker: ProductWorker,
-): ProductInstalledWorkflow {
+): ProductInstalledWorkflow | null {
   const selected = worker.selectedInstalledWorkflowId
     ? state.installedWorkflows.find(
         (workflow) => workflow.id === worker.selectedInstalledWorkflowId,
       )
     : null;
-  const workflow =
+  return (
     selected ??
     state.installedWorkflows.find(
       (item) => item.workerId === worker.id && item.status === "Enabled",
-    );
-  if (!workflow) {
-    throw new Error("Install an enabled workflow before starting this worker.");
-  }
-  return workflow;
+    ) ??
+    null
+  );
+}
+
+function installedWorkflowForRun(
+  state: ProductState,
+  run: ProductRun,
+): ProductInstalledWorkflow | null {
+  return run.installedWorkflowId === GENERAL_WORKER_SESSION_ID
+    ? null
+    : requireInstalledWorkflow(state, run.installedWorkflowId);
 }
 
 function requireDevice(state: ProductState, deviceId: string): ProductDevice {
@@ -5808,19 +5837,28 @@ function buildStartWorkerPrompt(
 
 function buildInitializeWorkerPrompt(
   worker: ProductWorker,
-  workflow: ProductInstalledWorkflow,
+  workflow: ProductInstalledWorkflow | null,
 ): string {
+  const sessionContext = workflow
+    ? [
+        `Installed skill context: ${workflow.hermesSkillName}`,
+        `Selected workflow: ${workflow.workflowTitle}`,
+        `Workflow description: ${workflow.description}`,
+        `Apps: ${workflow.apps.join(", ") || "Desktop app"}`,
+        "Initialize the worker session only. Do not execute the installed workflow yet, do not navigate apps, and do not perform external actions.",
+      ]
+    : [
+        "Session mode: General AI worker session (no workflow installed).",
+        "No workflow skill is selected. Use the worker profile and available tools for the user's next command.",
+        "Initialize the worker session only. Do not navigate apps or perform external actions.",
+      ];
   return [
     "You are the Hermes Agent instance backing an OysterWorkflow AI worker.",
     `Worker: ${worker.name}`,
     `Worker reference: ${worker.config.hermesAgentReference}`,
     ...workerConfigPromptLines(worker),
-    `Installed skill context: ${workflow.hermesSkillName}`,
-    `Selected workflow: ${workflow.workflowTitle}`,
-    `Workflow description: ${workflow.description}`,
-    `Apps: ${workflow.apps.join(", ") || "Desktop app"}`,
+    ...sessionContext,
     "Approval policy: allow_all.",
-    "Initialize the worker session only. Do not execute the installed workflow yet, do not navigate apps, and do not perform external actions.",
     "Reply with a concise ready message for the Agent panel, including that you are ready for the user's next command.",
     "Keep the session open for follow-up commands through the same Hermes session.",
     ...workerUserFacingResponsePolicyLines(),
@@ -5831,17 +5869,25 @@ function buildInitializeWorkerPrompt(
 
 function buildWorkerCommandPrompt(input: {
   worker: ProductWorker;
-  installedWorkflow: ProductInstalledWorkflow;
+  installedWorkflow: ProductInstalledWorkflow | null;
   command: string;
 }): string {
+  const sessionContext = input.installedWorkflow
+    ? [
+        `Installed skill: ${input.installedWorkflow.hermesSkillName}`,
+        `Workflow: ${input.installedWorkflow.workflowTitle}`,
+        "Use the installed workflow skill as the operating guide.",
+      ]
+    : [
+        "Session mode: General AI worker session (no workflow installed).",
+        "Use the worker profile and available tools to carry out the user's command.",
+      ];
   return [
     "Continue the OysterWorkflow worker run.",
     `Worker: ${input.worker.name}`,
     ...workerConfigPromptLines(input.worker),
-    `Installed skill: ${input.installedWorkflow.hermesSkillName}`,
-    `Workflow: ${input.installedWorkflow.workflowTitle}`,
+    ...sessionContext,
     `User command: ${input.command}`,
-    "Use the installed workflow skill as the operating guide.",
     "Use only evidence from this current run and current app/browser/tool state. Do not treat previous run summaries, old session history, cached draft claims, or cached CRM claims as proof of completion.",
     "Do not rewrite, self-improve, or create skills during workflow execution unless the user explicitly asks for skill editing.",
     "Avoid noisy repeated full-screen `computer_use` captures. Prefer targeted browser/tool/app evidence; if `computer_use` output is too large, switch methods or report the specific foreground app/window needed.",

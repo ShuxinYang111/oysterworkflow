@@ -9,6 +9,9 @@ export type DesktopUpdatePhase =
   | "installing"
   | "error";
 
+export type DesktopUpdateErrorCode =
+  "release_metadata_unavailable" | "network_unavailable" | "operation_failed";
+
 export interface DesktopUpdateProgress {
   percent: number;
   transferredBytes: number;
@@ -27,4 +30,5 @@ export interface DesktopUpdateSnapshot {
   checkedAt: string | null;
   progress: DesktopUpdateProgress | null;
   errorMessage: string | null;
+  errorCode?: DesktopUpdateErrorCode | null;
 }

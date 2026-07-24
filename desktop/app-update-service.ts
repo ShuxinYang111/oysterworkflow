@@ -1,4 +1,5 @@
 import type {
+  DesktopUpdateErrorCode,
   DesktopUpdateProgress,
   DesktopUpdateSnapshot,
 } from "../src/desktop-update/contracts.js";
@@ -55,6 +56,7 @@ export function createDesktopUpdateService(
   const now = options.now ?? (() => new Date());
   let checkInFlight: Promise<DesktopUpdateSnapshot> | null = null;
   let downloadInFlight: Promise<DesktopUpdateSnapshot> | null = null;
+  let activeOperation: "check" | "download" | null = null;
   let snapshot: DesktopUpdateSnapshot = {
     supported,
     phase: supported ? "idle" : "unsupported",
@@ -66,6 +68,7 @@ export function createDesktopUpdateService(
     checkedAt: null,
     progress: null,
     errorMessage: null,
+    errorCode: null,
   };
 
   const publish = (patch: Partial<DesktopUpdateSnapshot>): void => {
@@ -79,6 +82,7 @@ export function createDesktopUpdateService(
       phase: "checking",
       progress: null,
       errorMessage: null,
+      errorCode: null,
     });
   });
   options.driver.onUpdateAvailable((info) => {
@@ -91,6 +95,7 @@ export function createDesktopUpdateService(
       checkedAt: now().toISOString(),
       progress: null,
       errorMessage: null,
+      errorCode: null,
     });
   });
   options.driver.onUpdateNotAvailable(() => {
@@ -103,6 +108,7 @@ export function createDesktopUpdateService(
       checkedAt: now().toISOString(),
       progress: null,
       errorMessage: null,
+      errorCode: null,
     });
   });
   options.driver.onDownloadProgress((progress) => {
@@ -110,6 +116,7 @@ export function createDesktopUpdateService(
       phase: "downloading",
       progress: normalizeProgress(progress),
       errorMessage: null,
+      errorCode: null,
     });
   });
   options.driver.onUpdateDownloaded((info) => {
@@ -126,15 +133,48 @@ export function createDesktopUpdateService(
         ? { ...snapshot.progress, percent: 100 }
         : null,
       errorMessage: null,
+      errorCode: null,
     });
   });
   options.driver.onError((error) => {
+    publishUpdateError(error, activeOperation === "check");
+  });
+
+  const publishCurrentVersion = (): void => {
+    publish({
+      phase: "up_to_date",
+      availableVersion: null,
+      releaseName: null,
+      releaseNotes: null,
+      releaseDate: null,
+      checkedAt: now().toISOString(),
+      progress: null,
+      errorMessage: null,
+      errorCode: null,
+    });
+  };
+
+  const publishUpdateError = (
+    error: unknown,
+    allowCurrentReleaseFallback: boolean,
+  ): boolean => {
+    if (
+      allowCurrentReleaseFallback &&
+      isMissingCurrentReleaseMetadata(error, options.currentVersion)
+    ) {
+      publishCurrentVersion();
+      return true;
+    }
+    const normalized = normalizeUpdateError(error);
     publish({
       phase: "error",
+      checkedAt: now().toISOString(),
       progress: null,
-      errorMessage: normalizeErrorMessage(error),
+      errorMessage: normalized.message,
+      errorCode: normalized.code,
     });
-  });
+    return false;
+  };
 
   return {
     getSnapshot: () => cloneSnapshot(snapshot),
@@ -153,20 +193,23 @@ export function createDesktopUpdateService(
         phase: "checking",
         progress: null,
         errorMessage: null,
+        errorCode: null,
       });
+      activeOperation = "check";
       checkInFlight = options.driver
         .checkForUpdates()
         .then(() => cloneSnapshot(snapshot))
         .catch((error: unknown) => {
-          publish({
-            phase: "error",
-            progress: null,
-            errorMessage: normalizeErrorMessage(error),
-          });
+          if (publishUpdateError(error, true)) {
+            return cloneSnapshot(snapshot);
+          }
           throw error;
         })
         .finally(() => {
           checkInFlight = null;
+          if (activeOperation === "check") {
+            activeOperation = null;
+          }
         });
       return checkInFlight;
     },
@@ -191,20 +234,21 @@ export function createDesktopUpdateService(
           bytesPerSecond: 0,
         },
         errorMessage: null,
+        errorCode: null,
       });
+      activeOperation = "download";
       downloadInFlight = options.driver
         .downloadUpdate()
         .then(() => cloneSnapshot(snapshot))
         .catch((error: unknown) => {
-          publish({
-            phase: "error",
-            progress: null,
-            errorMessage: normalizeErrorMessage(error),
-          });
+          publishUpdateError(error, false);
           throw error;
         })
         .finally(() => {
           downloadInFlight = null;
+          if (activeOperation === "download") {
+            activeOperation = null;
+          }
         });
       return downloadInFlight;
     },
@@ -212,7 +256,7 @@ export function createDesktopUpdateService(
       if (snapshot.phase !== "downloaded") {
         throw new Error("Download the update before installing it.");
       }
-      publish({ phase: "installing", errorMessage: null });
+      publish({ phase: "installing", errorMessage: null, errorCode: null });
       return cloneSnapshot(snapshot);
     },
     quitAndInstall() {
@@ -318,9 +362,62 @@ function normalizeOptionalText(value: unknown): string | null {
   return normalized ? normalized.slice(0, 8_000) : null;
 }
 
-function normalizeErrorMessage(error: unknown): string {
+function normalizeUpdateError(error: unknown): {
+  code: DesktopUpdateErrorCode;
+  message: string;
+} {
   const message = error instanceof Error ? error.message : String(error);
-  return message.trim().slice(0, 1_000) || "The update operation failed.";
+  if (isMissingReleaseMetadata(message)) {
+    return {
+      code: "release_metadata_unavailable",
+      message:
+        "The Windows release is temporarily missing update information. Try again later.",
+    };
+  }
+  if (
+    /\b(?:ECONNABORTED|ECONNREFUSED|ECONNRESET|ENETUNREACH|ENOTFOUND|ETIMEDOUT)\b|network|timed?\s*out|fetch failed/iu.test(
+      message,
+    )
+  ) {
+    return {
+      code: "network_unavailable",
+      message:
+        "OysterWorkflow could not reach the update service. Check your connection and try again.",
+    };
+  }
+  return {
+    code: "operation_failed",
+    message: "OysterWorkflow could not complete the update operation.",
+  };
+}
+
+function isMissingCurrentReleaseMetadata(
+  error: unknown,
+  currentVersion: string,
+): boolean {
+  const message = error instanceof Error ? error.message : String(error);
+  if (!isMissingReleaseMetadata(message)) {
+    return false;
+  }
+  const releaseVersion = message.match(
+    /\/releases\/download\/v?([^/\s]+)\/latest(?:-[^/\s]+)?\.yml/iu,
+  )?.[1];
+  return (
+    releaseVersion !== undefined &&
+    normalizeVersion(releaseVersion) === normalizeVersion(currentVersion)
+  );
+}
+
+function isMissingReleaseMetadata(message: string): boolean {
+  return (
+    /Cannot find latest(?:-[^/\s]+)?\.yml/iu.test(message) ||
+    /latest(?:-[^/\s]+)?\.yml[\s\S]{0,300}\b404\b/iu.test(message) ||
+    /\b404\b[\s\S]{0,300}latest(?:-[^/\s]+)?\.yml/iu.test(message)
+  );
+}
+
+function normalizeVersion(version: string): string {
+  return decodeURIComponent(version).trim().replace(/^v/iu, "");
 }
 
 function cloneSnapshot(snapshot: DesktopUpdateSnapshot): DesktopUpdateSnapshot {

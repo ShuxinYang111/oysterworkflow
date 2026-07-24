@@ -44,4 +44,36 @@ describe("product Agent conversation boundary", () => {
       ),
     ).toEqual(["event-user", "event-assistant"]);
   });
+
+  it("keeps historical failures out of the current worker session", () => {
+    const events: ProductRunEvent[] = [
+      {
+        id: "event-current-ready",
+        runId: "run-current",
+        workerId: "sales",
+        source: "hermes",
+        status: "AI worker ready",
+        body: "Ready for the next command.",
+        createdAt: "2026-07-23T07:16:41.000Z",
+      },
+      {
+        id: "event-old-failure",
+        runId: "run-old",
+        workerId: "sales",
+        source: "system",
+        status: "AI worker failed",
+        body: "Old PowerShell launcher failure.",
+        createdAt: "2026-07-23T07:07:25.000Z",
+      },
+    ];
+    const state = { runEvents: events } as ProductStateSnapshot;
+
+    expect(
+      productAgentConversationEventsForWorker(
+        state,
+        "sales",
+        "run-current",
+      ).map((event) => event.id),
+    ).toEqual(["event-current-ready"]);
+  });
 });

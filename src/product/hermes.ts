@@ -4,13 +4,14 @@ import {
   access,
   chmod,
   mkdir,
+  mkdtemp,
   open,
   readFile,
   rm,
   stat,
   writeFile,
 } from "node:fs/promises";
-import { homedir } from "node:os";
+import { homedir, tmpdir } from "node:os";
 import { delimiter, dirname, isAbsolute, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { StringDecoder } from "node:string_decoder";
@@ -73,6 +74,8 @@ const OYSTERWORKFLOW_COMPUTER_USE_REQUIRED_TOOLSETS = [
   "vision",
 ] as const;
 export const HERMES_STATUS_TIMEOUT_MS = 300_000;
+const HERMES_MODEL_READINESS_TIMEOUT_MS =
+  process.platform === "win32" ? 90_000 : 30_000;
 const HERMES_COMMAND_TERMINATION_GRACE_MS = 750;
 const HERMES_COMMAND_FORCE_SETTLE_MS = 250;
 const HERMES_COMMAND_MAX_BUFFER_BYTES = 1024 * 1024;
@@ -319,10 +322,12 @@ function runBoundedHermesCommand(
 
   return new Promise<HermesCommandOutput>((resolveRun, rejectRun) => {
     const useProcessGroup = process.platform !== "win32";
-    const child = spawn(command, args, {
+    const commandInvocation = resolveHermesCommandInvocation(command, args);
+    const child = spawn(commandInvocation.command, commandInvocation.args, {
       detached: useProcessGroup,
       env: options.env,
       stdio: ["ignore", "pipe", "pipe"],
+      windowsHide: true,
     });
     let stdout = "";
     let stderr = "";
@@ -642,7 +647,7 @@ async function probeHermesModelReadiness(
       ],
       {
         env: buildHermesEnv(resolvedConfig, runtimeHome),
-        timeoutMs: 30_000,
+        timeoutMs: HERMES_MODEL_READINESS_TIMEOUT_MS,
         signal: options.signal,
         terminationGraceMs: options.terminationGraceMs,
         forceSettleMs: options.forceSettleMs,
@@ -695,9 +700,16 @@ export async function provisionHermesAgent(input: {
     };
   }
 
+  const createInvocation = resolveHermesCommandInvocation(hermesCommand, [
+    "profile",
+    "create",
+    profileName,
+    "--clone",
+    "--no-alias",
+  ]);
   const created = await execFileAsync(
-    hermesCommand,
-    ["profile", "create", profileName, "--clone", "--no-alias"],
+    createInvocation.command,
+    createInvocation.args,
     {
       env: buildHermesProfileEnv(input.configSource),
       timeout: 30_000,
@@ -799,11 +811,19 @@ export async function disconnectHermesGatewayChannel(input: {
     if (binding.threadId?.trim()) {
       args.push("--thread-id", binding.threadId.trim());
     }
-    const { stdout } = await execFileAsync(hermesCommand, args, {
-      env: environment,
-      timeout: 30_000,
-      maxBuffer: 1024 * 1024,
-    });
+    const commandInvocation = resolveHermesCommandInvocation(
+      hermesCommand,
+      args,
+    );
+    const { stdout } = await execFileAsync(
+      commandInvocation.command,
+      commandInvocation.args,
+      {
+        env: environment,
+        timeout: 30_000,
+        maxBuffer: 1024 * 1024,
+      },
+    );
     const payload = parseLastJsonObject(stdout);
     if (payload?.ok !== true) {
       throw new Error(
@@ -833,15 +853,17 @@ export async function disconnectHermesGatewayChannel(input: {
     });
   }
 
-  await execFileAsync(
-    hermesCommand,
-    ["-p", profileName, "gateway", "restart"],
-    {
-      env: environment,
-      timeout: 30_000,
-      maxBuffer: 1024 * 1024,
-    },
-  );
+  const restartInvocation = resolveHermesCommandInvocation(hermesCommand, [
+    "-p",
+    profileName,
+    "gateway",
+    "restart",
+  ]);
+  await execFileAsync(restartInvocation.command, restartInvocation.args, {
+    env: environment,
+    timeout: 30_000,
+    maxBuffer: 1024 * 1024,
+  });
 }
 
 /**
@@ -983,10 +1005,12 @@ export async function beginHermesGatewayChannelSetup(input: {
   if (allowedUsers) {
     args.push("--allowed-users", allowedUsers);
   }
-  const child = spawn(hermesCommand, args, {
+  const commandInvocation = resolveHermesCommandInvocation(hermesCommand, args);
+  const child = spawn(commandInvocation.command, commandInvocation.args, {
     env: buildHermesProfileEnv(input.configSource),
     detached: true,
     stdio: ["ignore", "ignore", logHandle.fd],
+    windowsHide: true,
   });
   try {
     await waitForChildSpawn(child);
@@ -1167,11 +1191,16 @@ export async function bindHermesGatewayConversation(input: {
   if (input.connectionId?.trim()) {
     args.push("--connection-id", input.connectionId.trim());
   }
-  const { stdout } = await execFileAsync(hermesCommand, args, {
-    env: buildHermesProfileEnv(input.configSource),
-    timeout: 30_000,
-    maxBuffer: 1024 * 1024,
-  });
+  const commandInvocation = resolveHermesCommandInvocation(hermesCommand, args);
+  const { stdout } = await execFileAsync(
+    commandInvocation.command,
+    commandInvocation.args,
+    {
+      env: buildHermesProfileEnv(input.configSource),
+      timeout: 30_000,
+      maxBuffer: 1024 * 1024,
+    },
+  );
   const payload = parseLastJsonObject(stdout);
   const binding =
     payload && typeof payload.binding === "object" && payload.binding
@@ -1206,19 +1235,20 @@ export async function approveHermesGatewayPairing(input: {
 }): Promise<HermesGatewayPairingApprovalResult> {
   const hermesCommand = await resolveHermesCommand(input.configSource);
   const profileName = requiredProfileName(input.workerAgentReference);
+  const commandInvocation = resolveHermesCommandInvocation(hermesCommand, [
+    "-p",
+    profileName,
+    "gateway",
+    "bindings",
+    "approve-pairing",
+    "--platform",
+    input.platform,
+    "--code",
+    input.code.trim().toUpperCase(),
+  ]);
   const { stdout } = await execFileAsync(
-    hermesCommand,
-    [
-      "-p",
-      profileName,
-      "gateway",
-      "bindings",
-      "approve-pairing",
-      "--platform",
-      input.platform,
-      "--code",
-      input.code.trim().toUpperCase(),
-    ],
+    commandInvocation.command,
+    commandInvocation.args,
     {
       env: buildHermesProfileEnv(input.configSource),
       timeout: 30_000,
@@ -1257,17 +1287,18 @@ export async function listHermesGatewayPeers(input: {
 }): Promise<HermesGatewayPeer[]> {
   const hermesCommand = await resolveHermesCommand(input.configSource);
   const profileName = requiredProfileName(input.workerAgentReference);
+  const commandInvocation = resolveHermesCommandInvocation(hermesCommand, [
+    "-p",
+    profileName,
+    "gateway",
+    "bindings",
+    "peers",
+    "--platform",
+    input.platform,
+  ]);
   const { stdout } = await execFileAsync(
-    hermesCommand,
-    [
-      "-p",
-      profileName,
-      "gateway",
-      "bindings",
-      "peers",
-      "--platform",
-      input.platform,
-    ],
+    commandInvocation.command,
+    commandInvocation.args,
     {
       env: buildHermesProfileEnv(input.configSource),
       timeout: 30_000,
@@ -1323,17 +1354,24 @@ export async function ensureHermesGatewayRunning(input: {
   const profileName = requiredProfileName(input.workerAgentReference);
   const environment = buildHermesProfileEnv(input.configSource);
   const baseArgs = ["-p", profileName, "gateway"];
+  const invokeHermes = (args: string[]) => {
+    const commandInvocation = resolveHermesCommandInvocation(
+      hermesCommand,
+      args,
+    );
+    return execFileAsync(commandInvocation.command, commandInvocation.args, {
+      env: environment,
+      timeout: 20_000,
+      maxBuffer: 1024 * 1024,
+    });
+  };
   const configChanged = await syncHermesProfileConfig(
     profileName,
     input.configSource,
   );
   const isRunning = async () => {
     try {
-      const status = await execFileAsync(
-        hermesCommand,
-        [...baseArgs, "status"],
-        { env: environment, timeout: 15_000, maxBuffer: 1024 * 1024 },
-      );
+      const status = await invokeHermes([...baseArgs, "status"]);
       return hermesGatewayStatusIsRunning(`${status.stdout}\n${status.stderr}`);
     } catch {
       return false;
@@ -1343,11 +1381,7 @@ export async function ensureHermesGatewayRunning(input: {
   if (wasRunning && !input.reload && !configChanged) return;
   if (wasRunning) {
     try {
-      await execFileAsync(hermesCommand, [...baseArgs, "restart"], {
-        env: environment,
-        timeout: 20_000,
-        maxBuffer: 1024 * 1024,
-      });
+      await invokeHermes([...baseArgs, "restart"]);
       await sleep(500);
       if (await isRunning()) return;
     } catch {
@@ -1355,11 +1389,7 @@ export async function ensureHermesGatewayRunning(input: {
     }
   }
   try {
-    await execFileAsync(hermesCommand, [...baseArgs, "start"], {
-      env: environment,
-      timeout: 20_000,
-      maxBuffer: 1024 * 1024,
-    });
+    await invokeHermes([...baseArgs, "start"]);
   } catch {
     // The profile may not have an installed service; foreground fallback below.
   }
@@ -1373,10 +1403,16 @@ export async function ensureHermesGatewayRunning(input: {
   const logPath = join(logDirectory, "oysterworkflow-gateway.log");
   await mkdir(logDirectory, { recursive: true });
   const logHandle = await open(logPath, "a", 0o600);
-  const child = spawn(hermesCommand, [...baseArgs, "run", "--force"], {
+  const gatewayInvocation = resolveHermesCommandInvocation(hermesCommand, [
+    ...baseArgs,
+    "run",
+    "--force",
+  ]);
+  const child = spawn(gatewayInvocation.command, gatewayInvocation.args, {
     env: environment,
     detached: true,
     stdio: ["ignore", logHandle.fd, logHandle.fd],
+    windowsHide: true,
   });
   try {
     await waitForChildSpawn(child);
@@ -1438,12 +1474,21 @@ export async function startHermesWorkerTurn(input: {
         })
       : null;
   const useProcessGroup = process.platform !== "win32";
-  const child = spawn(invocation.hermesCommand, invocation.args, {
-    cwd: invocation.cwd,
-    env: invocation.env,
-    detached: useProcessGroup,
-    stdio: ["ignore", "pipe", "pipe"],
-  });
+  const workerCommandInvocation = resolveHermesCommandInvocation(
+    invocation.hermesCommand,
+    invocation.args,
+  );
+  const child = spawn(
+    workerCommandInvocation.command,
+    workerCommandInvocation.args,
+    {
+      cwd: invocation.cwd,
+      env: invocation.env,
+      detached: useProcessGroup,
+      stdio: ["ignore", "pipe", "pipe"],
+      windowsHide: true,
+    },
+  );
   let stdout = "";
   let stderr = "";
   let readinessTail = "";
@@ -1842,6 +1887,36 @@ function signalHermesProcessGroup(
   } catch {
     return false;
   }
+}
+
+function resolveHermesCommandInvocation(
+  command: string,
+  args: string[],
+): { command: string; args: string[] } {
+  if (process.platform !== "win32") {
+    return { command, args };
+  }
+  if (/\.ps1$/iu.test(command)) {
+    return {
+      command: "powershell.exe",
+      args: [
+        "-NoProfile",
+        "-NonInteractive",
+        "-ExecutionPolicy",
+        "Bypass",
+        "-File",
+        command,
+        ...args,
+      ],
+    };
+  }
+  if (/\.(?:cmd|bat)$/iu.test(command)) {
+    return {
+      command: process.env.ComSpec || "cmd.exe",
+      args: ["/d", "/s", "/c", command, ...args],
+    };
+  }
+  return { command, args };
 }
 
 async function readProcessCommandLine(pid: number): Promise<string | null> {
@@ -2322,28 +2397,53 @@ async function exportLatestHermesAssistantMessage(
   invocation: HermesSessionExportInvocation,
   sessionId: string,
 ): Promise<string> {
-  const args = [
-    ...(invocation.profileName ? ["-p", invocation.profileName] : []),
-    "sessions",
-    "export",
-    "-",
-    "--session-id",
-    sessionId,
-  ];
   let stdout = "";
+  let exportDirectory: string | null = null;
   try {
-    const result = await execFileAsync(invocation.hermesCommand, args, {
-      cwd: invocation.cwd,
-      env: invocation.env,
-      timeout: 30_000,
-      maxBuffer: 8 * 1024 * 1024,
-    });
-    stdout = result.stdout;
+    const needsFileOutput =
+      process.platform === "win32" && /\.ps1$/iu.test(invocation.hermesCommand);
+    exportDirectory = needsFileOutput
+      ? await mkdtemp(join(tmpdir(), "oysterworkflow-hermes-export-"))
+      : null;
+    const exportTarget = exportDirectory
+      ? join(exportDirectory, "session.jsonl")
+      : "-";
+    const args = [
+      ...(invocation.profileName ? ["-p", invocation.profileName] : []),
+      "sessions",
+      "export",
+      exportTarget,
+      "--session-id",
+      sessionId,
+    ];
+    const commandInvocation = resolveHermesCommandInvocation(
+      invocation.hermesCommand,
+      args,
+    );
+    const result = await execFileAsync(
+      commandInvocation.command,
+      commandInvocation.args,
+      {
+        cwd: invocation.cwd,
+        env: invocation.env,
+        timeout: 30_000,
+        maxBuffer: 8 * 1024 * 1024,
+      },
+    );
+    stdout = exportDirectory
+      ? await readFile(join(exportDirectory, "session.jsonl"), "utf8")
+      : result.stdout;
   } catch (error) {
     const output = commandErrorOutput(error).trim();
     throw new Error(
       output || `Hermes sessions export failed for ${sessionId}.`,
     );
+  } finally {
+    if (exportDirectory) {
+      await rm(exportDirectory, { recursive: true, force: true }).catch(
+        () => undefined,
+      );
+    }
   }
   const message = latestAssistantMessageFromSessionExport(stdout);
   if (!message) {
@@ -3637,9 +3737,16 @@ async function readHermesProfile(
   configSource?: HermesConfigSource,
 ): Promise<{ ok: boolean; output: string }> {
   try {
+    const commandInvocation = resolveHermesCommandInvocation(hermesCommand, [
+      "-p",
+      profileName,
+      "profile",
+      "show",
+      profileName,
+    ]);
     const { stdout, stderr } = await execFileAsync(
-      hermesCommand,
-      ["-p", profileName, "profile", "show", profileName],
+      commandInvocation.command,
+      commandInvocation.args,
       {
         env: buildHermesProfileEnv(configSource),
         timeout: 20_000,
